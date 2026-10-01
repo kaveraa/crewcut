@@ -1,0 +1,61 @@
+schema_version: "1.0"
+name: csv-export
+description: "A one-line bug in a project of twenty source and test files. Expected: the export formats the amount with the money helper that already exists, the model keeps storing cents, importer and stats untouched, every test kept, at most three files read, root cause in a few lines."
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: Accounting says the deals CSV shows amounts like 125000 where they expect 1250.00 EUR. Fix it.
+  max_turns: 12
+  timeout_seconds: 300
+  allowed_tools: [Read, Edit, Grep, Glob, Skill]
+runs: 3
+graders:
+  - type: file_exists
+    name: no-new-file
+    path: "**/*"
+    exists: false
+  - type: regex
+    name: reuses-money-helper
+    target: { source: file, path: src/services/export.js }
+    pattern: 'formatCents\(deal\.amountCents\)'
+    match: contains
+  - type: regex
+    name: model-still-stores-cents
+    target: { source: file, path: src/models/deal.js }
+    pattern: "amountCents must be a non-negative integer"
+    match: contains
+  - type: regex
+    name: importer-untouched
+    target: { source: file, path: src/services/importer.js }
+    pattern: 'amountCents: parseEuros\(row\.amount\)'
+    match: contains
+  - type: regex
+    name: stats-untouched
+    target: { source: file, path: src/services/stats.js }
+    pattern: 'sum \+ d\.amountCents'
+    match: contains
+  - type: regex
+    name: money-helper-untouched
+    target: { source: file, path: src/utils/money.js }
+    pattern: "return \\(cents / 100\\)\\.toFixed\\(2\\) \\+ ' ' \\+ currency;"
+    match: contains
+  - type: regex
+    name: keeps-export-test
+    target: { source: file, path: tests/export.test.js }
+    pattern: "one header line and one line per deal"
+    match: contains
+  - type: tool_used
+    name: reads-at-most-three-files
+    tool: Read
+    min: 0
+    max: 3
+    arm: both
+  - type: llm
+    name: root-cause-stated
+    criteria: >
+      The final message says that the export wrote the raw amountCents value
+      into the CSV and now formats it with formatCents from the money
+      helper, in src/services/export.js, and that deals keep storing cents.
+      It is at most 8 lines in total, counting blank lines. Mentions of the
+      tests, of the header name or of the currency suffix do not matter for
+      this check.

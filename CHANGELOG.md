@@ -5,11 +5,14 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.3.3] - 2026-10-01
+
 ### Added
 
-- Eval case `vat-country`: a bug across several files with an existing test
-  suite, graded on reuse of the existing check, on files and tests left
-  intact and on the number of files read. Measured in the README.
+- Eval cases `vat-country` (seven modules, four test files) and `csv-export`
+  (twenty source and test files): a bug the plugin should fix by reusing
+  what exists, graded on files and tests left intact and on the number of
+  files read. All cases re-measured in the README.
 - CI badge in the README.
 
 ### Changed
