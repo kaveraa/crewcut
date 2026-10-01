@@ -95,6 +95,22 @@ resumed session and a context compaction keep the level you chose. Typing
 `stop crewcut` or `normal mode` as a whole message also switches the plugin
 off.
 
+`/crewcut-review` and `/crewcut-audit` put the session in a read-only
+`review` state until you switch to a level again: `/crewcut` shows it, a
+compaction keeps it, and subagents started meanwhile receive the read-only
+rule instead of the ruleset.
+
+## Status line
+
+The plugin ships `hooks/statusline.js`, which prints the level, the model
+and the working directory, for example `crewcut: ultra | Opus | shop`. On
+the first session start without a status line configured, Claude offers
+once to add it to your settings; say yes, or add it yourself:
+
+```json
+"statusLine": { "type": "command", "command": "node \"<plugin dir>/hooks/statusline.js\"" }
+```
+
 Settings live in `crewcut.json` next to your Claude settings (`~/.claude`, or
 `CLAUDE_CONFIG_DIR`): `{ "defaultLevel": "ultra", "subagents": true }`. The
 `CREWCUT_DEFAULT_MODE` environment variable wins over the file. With

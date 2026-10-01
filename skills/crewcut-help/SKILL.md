@@ -27,9 +27,13 @@ Commands
 
 Also: "stop crewcut" or "normal mode" as a whole message = /crewcut off.
 A resumed session and a context compaction keep the level you chose.
+/crewcut-review and /crewcut-audit put the session in the read-only
+"review" state until the next /crewcut <level>.
 
 Settings
   CREWCUT_DEFAULT_MODE       env var, wins over the config file
   ~/.claude/crewcut.json     { "defaultLevel": "...", "subagents": true|false }
   ~/.claude/crewcut-mode     the level of the current session (per user)
+  statusline                 "statusLine": { "type": "command",
+                             "command": "node \"<plugin dir>/hooks/statusline.js\"" }
 ```

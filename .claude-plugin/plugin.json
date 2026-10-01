@@ -1,6 +1,6 @@
 {
   "name": "crewcut",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Short hair, short code. Makes Claude Code spend fewer tokens: simplest code that works, short answers, few tool calls, no safety cuts.",
   "author": {
     "name": "Augustin Kavera",

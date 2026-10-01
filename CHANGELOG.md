@@ -5,6 +5,17 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-01
+
+### Added
+
+- Read-only `review` state: `/crewcut-review` and `/crewcut-audit` mark the
+  session until the next `/crewcut <level>`; `/crewcut` shows it, compaction
+  keeps it, subagents receive the read-only rule.
+- Status line badge: `hooks/statusline.js` prints the level, the model and
+  the working directory; a one-time offer to configure it at session start
+  when no status line exists.
+
 ## [0.2.2] - 2026-10-01
 
 ### Added

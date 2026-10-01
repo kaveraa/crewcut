@@ -18,3 +18,6 @@ argument-hint: "[git range or files]"
 3. Run the `crewcut-reviewer` agent (namespaced `crewcut:crewcut-reviewer`)
    with the diff and the scope as its input.
 4. Relay its findings verbatim. Change nothing, add nothing, explain nothing.
+
+The hook has put the session in the read-only `review` state. It stays until
+the user types `/crewcut <level>`; do not switch back yourself.
