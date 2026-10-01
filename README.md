@@ -98,7 +98,10 @@ injected at session start.
 | `/crewcut subagents on|off` | Inject the rules into subagents too (on by default)   |
 | `/crewcut-review [scope]`   | Read-only review of a diff, see below                 |
 | `/crewcut-audit [path]`     | Same review over a whole tree, ranked by lines to cut |
+| `/crewcut-debt [path]`      | Ledger of the `crewcut:` corners cut on purpose, see below |
+| `/crewcut-gain`             | What the plugin saves, as measured on its eval cases  |
 | `/crewcut-help`             | Reference card                                        |
+| `/crewcut uninstall`        | Remove the plugin's files next to your settings, see below |
 
 A new session starts at the default level, `full` unless you changed it; a
 resumed session and a context compaction keep the level you chose. Typing
@@ -113,7 +116,9 @@ rule instead of the ruleset.
 ## Status line
 
 The plugin ships a status line script that prints the level, the model and
-the working directory, for example `crewcut: ultra | Opus | shop`. At session
+the working directory, for example `crewcut: ultra | Opus | shop`. The level
+is green, amber for `ultra`, blue for `review`, grey for `off`; set
+`NO_COLOR=1` to print it plain. At session
 start the hook copies it to `crewcut-statusline.js` next to your Claude
 settings, under a path that survives plugin updates, and refreshes the copy
 when the plugin changes. On the first start without a status line
@@ -128,7 +133,12 @@ Settings live in `crewcut.json` next to your Claude settings (`~/.claude`, or
 `CLAUDE_CONFIG_DIR`): `{ "defaultLevel": "ultra", "subagents": true }`. The
 `CREWCUT_DEFAULT_MODE` environment variable wins over the file. With
 `subagents` on, every subagent Claude starts receives the ruleset of the
-current level, about 430 tokens each; switch it off to save them.
+current level, about 580 tokens each; switch it off to save them, or limit
+it to some agent types with a regular expression, case-insensitive, on the
+agent type: `"subagentMatcher": "explore|general"` in the file, or the
+`CREWCUT_SUBAGENT_MATCHER` environment variable, which wins. A subagent
+whose type is unknown, or a pattern that does not compile, still receives
+the rules.
 
 ## Token discipline
 
@@ -186,6 +196,36 @@ cut: 17 lines
 The rung names where the code should have stopped: `skip`, `reuse`, `stdlib`,
 `native`, `installed`, `one-line`, or `prose` for unrequested comments and
 docs. The review changes nothing.
+
+## /crewcut-debt
+
+Every corner crewcut cuts on purpose carries a comment such as
+`// crewcut: no retry, add when the API flakes`. `/crewcut-debt` gathers
+them into one list, one line per marker, and flags those that name no
+condition to revisit:
+
+```
+src/queue.js:18: no retry -> add when: the API flakes
+src/report.js:40: full table scan -> no trigger
+2 markers, 1 without a trigger
+```
+
+It reads and reports only. `/crewcut-gain` prints the measure above as a
+card; it never claims a saving on your repository, since the version you did
+not build was never written.
+
+## Update and uninstall
+
+Update with `/plugin marketplace update crewcut` then `/reload-plugins`, or
+enable auto-update for the marketplace in `/plugin`.
+
+`/plugin remove crewcut` removes the plugin itself. The plugin also keeps a
+few files next to your Claude settings: the level of the session, the
+`crewcut.json` config, the status line copy and its flag, plus the
+`statusLine` entry if you accepted it. Type `/crewcut uninstall` in a
+session before removing the plugin and they go away; the `statusLine` entry
+is removed only when it points at crewcut's own script. From a shell, the
+same cleanup is `node <plugin dir>/hooks/crewcut.js uninstall`.
 
 ## Limitations
 
