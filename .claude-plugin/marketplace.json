@@ -1,0 +1,16 @@
+{
+  "name": "crewcut",
+  "description": "The crewcut plugin: short hair, short code, fewer tokens in Claude Code.",
+  "owner": {
+    "name": "Augustin Kavera",
+    "url": "https://github.com/kaveraa"
+  },
+  "plugins": [
+    {
+      "name": "crewcut",
+      "description": "Short hair, short code. Fewer tokens in Claude Code.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "crewcut",
+  "version": "0.1.0",
+  "description": "Short hair, short code. Makes Claude Code spend fewer tokens: simplest code that works, short answers, few tool calls, no safety cuts.",
+  "author": {
+    "name": "Augustin Kavera",
+    "url": "https://github.com/kaveraa"
+  },
+  "homepage": "https://github.com/kaveraa/crewcut",
+  "repository": "https://github.com/kaveraa/crewcut",
+  "license": "MIT",
+  "keywords": ["claude-code", "claude-code-plugin", "tokens", "yagni", "minimalism"],
+  "hooks": "./hooks/hooks.json"
+}
