@@ -54,8 +54,8 @@ graders:
     name: root-cause-stated
     criteria: >
       The final message says that the export wrote the raw amountCents value
-      into the CSV and now formats it with formatCents from the money
-      helper, in src/services/export.js, and that deals keep storing cents.
-      It is at most 8 lines in total, counting blank lines. Mentions of the
-      tests, of the header name or of the currency suffix do not matter for
-      this check.
+      into the CSV and now formats it with the existing formatCents helper,
+      in src/services/export.js. It is at most 8 lines in total, counting
+      blank lines. Mentions of the tests, of the header name, of the
+      currency suffix or of where cents are stored do not matter for this
+      check.
