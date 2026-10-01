@@ -1,5 +1,5 @@
 'use strict';
-const { test } = require('node:test');
+const { test, after } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -66,9 +66,17 @@ test('parseCommand ignores ordinary prompts, even ones that mention crewcut', ()
   assert.equal(parseCommand(42), null);
 });
 
+const tempDirs = [];
+
 function tempDir() {
-  return fs.mkdtempSync(path.join(os.tmpdir(), 'crewcut-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'crewcut-'));
+  tempDirs.push(dir);
+  return dir;
 }
+
+after(() => {
+  for (const dir of tempDirs) fs.rmSync(dir, { recursive: true, force: true });
+});
 
 function badDir() {
   return path.join(os.tmpdir(), String.fromCharCode(0) + 'bad');
