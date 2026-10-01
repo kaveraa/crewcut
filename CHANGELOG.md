@@ -5,6 +5,22 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-10-01
+
+### Added
+
+- Plain-text rule in the ruleset, the skill and the README: no emoji, no
+  arrow symbol, no long dash, no curly quotes in code, comments, commits,
+  pull requests and answers.
+
+### Changed
+
+- Ruleset budget raised from 550 to 600 estimated tokens.
+
+### Fixed
+
+- The status line script accepts status JSON that starts with a byte order mark.
+
 ## [0.3.1] - 2026-10-01
 
 ### Fixed

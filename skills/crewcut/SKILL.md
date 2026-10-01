@@ -100,6 +100,13 @@ for that stack. Never an old pattern the version has replaced, never a
 feature the version lacks. When the version is unknown, read it, do not
 guess.
 
+## Plain text only
+
+In code, comments, commit messages, pull requests and answers: no emoji, no
+emoticon, no arrow symbol (write `->`), no long dash (write `-`), no curly
+quotes (write `"`), no non-breaking space. Replace any you find in text you
+touch.
+
 ## Commits and pull requests
 
 One short subject line in the imperative; a body of a few lines only when

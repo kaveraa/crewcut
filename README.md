@@ -138,6 +138,12 @@ and libraries, and uses the idioms and features those versions allow, with
 the current best practice for that stack. Never an old pattern the version
 has replaced, never a feature the version lacks.
 
+## Plain text only
+
+In code, comments, commits, pull requests and answers: no emoji, no
+emoticon, no arrow symbol (`->` instead), no long dash (`-` instead), no
+curly quotes (`"` instead). Any found in text Claude touches is replaced.
+
 ## Commits and pull requests
 
 One short subject line, a brief body only when it adds something. No AI

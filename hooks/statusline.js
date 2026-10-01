@@ -56,7 +56,7 @@ function main() {
   process.stdin.on('end', () => {
     let input = null;
     try {
-      input = JSON.parse(text);
+      input = JSON.parse(text.charCodeAt(0) === 0xfeff ? text.slice(1) : text);
     } catch {
       // no status JSON: print the level alone
     }

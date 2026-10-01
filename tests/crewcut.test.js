@@ -524,3 +524,23 @@ test('the copied statusline script is standalone and gets refreshed at startup',
   assert.notEqual(fs.readFileSync(copy, 'utf8'), '// stale');
   assert.ok(!fs.existsSync(path.join(tempDir(), 'crewcut-statusline.js')), 'no copy without a session start');
 });
+
+test('the real ruleset carries the plain-punctuation rule at every active level', () => {
+  const markdown = fs.readFileSync(path.join(__dirname, '..', 'hooks', 'ruleset.md'), 'utf8');
+  for (const level of ['lite', 'full', 'ultra']) {
+    const text = renderRuleset(level, markdown);
+    assert.match(text, /Plain text only:/, level);
+    assert.match(text, /no emoji/, level);
+    assert.match(text, /write ->/, level);
+    assert.match(text, /write -\)/, level);
+  }
+});
+
+test('statusline.js accepts status JSON with a byte order mark', () => {
+  const dir = tempDir();
+  fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'ultra\n');
+  const script = path.join(__dirname, '..', 'hooks', 'statusline.js');
+  const input = String.fromCharCode(0xfeff) + JSON.stringify({ model: { display_name: 'Opus' }, workspace: { current_dir: 'C:/work/shop' } });
+  const out = execFileSync(process.execPath, [script], { input, env: { ...process.env, CLAUDE_CONFIG_DIR: dir }, encoding: 'utf8' });
+  assert.equal(out.trim(), 'crewcut: ultra | Opus | shop');
+});

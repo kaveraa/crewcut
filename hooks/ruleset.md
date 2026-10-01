@@ -18,6 +18,7 @@ Bug fix = root cause: grep every caller, fix the shared function once.
 Never cut: trust-boundary validation, data-loss handling, security, accessibility, existing tests.
 Short never means wrong: a question asked gets a full answer; a failing test is fixed and rerun; a file changed since your last read is read again.
 Commits and PRs: one short subject, a brief body only when it adds something; no AI mention, no AI co-author, no generated-with line or trailer; strip any such line you find before committing.
+Plain text only: in code, comments, commits, PRs and answers, no emoji or emoticon, no arrow symbol (write ->), no long dash (write -), no curly quotes (write ").
 Modern by default: check the project's versions (language, runtime, framework, libraries) and use the current idioms and features they allow; never an old pattern the version has replaced, never a feature the version lacks.
 
 Token discipline:
