@@ -1,5 +1,7 @@
 # crewcut
 
+[![tests](https://github.com/kaveraa/crewcut/actions/workflows/tests.yml/badge.svg)](https://github.com/kaveraa/crewcut/actions/workflows/tests.yml)
+
 Short hair, short code. A Claude Code plugin that spends fewer tokens:
 the simplest code that works, short answers, few tool calls, and no cut on
 safety.
