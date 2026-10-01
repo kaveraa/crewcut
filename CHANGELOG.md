@@ -16,6 +16,11 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 - Tests remove their temporary directories when the run ends.
 
+### Fixed
+
+- The status line offer stays silent inside `claude plugin eval` runs, which
+  start from a fresh config dir and used to receive it on every run.
+
 ## [0.3.2] - 2026-10-01
 
 ### Added

@@ -487,6 +487,17 @@ test('session startup nudges once about the statusline when none is configured',
   assert.doesNotMatch(second, /statusline\.js/);
 });
 
+test('session startup does not nudge inside an eval run', () => {
+  const dir = tempDir();
+  const text = payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir, CLAUDE_CODE_EVAL_CONFINED: '1' })).additionalContext;
+  assert.match(text, /^CREWCUT ACTIVE/);
+  assert.doesNotMatch(text, /statusline\.js/);
+  assert.ok(!fs.existsSync(path.join(dir, 'crewcut-nudged')));
+  const zero = tempDir();
+  const again = payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: zero, CLAUDE_CODE_EVAL_CONFINED: '0' })).additionalContext;
+  assert.match(again, /statusline\.js/);
+});
+
 test('session startup does not nudge when a statusline exists, on compact, or when off', () => {
   const withStatus = tempDir();
   fs.writeFileSync(path.join(withStatus, 'settings.json'), '{"statusLine":{"type":"command","command":"x"}}');
