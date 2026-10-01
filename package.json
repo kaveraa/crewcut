@@ -1,0 +1,15 @@
+{
+  "name": "crewcut",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Short hair, short code. A Claude Code plugin that spends fewer tokens.",
+  "license": "MIT",
+  "author": "Augustin Kavera (https://github.com/kaveraa)",
+  "repository": "github:kaveraa/crewcut",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test tests/crewcut.test.js tests/text.test.js"
+  }
+}
