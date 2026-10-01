@@ -177,6 +177,12 @@ function envelope(eventName, text) {
   return JSON.stringify({ hookSpecificOutput: { hookEventName: eventName, additionalContext: text } });
 }
 
+// An eval run starts from a fresh config dir with nobody to answer the offer.
+function isEvalRun(env) {
+  const value = String(env.CLAUDE_CODE_EVAL_CONFINED || '').trim().toLowerCase();
+  return value !== '' && value !== '0' && value !== 'false';
+}
+
 function onSession(input, env, dir) {
   // resume and compact continue a session: keep the level the user chose
   const keep = KEEP_LEVEL_SOURCES.includes(input.source);
@@ -185,7 +191,7 @@ function onSession(input, env, dir) {
   const rules = loadRuleset(level);
   if (!rules) return '';
   if (!keep && fs.existsSync(statuslineCopy(dir))) refreshStatuslineCopy(dir);
-  const nudge = keep ? '' : statuslineNudge(dir);
+  const nudge = keep || isEvalRun(env) ? '' : statuslineNudge(dir);
   return envelope('SessionStart', nudge ? `${rules}\n\n${nudge}` : rules);
 }
 
