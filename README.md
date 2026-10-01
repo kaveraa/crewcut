@@ -6,16 +6,35 @@ safety.
 
 ## Measured
 
-Not measured yet. The table below is filled from
-`claude plugin eval . --ablation with-without` once the first run is in.
+Measured on 2026-10-01 with Claude Code 2.1.287, default model, Sonnet as
+judge: five cases, three runs each, with and without the plugin
+(`claude plugin eval . --ablation with-without --runs 3 --judge-model sonnet`).
+Score is the share of graders passed. Cost stands in for tokens at a fixed
+model; one run of these cases is about 36 000 tokens of context, of which
+the plugin adds about 700.
 
-| Case            | Tokens without | Tokens with | Delta |
-| --------------- | -------------- | ----------- | ----- |
-| date-picker     |                |             |       |
-| url-parse       |                |             |       |
-| shared-bug      |                |             |       |
-| keep-validation |                |             |       |
-| explain-bug     |                |             |       |
+| Case            | Score with | Score without | Cost per run with | Cost per run without | Turns with | Turns without |
+| --------------- | ---------- | ------------- | ----------------- | -------------------- | ---------- | ------------- |
+| date-picker     | 0.83       | 0.83          | 0.083 USD         | 0.069 USD            | 3.7        | 3.0           |
+| url-parse       | 0.90       | 0.86          | 0.077 USD         | 0.069 USD            | 3.3        | 3.7           |
+| shared-bug      | 1.00       | 0.63          | 0.094 USD         | 0.091 USD            | 5.0        | 6.3           |
+| keep-validation | 0.94       | 0.94          | 0.118 USD         | 0.110 USD            | 4.3        | 4.0           |
+| explain-bug     | 0.92       | 0.83          | 0.080 USD         | 0.083 USD            | 4.0        | 5.7           |
+| all             | 0.92       | 0.82          | 0.090 USD         | 0.084 USD            | 4.1        | 4.5           |
+
+What it says:
+
+- Quality goes up: 0.92 against 0.82 overall. On `shared-bug` the plugin
+  fixed the shared function in 3 runs out of 3; without it, all 3 runs
+  patched the caller instead.
+- Tokens do not go down on tasks this small: cost per run is 7 % higher
+  with the plugin, because the ruleset and the skill descriptions are a
+  fixed cost and these tasks have nothing to cut. Turns go down 10 %.
+- The savings crewcut is built for come from the reading, writing and tool
+  discipline on larger tasks, which these cases do not measure yet. A
+  larger case is the next thing to add.
+- Honest misses: on `date-picker` the answer stayed longer than the output
+  rule asks, with or without the plugin.
 
 Every case grades correctness as well as size: a shorter answer that is
 wrong scores zero. `keep-validation` asks to simplify a handler at a trust
