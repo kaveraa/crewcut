@@ -77,19 +77,29 @@ injected at session start.
 
 ## Commands and levels
 
-| Command           | Effect                                                |
-| ----------------- | ----------------------------------------------------- |
-| `/crewcut`        | Show the current level                                |
-| `/crewcut off`    | Silence the plugin for this session                   |
-| `/crewcut lite`   | Output discipline and a light reading habit           |
-| `/crewcut full`   | Default. Output, reading, writing and tool discipline |
-| `/crewcut ultra`  | Full, plus one-line answers and no new file or dependency without an explicit request |
-| `/crewcut-review` | Read-only review of a diff, see below                 |
+| Command                     | Effect                                                |
+| --------------------------- | ----------------------------------------------------- |
+| `/crewcut`                  | Show the current level and the default                |
+| `/crewcut off`              | Silence the plugin for this session                   |
+| `/crewcut lite`             | Output discipline and a light reading habit           |
+| `/crewcut full`             | Default. Output, reading, writing and tool discipline |
+| `/crewcut ultra`            | Full, plus one-line answers and no new file or dependency without an explicit request |
+| `/crewcut default <level>`  | Set the level new sessions start at                   |
+| `/crewcut subagents on|off` | Inject the rules into subagents too (on by default)   |
+| `/crewcut-review [scope]`   | Read-only review of a diff, see below                 |
+| `/crewcut-audit [path]`     | Same review over a whole tree, ranked by lines to cut |
+| `/crewcut-help`             | Reference card                                        |
 
-A new session starts at `full`; a resumed session and a context compaction
-keep the level you chose. Set `CREWCUT_DEFAULT_MODE` to `off`, `lite`, `full`
-or `ultra` to change that default. Typing `stop crewcut` or `normal mode` as
-a whole message also switches the plugin off.
+A new session starts at the default level, `full` unless you changed it; a
+resumed session and a context compaction keep the level you chose. Typing
+`stop crewcut` or `normal mode` as a whole message also switches the plugin
+off.
+
+Settings live in `crewcut.json` next to your Claude settings (`~/.claude`, or
+`CLAUDE_CONFIG_DIR`): `{ "defaultLevel": "ultra", "subagents": true }`. The
+`CREWCUT_DEFAULT_MODE` environment variable wins over the file. With
+`subagents` on, every subagent Claude starts receives the ruleset of the
+current level, about 430 tokens each; switch it off to save them.
 
 ## Token discipline
 

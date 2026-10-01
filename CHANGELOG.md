@@ -5,6 +5,21 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-01
+
+### Added
+
+- `/crewcut default <level>`: a persistent default stored in `crewcut.json`
+  next to the Claude settings; `CREWCUT_DEFAULT_MODE` still wins over it.
+- SubagentStart hook: every subagent receives the ruleset of the current
+  level. `/crewcut subagents off` switches it off.
+- `/crewcut-help`: a reference card, loaded only when invoked.
+- `/crewcut-audit [path]`: the review over a whole tree, ranked by lines to cut.
+
+### Changed
+
+- `/crewcut` alone now shows the default level next to the current one.
+
 ## [0.1.0] - 2026-10-01
 
 ### Added

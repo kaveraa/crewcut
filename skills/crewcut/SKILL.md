@@ -20,7 +20,9 @@ on for every response until `/crewcut off`.
 If the user typed `/crewcut <level>`, the hook has already switched the level.
 Answer `crewcut: <level>` on one line and stop. If the user typed `/crewcut`
 alone, state the current level on one line and stop. Levels: off, lite, full,
-ultra.
+ultra. `/crewcut default <level>` and `/crewcut subagents on|off` are handled
+by the hook too: repeat its `crewcut:` line and stop. If no `crewcut:` line
+came from the hook, say that nothing changed.
 
 ## Understand first
 

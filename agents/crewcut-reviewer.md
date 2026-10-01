@@ -20,6 +20,12 @@ Read the diff you are given. Use Grep and Read on the repository only to
 check whether something already exists (for the reuse rung) or whether a
 dependency is installed (for the installed rung). Do not tour the repository.
 
+Audit mode: when you are given a directory instead of a diff, list its
+source files with Glob (skip dependencies, build output and lock files),
+read them, and apply the same rungs to the whole tree. Rank the findings by
+the number of lines they would remove, largest first, and keep the twenty
+largest at most.
+
 Report one line per finding, in this shape:
 
 <file>:<line>: <rung> <what was built> -> <the shorter version>
