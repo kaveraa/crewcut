@@ -1,11 +1,18 @@
 'use strict';
 // crewcut hook: keeps the active level and injects the ruleset for it.
 
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+
 const LEVELS = ['off', 'lite', 'full', 'ultra'];
 const DEFAULT_LEVEL = 'full';
+const LEVEL_FILE = 'crewcut-mode';
+const RULESET_FILE = path.join(__dirname, 'ruleset.md');
 const OFF_PHRASES = ['stop crewcut', 'normal mode'];
 const COMMAND = /^\/crewcut(?::crewcut)?(?:\s+(\S+))?$/;
 const TAG = /^\[(lite|full|ultra)\]\s?/;
+const BOM = 0xfeff;
 
 function normalize(prompt) {
   if (typeof prompt !== 'string') return '';
@@ -32,4 +39,95 @@ function renderRuleset(level, markdown) {
   return kept.join('\n').replace(/\{level\}/g, level).trim();
 }
 
-module.exports = { LEVELS, DEFAULT_LEVEL, parseCommand, renderRuleset };
+function configDir(env) {
+  return env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), '.claude');
+}
+
+function defaultLevel(env) {
+  const wanted = String(env.CREWCUT_DEFAULT_MODE || '').trim().toLowerCase();
+  return LEVELS.includes(wanted) ? wanted : DEFAULT_LEVEL;
+}
+
+function readLevel(dir) {
+  try {
+    const text = fs.readFileSync(path.join(dir, LEVEL_FILE), 'utf8').trim().toLowerCase();
+    return LEVELS.includes(text) ? text : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeLevel(dir, level) {
+  try {
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, LEVEL_FILE), level + '\n');
+  } catch {
+    // best effort: a missing level file only means the default applies
+  }
+}
+
+function loadRuleset(level) {
+  try {
+    return renderRuleset(level, fs.readFileSync(RULESET_FILE, 'utf8'));
+  } catch {
+    return '';
+  }
+}
+
+function parseInput(text) {
+  try {
+    const raw = String(text);
+    const value = JSON.parse(raw.charCodeAt(0) === BOM ? raw.slice(1) : raw);
+    return value && typeof value === 'object' ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+function envelope(eventName, text) {
+  if (!text) return '';
+  return JSON.stringify({ hookSpecificOutput: { hookEventName: eventName, additionalContext: text } });
+}
+
+function run(mode, stdinText, env) {
+  const input = parseInput(stdinText);
+  if (!input) return '';
+  const dir = configDir(env);
+  if (mode === 'session') {
+    const level = defaultLevel(env);
+    writeLevel(dir, level);
+    return envelope('SessionStart', loadRuleset(level));
+  }
+  if (mode !== 'prompt') return '';
+  const command = parseCommand(input.prompt);
+  if (!command) return '';
+  if (command.command === 'status') {
+    const level = readLevel(dir) || defaultLevel(env);
+    return envelope('UserPromptSubmit', `crewcut: ${level} (levels: ${LEVELS.join(', ')})`);
+  }
+  writeLevel(dir, command.level);
+  const rules = loadRuleset(command.level);
+  const text = rules ? `crewcut: ${command.level}\n\n${rules}` : `crewcut: ${command.level}`;
+  return envelope('UserPromptSubmit', text);
+}
+
+function main() {
+  let text = '';
+  process.stdin.setEncoding('utf8');
+  process.stdin.on('data', (chunk) => { text += chunk; });
+  process.stdin.on('error', () => {});
+  process.stdin.on('end', () => {
+    const output = run(process.argv[2], text, process.env);
+    if (output) {
+      try {
+        process.stdout.write(output + '\n');
+      } catch {
+        // closed stdout: nothing to do
+      }
+    }
+  });
+}
+
+module.exports = { LEVELS, DEFAULT_LEVEL, parseCommand, renderRuleset, configDir, readLevel, writeLevel, run };
+
+if (require.main === module) main();
