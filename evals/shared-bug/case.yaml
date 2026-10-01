@@ -1,0 +1,37 @@
+schema_version: "1.0"
+name: shared-bug
+description: "A bug in a shared function with three callers. Expected: one fix in formatPrice, no guard in any caller, the root cause stated in one line."
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: formatPrice returns NaN in checkout.js when the amount comes from the form. Fix it.
+  max_turns: 12
+  timeout_seconds: 300
+  allowed_tools: [Read, Edit, Grep, Glob, Skill]
+runs: 3
+graders:
+  - type: file_exists
+    name: no-new-file
+    path: "**/*"
+    exists: false
+  - type: regex
+    name: fix-in-shared-function
+    target: { source: file, path: price.js }
+    pattern: 'Number\(|parseFloat\(|\+amount|\* 1'
+    match: contains
+  - type: regex
+    name: no-guard-in-checkout
+    target: { source: file, path: checkout.js }
+    pattern: 'Number\(|parseFloat\(|\+form\.amount'
+    match: not_contains
+  - type: regex
+    name: no-guard-in-cart
+    target: { source: file, path: cart.js }
+    pattern: 'Number\(|parseFloat\('
+    match: not_contains
+  - type: llm
+    name: root-cause-in-one-line
+    criteria: >
+      The final message names the root cause (the amount arrives as a string
+      and the shared function only accepts numbers) in a single line, is at
+      most 10 lines in total, and does not describe each caller.

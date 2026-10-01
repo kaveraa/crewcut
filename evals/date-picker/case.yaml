@@ -1,0 +1,37 @@
+schema_version: "1.0"
+name: date-picker
+description: "A form field that the platform covers natively. Expected: one label and one input, no component, no dependency, short answer."
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: Add a date of birth field to the signup form in index.html.
+  max_turns: 10
+  timeout_seconds: 300
+  allowed_tools: [Read, Edit, Grep, Glob, Skill]
+runs: 3
+graders:
+  - type: file_exists
+    name: no-new-file
+    path: "**/*"
+    exists: false
+  - type: regex
+    name: no-new-dependency
+    target: { source: file, path: package.json }
+    pattern: '"dependencies"|"devDependencies"'
+    match: not_contains
+  - type: regex
+    name: native-date-input
+    target: { source: file, path: index.html }
+    pattern: 'type="date"'
+    match: contains
+  - type: regex
+    name: no-script-added
+    target: { source: file, path: index.html }
+    pattern: '<script'
+    match: not_contains
+  - type: llm
+    name: short-answer
+    criteria: >
+      The final message is at most 15 lines. It does not restate the request,
+      does not explain alternatives at length and does not recap the edit
+      beyond one line.

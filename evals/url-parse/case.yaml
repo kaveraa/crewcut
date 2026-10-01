@@ -1,0 +1,36 @@
+schema_version: "1.0"
+name: url-parse
+description: "A parsing task the standard library covers. Expected: the URL class, no regular expression, no new file, short answer."
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: In links.js, hostOf is missing. Add it so describe works. It must return the host of a link, without port.
+  max_turns: 10
+  timeout_seconds: 300
+  allowed_tools: [Read, Edit, Grep, Glob, Skill]
+runs: 3
+graders:
+  - type: file_exists
+    name: no-new-file
+    path: "**/*"
+    exists: false
+  - type: regex
+    name: uses-url-class
+    target: { source: file, path: links.js }
+    pattern: 'new URL\('
+    match: contains
+  - type: regex
+    name: no-regex
+    target: { source: file, path: links.js }
+    pattern: 'RegExp\(|\.match\(|\.exec\(|\.replace\(/|\.split\(/'
+    match: not_contains
+  - type: regex
+    name: no-new-dependency
+    target: { source: file, path: package.json }
+    pattern: '"dependencies"|"devDependencies"'
+    match: not_contains
+  - type: llm
+    name: short-answer
+    criteria: >
+      The final message is at most 20 lines, shows or names the added
+      function, and contains no explanation that the user did not ask for.
