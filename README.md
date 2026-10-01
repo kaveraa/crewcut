@@ -33,8 +33,14 @@ What it says:
   with the plugin, because the ruleset and the skill descriptions are a
   fixed cost and these tasks have nothing to cut. Turns go down 10 %.
 - The savings crewcut is built for come from the reading, writing and tool
-  discipline on larger tasks, which these cases do not measure yet. A
-  larger case is the next thing to add.
+  discipline on larger tasks, which these five cases do not measure.
+  `vat-country`, added with 0.3.2 and measured the same way, is a first
+  step: seven modules, four test files, a bug that one grep locates. Score
+  1.00 with the plugin against 0.93 without; 2.3 files read against 3.3;
+  10.0 turns against 11.3; cost per run 0.097 USD against 0.083 USD. Both
+  arms found the root cause and reused the existing function; the plugin
+  gains on the length of the answer and the number of reads, and still
+  pays the fixed cost of the ruleset.
 - Honest misses: on `date-picker` the answer stayed longer than the output
   rule asks, with or without the plugin.
 

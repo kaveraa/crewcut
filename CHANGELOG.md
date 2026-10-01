@@ -9,7 +9,7 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 - Eval case `vat-country`: a bug across several files with an existing test
   suite, graded on reuse of the existing check, on files and tests left
-  intact and on the number of files read.
+  intact and on the number of files read. Measured in the README.
 - CI badge in the README.
 
 ### Changed
