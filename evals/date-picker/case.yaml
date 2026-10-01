@@ -30,6 +30,14 @@ graders:
     pattern: '<script'
     match: not_contains
   - type: llm
+    name: correct-field
+    focus: { source: file, path: index.html }
+    criteria: >
+      The form has a date of birth field that works: a label whose "for"
+      matches the id of an input with type="date" and a name attribute, placed
+      inside the form before the submit button. The three existing fields and
+      the submit button are unchanged.
+  - type: llm
     name: short-answer
     criteria: >
       The final message is at most 15 lines. It does not restate the request,

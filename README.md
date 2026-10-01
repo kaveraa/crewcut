@@ -9,11 +9,18 @@ safety.
 Not measured yet. The table below is filled from
 `claude plugin eval . --ablation with-without` once the first run is in.
 
-| Case        | Tokens without | Tokens with | Delta |
-| ----------- | -------------- | ----------- | ----- |
-| date-picker |                |             |       |
-| url-parse   |                |             |       |
-| shared-bug  |                |             |       |
+| Case            | Tokens without | Tokens with | Delta |
+| --------------- | -------------- | ----------- | ----- |
+| date-picker     |                |             |       |
+| url-parse       |                |             |       |
+| shared-bug      |                |             |       |
+| keep-validation |                |             |       |
+| explain-bug     |                |             |       |
+
+Every case grades correctness as well as size: a shorter answer that is
+wrong scores zero. `keep-validation` asks to simplify a handler at a trust
+boundary and fails if any check disappears; `explain-bug` asks a question
+and fails if the explanation is cut short.
 
 ## The ladder
 

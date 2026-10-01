@@ -30,6 +30,15 @@ graders:
     pattern: 'Number\(|parseFloat\('
     match: not_contains
   - type: llm
+    name: correct-fix
+    focus: { source: file, path: price.js }
+    criteria: >
+      formatPrice now converts its argument to a number before checking it, so
+      formatPrice('12.50') and formatPrice(12.5) both give '12.50 EUR', while a
+      value that is not a number (such as 'abc', undefined or NaN) still gives
+      NaN or throws, never a string with NaN in it. The export and the
+      function name are unchanged.
+  - type: llm
     name: root-cause-in-one-line
     criteria: >
       The final message names the root cause (the amount arrives as a string

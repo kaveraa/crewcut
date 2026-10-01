@@ -17,8 +17,21 @@ graders:
   - type: regex
     name: uses-url-class
     target: { source: file, path: links.js }
-    pattern: 'new URL\('
+    pattern: 'new URL\(|URL\.parse\('
     match: contains
+  - type: regex
+    name: host-without-port
+    target: { source: file, path: links.js }
+    pattern: '\.hostname'
+    match: contains
+  - type: llm
+    name: correct-function
+    focus: { source: file, path: links.js }
+    criteria: >
+      links.js defines hostOf so that describe works for the three links in the
+      file: hostOf('http://blog.example.org:8080/post/1?ref=home') gives
+      'blog.example.org' (no port), and the other two give 'example.com' and
+      'www.example.net'. The links array and describe are unchanged.
   - type: regex
     name: no-regex
     target: { source: file, path: links.js }
