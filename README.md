@@ -8,46 +8,48 @@ safety.
 
 ## Measured
 
-Measured on 2026-10-01 with Claude Code 2.1.287, default model, Sonnet as
-judge: five cases, three runs each, with and without the plugin
-(`claude plugin eval . --ablation with-without --runs 3 --judge-model sonnet`).
-Score is the share of graders passed. Cost stands in for tokens at a fixed
-model; one run of these cases is about 36 000 tokens of context, of which
-the plugin adds about 700.
+Measured on 2026-10-01 with crewcut 0.3.3, Claude Code 2.1.287, Sonnet 5.5
+as the working model and Sonnet as judge: seven cases, three runs each, with
+and without the plugin
+(`claude plugin eval . --ablation with-without --runs 3 --judge-model sonnet`,
+with `--allow-tools Edit Write`). Score is the share of graders passed. Cost
+stands in for tokens at a fixed model.
 
 | Case            | Score with | Score without | Cost per run with | Cost per run without | Turns with | Turns without |
 | --------------- | ---------- | ------------- | ----------------- | -------------------- | ---------- | ------------- |
-| date-picker     | 0.83       | 0.83          | 0.083 USD         | 0.069 USD            | 3.7        | 3.0           |
-| url-parse       | 0.90       | 0.86          | 0.077 USD         | 0.069 USD            | 3.3        | 3.7           |
-| shared-bug      | 1.00       | 0.63          | 0.094 USD         | 0.091 USD            | 5.0        | 6.3           |
-| keep-validation | 0.94       | 0.94          | 0.118 USD         | 0.110 USD            | 4.3        | 4.0           |
-| explain-bug     | 0.92       | 0.83          | 0.080 USD         | 0.083 USD            | 4.0        | 5.7           |
-| all             | 0.92       | 0.82          | 0.090 USD         | 0.084 USD            | 4.1        | 4.5           |
+| date-picker     | 0.83       | 0.83          | 0.052 USD         | 0.044 USD            | 4.3        | 4.0           |
+| url-parse       | 0.90       | 0.90          | 0.060 USD         | 0.055 USD            | 4.0        | 4.0           |
+| shared-bug      | 0.62       | 0.62          | 0.050 USD         | 0.049 USD            | 3.0        | 6.0           |
+| keep-validation | 0.89       | 0.89          | 0.095 USD         | 0.110 USD            | 4.0        | 4.3           |
+| explain-bug     | 0.92       | 0.92          | 0.051 USD         | 0.047 USD            | 4.0        | 4.0           |
+| vat-country     | 1.00       | 1.00          | 0.072 USD         | 0.074 USD            | 8.7        | 9.7           |
+| csv-export      | 1.00       | 0.89          | 0.063 USD         | 0.088 USD            | 7.0        | 11.0          |
+| all             | 0.88       | 0.87          | 0.063 USD         | 0.067 USD            | 5.0        | 6.1           |
 
 What it says:
 
-- Quality goes up: 0.92 against 0.82 overall. On `shared-bug` the plugin
-  fixed the shared function in 3 runs out of 3; without it, all 3 runs
-  patched the caller instead.
-- Tokens do not go down on tasks this small: cost per run is 7 % higher
-  with the plugin, because the ruleset and the skill descriptions are a
-  fixed cost and these tasks have nothing to cut. Turns go down 10 %.
-- The savings crewcut is built for come from the reading, writing and tool
-  discipline on larger tasks, which these five cases do not measure.
-  `vat-country`, added with 0.3.2 and measured the same way, is a first
-  step: seven modules, four test files, a bug that one grep locates. Score
-  1.00 with the plugin against 0.93 without; 2.3 files read against 3.3;
-  10.0 turns against 11.3; cost per run 0.097 USD against 0.083 USD. Both
-  arms found the root cause and reused the existing function; the plugin
-  gains on the length of the answer and the number of reads, and still
-  pays the fixed cost of the ruleset.
-- Honest misses: on `date-picker` the answer stayed longer than the output
-  rule asks, with or without the plugin.
+- The savings show up with the size of the project. `csv-export` is twenty
+  source and test files with a one-line bug: with the plugin, 3.0 files
+  read against 4.7, 7 turns against 11, cost 28 % lower, and a score of
+  1.00 against 0.89 because every run without the plugin read more files
+  than the case allows. `vat-country`, seven modules, sits in between: 2.3
+  files read against 2.7, one turn fewer, same cost. The five one-file
+  cases have nothing to cut, and the ruleset is a fixed cost there: a few
+  percent more per run, same score.
+- Turns go down 18 % overall. Quality is equal: 0.88 against 0.87.
+- Honest misses, with or without the plugin: on `shared-bug` all runs
+  patched the caller instead of the shared function, arguing that the two
+  other callers already pass numbers; on `date-picker` and `url-parse` the
+  answer stayed longer than the output rule asks.
+- An earlier measure of 0.1.0, five cases on another default model, gave
+  0.92 against 0.82 with `shared-bug` fixed at the root in 3 runs out of
+  3 against 0. The gap the plugin makes depends on the model it runs on.
 
 Every case grades correctness as well as size: a shorter answer that is
 wrong scores zero. `keep-validation` asks to simplify a handler at a trust
 boundary and fails if any check disappears; `explain-bug` asks a question
-and fails if the explanation is cut short.
+and fails if the explanation is cut short; `vat-country` and `csv-export`
+fail if an existing test or an untouched module changes.
 
 ## The ladder
 
