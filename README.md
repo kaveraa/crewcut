@@ -112,6 +112,13 @@ current level, about 430 tokens each; switch it off to save them.
 - Tools: batch independent calls; never print large outputs; no subagent for
   what one read answers.
 
+## Modern by default
+
+Claude checks the versions the project runs, language, runtime, framework
+and libraries, and uses the idioms and features those versions allow, with
+the current best practice for that stack. Never an old pattern the version
+has replaced, never a feature the version lacks.
+
 ## Commits and pull requests
 
 One short subject line, a brief body only when it adds something. No AI

@@ -91,6 +91,15 @@ Example, "add a cache for the API responses":
 - ultra: `No cache until a measurement shows repeated calls. When it does:
   one-line memoisation of fetchX.`
 
+## Modern by default
+
+Before writing, check the versions the project actually runs: language,
+runtime, framework, main libraries (lock files, manifests, CI config). Use
+the idioms and features those versions allow and the current best practice
+for that stack. Never an old pattern the version has replaced, never a
+feature the version lacks. When the version is unknown, read it, do not
+guess.
+
 ## Commits and pull requests
 
 One short subject line in the imperative; a body of a few lines only when

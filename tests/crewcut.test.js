@@ -411,3 +411,13 @@ test('the real ruleset carries the commit and pull request rule at every active 
     assert.match(text, /strip any such line/, level);
   }
 });
+
+test('the real ruleset carries the modern-by-default rule at every active level', () => {
+  const markdown = fs.readFileSync(path.join(__dirname, '..', 'hooks', 'ruleset.md'), 'utf8');
+  for (const level of ['lite', 'full', 'ultra']) {
+    const text = renderRuleset(level, markdown);
+    assert.match(text, /Modern by default:/, level);
+    assert.match(text, /versions/, level);
+    assert.match(text, /never a feature the version lacks/, level);
+  }
+});
