@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const { execFileSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
+const { renderRuleset, LEVELS } = require('../hooks/crewcut.js');
 
 const root = path.join(__dirname, '..');
 
@@ -49,4 +50,19 @@ test('commit messages use plain punctuation and carry no trailer', () => {
   const match = findBanned(log);
   assert.equal(match, null, match && describe(match));
   assert.doesNotMatch(log, /^[A-Za-z-]+: .+$/m, 'trailer line found in a commit message');
+});
+
+test('compact ruleset stays under 400 estimated tokens at every level', () => {
+  const markdown = fs.readFileSync(path.join(root, 'hooks', 'ruleset.md'), 'utf8');
+  for (const level of LEVELS) {
+    const tokens = Math.ceil(renderRuleset(level, markdown).length / 4);
+    assert.ok(tokens < 400, `${level}: about ${tokens} tokens`);
+  }
+});
+
+test('rendered ruleset carries no level tag', () => {
+  const markdown = fs.readFileSync(path.join(root, 'hooks', 'ruleset.md'), 'utf8');
+  for (const level of LEVELS) {
+    assert.doesNotMatch(renderRuleset(level, markdown), /^\[(lite|full|ultra)\]/m);
+  }
 });
