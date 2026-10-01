@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
-const { renderRuleset, parseCommand, LEVELS, readLevel, writeLevel, run } = require('../hooks/crewcut.js');
+const { renderRuleset, parseCommand, LEVELS, readLevel, writeLevel, readConfig, writeConfig, run } = require('../hooks/crewcut.js');
 
 const sample = [
   'HEAD {level}',
@@ -178,21 +178,21 @@ test('prompt /crewcut alone reports the stored level and writes nothing', () => 
   const dir = tempDir();
   fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'lite\n');
   const out = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir });
-  assert.equal(payload(out).additionalContext, 'crewcut: lite (levels: off, lite, full, ultra)');
+  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: full; levels: off, lite, full, ultra)');
   assert.equal(levelIn(dir), 'lite');
 });
 
 test('prompt /crewcut reports the default when no level file exists', () => {
   const dir = tempDir();
   const out = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir, CREWCUT_DEFAULT_MODE: 'lite' });
-  assert.equal(payload(out).additionalContext, 'crewcut: lite (levels: off, lite, full, ultra)');
+  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: lite; levels: off, lite, full, ultra)');
   assert.ok(!fs.existsSync(path.join(dir, 'crewcut-mode')));
 });
 
 test('prompt /crewcut maximum reports status like a bare /crewcut', () => {
   const dir = tempDir();
   const out = run('prompt', promptInput('/crewcut maximum'), { CLAUDE_CONFIG_DIR: dir });
-  assert.equal(payload(out).additionalContext, 'crewcut: full (levels: off, lite, full, ultra)');
+  assert.equal(payload(out).additionalContext, 'crewcut: full (default: full; levels: off, lite, full, ultra)');
   assert.ok(!fs.existsSync(path.join(dir, 'crewcut-mode')));
 });
 
@@ -296,4 +296,108 @@ test('the real ruleset carries the quality guard at every active level', () => {
     assert.match(text, /failing test is fixed and rerun/, level);
     assert.match(text, /changed since your last read/, level);
   }
+});
+
+function configIn(dir) {
+  return JSON.parse(fs.readFileSync(path.join(dir, 'crewcut.json'), 'utf8'));
+}
+
+test('parseCommand recognises default and subagents commands', () => {
+  assert.deepEqual(parseCommand('/crewcut default ultra'), { command: 'default', level: 'ultra' });
+  assert.deepEqual(parseCommand('/crewcut:crewcut default off'), { command: 'default', level: 'off' });
+  assert.deepEqual(parseCommand('/crewcut default banana'), { command: 'status' });
+  assert.deepEqual(parseCommand('/crewcut default'), { command: 'status' });
+  assert.deepEqual(parseCommand('/crewcut subagents off'), { command: 'subagents', enabled: false });
+  assert.deepEqual(parseCommand('/crewcut subagents ON'), { command: 'subagents', enabled: true });
+  assert.deepEqual(parseCommand('/crewcut subagents maybe'), { command: 'status' });
+});
+
+test('readConfig gives an empty object for a missing, invalid or non-object file', () => {
+  const dir = tempDir();
+  assert.deepEqual(readConfig(dir), {});
+  fs.writeFileSync(path.join(dir, 'crewcut.json'), 'not json');
+  assert.deepEqual(readConfig(dir), {});
+  fs.writeFileSync(path.join(dir, 'crewcut.json'), '[1, 2]');
+  assert.deepEqual(readConfig(dir), {});
+  fs.writeFileSync(path.join(dir, 'crewcut.json'), String.fromCharCode(0xfeff) + '{"defaultLevel":"lite"}');
+  assert.deepEqual(readConfig(dir), { defaultLevel: 'lite' });
+});
+
+test('writeConfig merges into the existing file and never throws', () => {
+  const dir = tempDir();
+  writeConfig(dir, { defaultLevel: 'ultra' });
+  writeConfig(dir, { subagents: false });
+  assert.deepEqual(configIn(dir), { defaultLevel: 'ultra', subagents: false });
+  assert.doesNotThrow(() => writeConfig(badDir(), { defaultLevel: 'lite' }));
+});
+
+test('prompt /crewcut default writes the config and leaves the session level alone', () => {
+  const dir = tempDir();
+  fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'full\n');
+  const out = run('prompt', promptInput('/crewcut default ultra'), { CLAUDE_CONFIG_DIR: dir });
+  assert.equal(payload(out).additionalContext, 'crewcut: default ultra');
+  assert.equal(configIn(dir).defaultLevel, 'ultra');
+  assert.equal(levelIn(dir), 'full');
+});
+
+test('session uses the configured default, and the environment wins over it', () => {
+  const dir = tempDir();
+  writeConfig(dir, { defaultLevel: 'lite' });
+  const fromFile = run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir });
+  assert.match(payload(fromFile).additionalContext, /^CREWCUT ACTIVE - level: lite\./);
+  assert.equal(levelIn(dir), 'lite');
+  const fromEnv = run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir, CREWCUT_DEFAULT_MODE: 'ultra' });
+  assert.match(payload(fromEnv).additionalContext, /^CREWCUT ACTIVE - level: ultra\./);
+  assert.equal(levelIn(dir), 'ultra');
+});
+
+test('session ignores an invalid configured default', () => {
+  const dir = tempDir();
+  writeConfig(dir, { defaultLevel: 'banana' });
+  run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir });
+  assert.equal(levelIn(dir), 'full');
+});
+
+test('prompt /crewcut alone reports the level and the default', () => {
+  const dir = tempDir();
+  writeConfig(dir, { defaultLevel: 'ultra' });
+  fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'lite\n');
+  const out = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir });
+  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: ultra; levels: off, lite, full, ultra)');
+});
+
+test('prompt /crewcut subagents off writes the config and acknowledges', () => {
+  const dir = tempDir();
+  const out = run('prompt', promptInput('/crewcut subagents off'), { CLAUDE_CONFIG_DIR: dir });
+  assert.equal(payload(out).additionalContext, 'crewcut: subagents off');
+  assert.equal(configIn(dir).subagents, false);
+  const on = run('prompt', promptInput('/crewcut subagents on'), { CLAUDE_CONFIG_DIR: dir });
+  assert.equal(payload(on).additionalContext, 'crewcut: subagents on');
+  assert.equal(configIn(dir).subagents, true);
+});
+
+test('subagent emits the ruleset for the stored level by default', () => {
+  const dir = tempDir();
+  fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'ultra\n');
+  const out = run('subagent', '{"hook_event_name":"SubagentStart","agent_type":"general-purpose"}', { CLAUDE_CONFIG_DIR: dir });
+  const body = payload(out);
+  assert.equal(body.hookEventName, 'SubagentStart');
+  assert.match(body.additionalContext, /^CREWCUT ACTIVE - level: ultra\./);
+  assert.equal(levelIn(dir), 'ultra');
+});
+
+test('subagent falls back to the default level when no level is stored', () => {
+  const dir = tempDir();
+  const out = run('subagent', '{}', { CLAUDE_CONFIG_DIR: dir, CREWCUT_DEFAULT_MODE: 'lite' });
+  assert.match(payload(out).additionalContext, /^CREWCUT ACTIVE - level: lite\./);
+});
+
+test('subagent stays silent when switched off in the config or when the level is off', () => {
+  const dir = tempDir();
+  fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'ultra\n');
+  writeConfig(dir, { subagents: false });
+  assert.equal(run('subagent', '{}', { CLAUDE_CONFIG_DIR: dir }), '');
+  const other = tempDir();
+  fs.writeFileSync(path.join(other, 'crewcut-mode'), 'off\n');
+  assert.equal(run('subagent', '{}', { CLAUDE_CONFIG_DIR: other }), '');
 });
