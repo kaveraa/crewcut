@@ -29,21 +29,26 @@ graders:
     target: { source: file, path: cart.js }
     pattern: 'Number\(|parseFloat\('
     match: not_contains
-  - type: llm
-    name: correct-fix
-    focus: { source: file, path: price.js }
-    criteria: >
-      formatPrice('12.50') now gives '12.50 EUR' and formatPrice(12.5) still
-      gives '12.50 EUR'. formatPrice('abc') gives NaN or throws; it never
-      returns a string that contains NaN. The function is still named
-      formatPrice and still exported. Extra care for empty strings or
-      whitespace is acceptable, not required.
+  - type: regex
+    name: keeps-finite-check
+    target: { source: file, path: price.js }
+    pattern: 'Number\.isFinite\('
+    match: contains
+  - type: regex
+    name: keeps-format
+    target: { source: file, path: price.js }
+    pattern: "toFixed\\(2\\) \\+ ' EUR'"
+    match: contains
+  - type: regex
+    name: still-exported
+    target: { source: file, path: price.js }
+    pattern: 'module\.exports = \{ formatPrice \}'
+    match: contains
   - type: llm
     name: root-cause-stated
     criteria: >
-      The final message states the root cause (the amount arrives as a string
-      from the form and formatPrice only accepted numbers) in at most two
-      sentences, says the fix is in formatPrice so every caller gets it, and
-      is at most 12 lines in total counting blank lines. It may mention the
-      other callers in one sentence. It must not describe a change made to
-      checkout.js, cart.js or invoice.js.
+      The final message says that the amount arrives as a string from the
+      form and that formatPrice only accepted numbers, and says the fix was
+      made in formatPrice (price.js). It is at most 12 lines in total,
+      counting blank lines. Suggestions for the future, caveats and mentions
+      of the other callers do not matter for this check.

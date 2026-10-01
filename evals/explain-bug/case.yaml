@@ -30,7 +30,7 @@ graders:
       The final message explains the whole mechanism: form.amount is a string
       because it comes from the request body; Number.isFinite returns false
       for any string, even a numeric one, because it does not coerce; so
-      formatPrice returns NaN and the template prints it. It names where the
-      fix belongs (formatPrice, the shared function) without applying it. The
-      explanation is complete and not truncated for brevity; it may be short,
-      but every step above is present.
+      formatPrice returns NaN and the template prints it. It says where a fix
+      could go without applying one. The explanation is complete and not
+      truncated for brevity; it may be short, but every step above is
+      present.
