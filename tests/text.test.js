@@ -7,8 +7,11 @@ const path = require('node:path');
 
 const root = path.join(__dirname, '..');
 
-// em dash, en dash, curly quotes, arrows, nbsp, narrow nbsp, emoji
-const banned = /[–—‘’“”←-⇿  ]|\p{Extended_Pictographic}/u;
+// en dash, em dash, curly quotes, nbsp, narrow nbsp, then the arrows block and emoji
+const bannedPoints = [0x2013, 0x2014, 0x2018, 0x2019, 0x201c, 0x201d, 0x00a0, 0x202f];
+const bannedClass = bannedPoints.map((cp) => String.fromCodePoint(cp)).join('')
+  + String.fromCodePoint(0x2190) + '-' + String.fromCodePoint(0x21ff);
+const banned = new RegExp('[' + bannedClass + ']|\p{Extended_Pictographic}', 'u');
 
 function git(args) {
   return execFileSync('git', args, { cwd: root, encoding: 'utf8' });
