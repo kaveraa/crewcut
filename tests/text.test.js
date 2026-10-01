@@ -7,27 +7,34 @@ const path = require('node:path');
 
 const root = path.join(__dirname, '..');
 
-// en dash, em dash, curly quotes, nbsp, narrow nbsp, then the arrows block and emoji
+// en dash, em dash, curly quotes, nbsp, narrow nbsp, then the arrows block
 const bannedPoints = [0x2013, 0x2014, 0x2018, 0x2019, 0x201c, 0x201d, 0x00a0, 0x202f];
 const bannedClass = bannedPoints.map((cp) => String.fromCodePoint(cp)).join('')
   + String.fromCodePoint(0x2190) + '-' + String.fromCodePoint(0x21ff);
-const banned = new RegExp('[' + bannedClass + ']|\p{Extended_Pictographic}', 'u');
+const bannedChars = new RegExp('[' + bannedClass + ']', 'u');
+const emoji = /\p{Extended_Pictographic}/u;
+
+function findBanned(text) {
+  const a = bannedChars.exec(text);
+  const b = emoji.exec(text);
+  if (a && b) return a.index <= b.index ? a : b;
+  return a || b;
+}
 
 function git(args) {
   return execFileSync('git', args, { cwd: root, encoding: 'utf8' });
 }
 
 function describe(match) {
-  return 'U+' + match.codePointAt(0).toString(16).toUpperCase().padStart(4, '0');
+  return 'U+' + match[0].codePointAt(0).toString(16).toUpperCase().padStart(4, '0');
 }
 
 test('tracked files use plain punctuation', () => {
   const files = git(['ls-files']).split('\n').filter(Boolean);
   const offenders = [];
   for (const file of files) {
-    const text = fs.readFileSync(path.join(root, file), 'utf8');
-    const match = banned.exec(text);
-    if (match) offenders.push(`${file}: ${describe(match[0])}`);
+    const match = findBanned(fs.readFileSync(path.join(root, file), 'utf8'));
+    if (match) offenders.push(`${file}: ${describe(match)}`);
   }
   assert.deepEqual(offenders, []);
 });
@@ -39,7 +46,7 @@ test('commit messages use plain punctuation and carry no trailer', () => {
   } catch {
     return; // no commit yet
   }
-  const match = banned.exec(log);
-  assert.equal(match, null, match && describe(match[0]));
+  const match = findBanned(log);
+  assert.equal(match, null, match && describe(match));
   assert.doesNotMatch(log, /^[A-Za-z-]+: .+$/m, 'trailer line found in a commit message');
 });
