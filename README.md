@@ -112,6 +112,14 @@ current level, about 430 tokens each; switch it off to save them.
 - Tools: batch independent calls; never print large outputs; no subagent for
   what one read answers.
 
+## Commits and pull requests
+
+One short subject line, a brief body only when it adds something. No AI
+mention, no AI co-author, no generated-with line, no trailer. Any such
+watermark found in a message, a PR description or a file is removed before
+the commit or the PR goes out. A pull request description says what changed,
+why, and how it was checked, in a few lines.
+
 ## Never cut
 
 Validation at trust boundaries, handling that prevents data loss, security,

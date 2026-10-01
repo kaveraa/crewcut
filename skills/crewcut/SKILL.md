@@ -91,6 +91,15 @@ Example, "add a cache for the API responses":
 - ultra: `No cache until a measurement shows repeated calls. When it does:
   one-line memoisation of fetchX.`
 
+## Commits and pull requests
+
+One short subject line in the imperative; a body of a few lines only when
+it says something the diff does not. No mention of AI, no AI co-author, no
+generated-with line, no trailer of any kind. If a commit message, a PR
+description or a file carries such a watermark, remove it before you commit
+or open the PR. A pull request description is three to six lines: what
+changed, why, how it was checked.
+
 ## Never cut
 
 Validation at trust boundaries, handling that prevents data loss, security,

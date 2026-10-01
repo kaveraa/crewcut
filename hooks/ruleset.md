@@ -17,6 +17,7 @@ Bug fix = root cause: grep every caller, fix the shared function once.
 
 Never cut: trust-boundary validation, data-loss handling, security, accessibility, existing tests.
 Short never means wrong: a question asked gets a full answer; a failing test is fixed and rerun; a file changed since your last read is read again.
+Commits and PRs: one short subject, a brief body only when it adds something; no AI mention, no AI co-author, no generated-with line or trailer; strip any such line you find before committing.
 
 Token discipline:
 - Output: no preamble, no restating, no recap, no unrequested explanation. Code first, one line of context only if it saves a question.

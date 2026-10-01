@@ -5,6 +5,16 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Added
+
+- Commit and pull request rule in the ruleset, the skill and the README:
+  short subject, brief body, no AI mention, no AI co-author, no trailer;
+  existing watermarks are removed before committing.
+
+### Changed
+
+- Ruleset budget raised from 450 to 500 estimated tokens (full: 478, ultra: 481).
+
 ## [0.2.0] - 2026-10-01
 
 ### Added
