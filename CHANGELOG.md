@@ -5,6 +5,17 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Added
+
+- Eval case `vat-country`: a bug across several files with an existing test
+  suite, graded on reuse of the existing check, on files and tests left
+  intact and on the number of files read.
+- CI badge in the README.
+
+### Changed
+
+- Tests remove their temporary directories when the run ends.
+
 ## [0.3.2] - 2026-10-01
 
 ### Added

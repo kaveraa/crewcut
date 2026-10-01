@@ -1,0 +1,61 @@
+schema_version: "1.0"
+name: vat-country
+description: "A bug across several files with an existing test suite. Expected: the tax module switched to the EU membership check that already exists, no special case, no list edited, shipping untouched, every test kept, few files read, root cause in one line."
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: Swiss customers are charged VAT on their orders. Switzerland is not in the EU, so they should not be. Fix it.
+  max_turns: 12
+  timeout_seconds: 300
+  allowed_tools: [Read, Edit, Grep, Glob, Skill]
+runs: 3
+graders:
+  - type: file_exists
+    name: no-new-file
+    path: "**/*"
+    exists: false
+  - type: regex
+    name: reuses-membership-check
+    target: { source: file, path: src/vat.js }
+    pattern: 'isEuMember\('
+    match: contains
+  - type: regex
+    name: no-special-case
+    target: { source: file, path: src/vat.js }
+    pattern: "'CH'"
+    match: not_contains
+  - type: regex
+    name: keeps-warehouse-list
+    target: { source: file, path: src/countries.js }
+    pattern: "'CH', 'NO', 'GB', 'IS', 'LI'"
+    match: contains
+  - type: regex
+    name: keeps-shipping-zone
+    target: { source: file, path: src/shipping.js }
+    pattern: 'isEuropean\(country\) \? EUROPE_FLAT'
+    match: contains
+  - type: regex
+    name: keeps-vat-tests
+    target: { source: file, path: tests/vat.test.js }
+    pattern: "a US order carries no VAT"
+    match: contains
+  - type: regex
+    name: keeps-shipping-tests
+    target: { source: file, path: tests/shipping.test.js }
+    pattern: "Switzerland ships at the European flat rate"
+    match: contains
+  - type: tool_used
+    name: reads-at-most-four-files
+    tool: Read
+    min: 0
+    max: 4
+    arm: both
+  - type: llm
+    name: root-cause-stated
+    criteria: >
+      The final message says that the VAT rate was decided with the
+      European warehouse list (isEuropean), which includes Switzerland,
+      instead of the EU membership list (isEuMember), and that the fix is
+      in src/vat.js. It is at most 10 lines in total, counting blank lines.
+      Mentions of shipping, of the tests passing, or of a missing test for
+      Switzerland do not matter for this check.
