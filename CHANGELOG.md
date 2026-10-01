@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-01
+
 ### Added
 
 - Commit and pull request rule in the ruleset, the skill and the README:
