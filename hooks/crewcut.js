@@ -13,6 +13,7 @@ const CONFIG_FILE = 'crewcut.json';
 const NUDGE_FILE = 'crewcut-nudged';
 const RULESET_FILE = path.join(__dirname, 'ruleset.md');
 const STATUSLINE_FILE = path.join(__dirname, 'statusline.js');
+const STATUSLINE_COPY = 'crewcut-statusline.js';
 const OFF_PHRASES = ['stop crewcut', 'normal mode'];
 const COMMAND = /^\/crewcut(?::crewcut)?(?:\s+(\S+)(?:\s+(\S+))?(?:\s.*)?)?$/;
 const READ_ONLY_SKILL = /^\/crewcut(?::crewcut)?-(review|audit)(?:\s.*)?$/;
@@ -119,6 +120,31 @@ function loadRuleset(level) {
   }
 }
 
+// The status line script lives in the config dir under a stable name, because
+// the plugin cache path carries the version and changes on every update.
+function statuslineCopy(dir) {
+  return path.join(dir, STATUSLINE_COPY);
+}
+
+function refreshStatuslineCopy(dir) {
+  try {
+    const source = fs.readFileSync(STATUSLINE_FILE, 'utf8');
+    const copy = statuslineCopy(dir);
+    let current = null;
+    try {
+      current = fs.readFileSync(copy, 'utf8');
+    } catch {
+      // no copy yet
+    }
+    if (current !== source) {
+      fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(copy, source);
+    }
+  } catch {
+    // best effort: the status line keeps its last copy
+  }
+}
+
 // One-time offer to show the level in the status line, when none is configured.
 function statuslineNudge(dir) {
   try {
@@ -127,7 +153,8 @@ function statuslineNudge(dir) {
     if (fs.existsSync(flag)) return '';
     fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(flag, '');
-    const command = `node "${STATUSLINE_FILE}"`;
+    refreshStatuslineCopy(dir);
+    const command = `node "${statuslineCopy(dir)}"`;
     return 'Statusline, once: crewcut can show its level in the status line. Offer the user, in one '
       + `line, to add to ${path.join(dir, 'settings.json')}: "statusLine": { "type": "command", `
       + `"command": ${JSON.stringify(command)} }. Do it only on a yes; never mention it again.`;
@@ -157,6 +184,7 @@ function onSession(input, env, dir) {
   if (!keep) writeLevel(dir, level);
   const rules = loadRuleset(level);
   if (!rules) return '';
+  if (!keep && fs.existsSync(statuslineCopy(dir))) refreshStatuslineCopy(dir);
   const nudge = keep ? '' : statuslineNudge(dir);
   return envelope('SessionStart', nudge ? `${rules}\n\n${nudge}` : rules);
 }

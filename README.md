@@ -102,13 +102,16 @@ rule instead of the ruleset.
 
 ## Status line
 
-The plugin ships `hooks/statusline.js`, which prints the level, the model
-and the working directory, for example `crewcut: ultra | Opus | shop`. On
-the first session start without a status line configured, Claude offers
-once to add it to your settings; say yes, or add it yourself:
+The plugin ships a status line script that prints the level, the model and
+the working directory, for example `crewcut: ultra | Opus | shop`. At session
+start the hook copies it to `crewcut-statusline.js` next to your Claude
+settings, under a path that survives plugin updates, and refreshes the copy
+when the plugin changes. On the first start without a status line
+configured, Claude offers once to add it to your settings; say yes, or add
+it yourself:
 
 ```json
-"statusLine": { "type": "command", "command": "node \"<plugin dir>/hooks/statusline.js\"" }
+"statusLine": { "type": "command", "command": "node \"C:/Users/you/.claude/crewcut-statusline.js\"" }
 ```
 
 Settings live in `crewcut.json` next to your Claude settings (`~/.claude`, or

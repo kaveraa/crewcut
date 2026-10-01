@@ -5,6 +5,15 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-10-01
+
+### Fixed
+
+- The status line command pointed into the plugin cache, whose path carries
+  the version and changes on every update. The hook now copies the script to
+  `crewcut-statusline.js` next to the Claude settings and refreshes it at
+  session start; the offer and the docs use that stable path.
+
 ## [0.3.0] - 2026-10-01
 
 ### Added

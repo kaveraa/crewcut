@@ -470,9 +470,11 @@ test('review is never a default', () => {
 test('session startup nudges once about the statusline when none is configured', () => {
   const dir = tempDir();
   const first = payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir })).additionalContext;
-  assert.match(first, /statusline\.js/);
+  assert.match(first, /crewcut-statusline\.js/);
+  assert.doesNotMatch(first, /hooks[\\/]statusline\.js/);
   assert.match(first, /"statusLine"/);
   assert.ok(fs.existsSync(path.join(dir, 'crewcut-nudged')));
+  assert.ok(fs.existsSync(path.join(dir, 'crewcut-statusline.js')));
   const second = payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir })).additionalContext;
   assert.doesNotMatch(second, /statusline\.js/);
 });
@@ -504,4 +506,21 @@ test('statusline.js survives empty stdin and a missing level file', () => {
   const script = path.join(__dirname, '..', 'hooks', 'statusline.js');
   const out = execFileSync(process.execPath, [script], { input: '', env: { ...process.env, CLAUDE_CONFIG_DIR: dir }, encoding: 'utf8' });
   assert.equal(out.trim(), 'crewcut: full');
+});
+
+test('the copied statusline script is standalone and gets refreshed at startup', () => {
+  const dir = tempDir();
+  run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir });
+  const copy = path.join(dir, 'crewcut-statusline.js');
+  fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'lite\n');
+  const out = execFileSync(process.execPath, [copy], {
+    input: JSON.stringify({ model: { display_name: 'Opus' }, workspace: { current_dir: 'C:/work/shop' } }),
+    env: { ...process.env, CLAUDE_CONFIG_DIR: dir },
+    encoding: 'utf8',
+  });
+  assert.equal(out.trim(), 'crewcut: lite | Opus | shop');
+  fs.writeFileSync(copy, '// stale');
+  run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir });
+  assert.notEqual(fs.readFileSync(copy, 'utf8'), '// stale');
+  assert.ok(!fs.existsSync(path.join(tempDir(), 'crewcut-statusline.js')), 'no copy without a session start');
 });

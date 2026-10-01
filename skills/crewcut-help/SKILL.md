@@ -35,5 +35,6 @@ Settings
   ~/.claude/crewcut.json     { "defaultLevel": "...", "subagents": true|false }
   ~/.claude/crewcut-mode     the level of the current session (per user)
   statusline                 "statusLine": { "type": "command",
-                             "command": "node \"<plugin dir>/hooks/statusline.js\"" }
+                             "command": "node \"~/.claude/crewcut-statusline.js\"" }
+                             (the hook keeps that copy up to date)
 ```
