@@ -287,3 +287,13 @@ test('the script exits 0 when stdout is closed before it writes', async () => {
   assert.equal(code, 0, stderr);
   assert.equal(stderr, '');
 });
+
+test('the real ruleset carries the quality guard at every active level', () => {
+  const markdown = fs.readFileSync(path.join(__dirname, '..', 'hooks', 'ruleset.md'), 'utf8');
+  for (const level of ['lite', 'full', 'ultra']) {
+    const text = renderRuleset(level, markdown);
+    assert.match(text, /Short never means wrong/, level);
+    assert.match(text, /failing test is fixed and rerun/, level);
+    assert.match(text, /changed since your last read/, level);
+  }
+});

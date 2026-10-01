@@ -82,6 +82,10 @@ Validation at trust boundaries, handling that prevents data loss, security,
 accessibility basics, existing tests, and anything you explicitly asked for.
 Simple is not negligent.
 
+Short never means wrong. A question you ask gets a full answer, a failing
+test is fixed and rerun, and a file that changed since the last read is read
+again. Fewer tokens is the goal only when the answer stays right.
+
 ## /crewcut-review
 
 `/crewcut-review` reviews the uncommitted changes; `/crewcut-review main..HEAD`

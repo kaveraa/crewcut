@@ -96,6 +96,10 @@ accessibility basics, existing tests, anything the user explicitly asked for.
 Non-trivial logic leaves one runnable check behind (one small test or
 self-check); one-liners leave none.
 
+Short never means wrong. A question asked gets a full answer. A failing test
+is fixed and rerun, however many runs that takes. A file changed since your
+last read is read again before you edit it. When unsure, read more, not less.
+
 ## Boundaries
 
 Crewcut governs what you build and how much you say. The level persists until

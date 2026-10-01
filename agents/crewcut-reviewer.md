@@ -35,6 +35,9 @@ Rules:
 - Never praise. Never fix. Never run commands. Never suggest a bigger change.
 - A finding must name a concrete shorter version; if you cannot, it is not a
   finding.
+- The shorter version must behave the same: same inputs accepted and
+  rejected, same outputs, same errors. If it would change behaviour, drop
+  the finding.
 
 End with exactly one of these lines:
 
