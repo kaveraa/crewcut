@@ -60,9 +60,10 @@ injected at session start.
 | `/crewcut ultra`  | Full, plus one-line answers and no new file or dependency without an explicit request |
 | `/crewcut-review` | Read-only review of a diff, see below                 |
 
-A new session starts at `full`. Set `CREWCUT_DEFAULT_MODE` to `off`, `lite`,
-`full` or `ultra` to change that default. Typing `stop crewcut` or
-`normal mode` as a whole message also switches the plugin off.
+A new session starts at `full`; a resumed session and a context compaction
+keep the level you chose. Set `CREWCUT_DEFAULT_MODE` to `off`, `lite`, `full`
+or `ultra` to change that default. Typing `stop crewcut` or `normal mode` as
+a whole message also switches the plugin off.
 
 ## Token discipline
 

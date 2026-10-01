@@ -10,7 +10,8 @@ const DEFAULT_LEVEL = 'full';
 const LEVEL_FILE = 'crewcut-mode';
 const RULESET_FILE = path.join(__dirname, 'ruleset.md');
 const OFF_PHRASES = ['stop crewcut', 'normal mode'];
-const COMMAND = /^\/crewcut(?::crewcut)?(?:\s+(\S+))?$/;
+const COMMAND = /^\/crewcut(?::crewcut)?(?:\s+(\S+)(?:\s.*)?)?$/;
+const KEEP_LEVEL_SOURCES = ['resume', 'compact'];
 const TAG = /^\[(lite|full|ultra)\]\s?/;
 const BOM = 0xfeff;
 
@@ -94,8 +95,10 @@ function run(mode, stdinText, env) {
   if (!input) return '';
   const dir = configDir(env);
   if (mode === 'session') {
-    const level = defaultLevel(env);
-    writeLevel(dir, level);
+    // resume and compact continue a session: keep the level the user chose
+    const keep = KEEP_LEVEL_SOURCES.includes(input.source);
+    const level = (keep && readLevel(dir)) || defaultLevel(env);
+    if (!keep) writeLevel(dir, level);
     return envelope('SessionStart', loadRuleset(level));
   }
   if (mode !== 'prompt') return '';
@@ -116,6 +119,7 @@ function main() {
   process.stdin.setEncoding('utf8');
   process.stdin.on('data', (chunk) => { text += chunk; });
   process.stdin.on('error', () => {});
+  process.stdout.on('error', () => {});
   process.stdin.on('end', () => {
     const output = run(process.argv[2], text, process.env);
     if (output) {

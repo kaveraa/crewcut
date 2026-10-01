@@ -231,3 +231,59 @@ test('the script runs end to end as a child process', () => {
   });
   assert.equal(silent, '');
 });
+
+test('parseCommand accepts trailing words after a valid level', () => {
+  assert.deepEqual(parseCommand('/crewcut ultra please'), { command: 'set', level: 'ultra' });
+  assert.deepEqual(parseCommand('/crewcut maximum now'), { command: 'status' });
+});
+
+test('session on compact keeps the stored level and does not rewrite it', () => {
+  const dir = tempDir();
+  fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'ultra\n');
+  const out = run('session', '{"hook_event_name":"SessionStart","source":"compact"}', { CLAUDE_CONFIG_DIR: dir });
+  assert.match(payload(out).additionalContext, /^CREWCUT ACTIVE - level: ultra\./);
+  assert.equal(levelIn(dir), 'ultra');
+});
+
+test('session on resume keeps the stored level', () => {
+  const dir = tempDir();
+  fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'lite\n');
+  const out = run('session', '{"hook_event_name":"SessionStart","source":"resume"}', { CLAUDE_CONFIG_DIR: dir });
+  assert.match(payload(out).additionalContext, /^CREWCUT ACTIVE - level: lite\./);
+  assert.equal(levelIn(dir), 'lite');
+});
+
+test('session on compact with a stored off stays silent', () => {
+  const dir = tempDir();
+  fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'off\n');
+  assert.equal(run('session', '{"source":"compact"}', { CLAUDE_CONFIG_DIR: dir }), '');
+  assert.equal(levelIn(dir), 'off');
+});
+
+test('session on startup and clear resets a stored level to the default', () => {
+  for (const source of ['startup', 'clear']) {
+    const dir = tempDir();
+    fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'ultra\n');
+    const out = run('session', JSON.stringify({ source }), { CLAUDE_CONFIG_DIR: dir });
+    assert.match(payload(out).additionalContext, /^CREWCUT ACTIVE - level: full\./);
+    assert.equal(levelIn(dir), 'full');
+  }
+});
+
+test('the script exits 0 when stdout is closed before it writes', async () => {
+  const { spawn } = require('node:child_process');
+  const dir = tempDir();
+  const script = path.join(__dirname, '..', 'hooks', 'crewcut.js');
+  const child = spawn(process.execPath, [script, 'session'], {
+    env: { ...process.env, CLAUDE_CONFIG_DIR: dir },
+    stdio: ['pipe', 'pipe', 'pipe'],
+  });
+  let stderr = '';
+  child.stderr.setEncoding('utf8');
+  child.stderr.on('data', (chunk) => { stderr += chunk; });
+  child.stdout.destroy();
+  child.stdin.end('{"source":"startup"}');
+  const code = await new Promise((resolve) => child.on('close', resolve));
+  assert.equal(code, 0, stderr);
+  assert.equal(stderr, '');
+});
