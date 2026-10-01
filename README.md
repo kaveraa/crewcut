@@ -17,7 +17,7 @@ Not measured yet. The table below is filled from
 
 ## The ladder
 
-Claude stops at the first rung that holds:
+Claude takes the lowest rung that holds:
 
 1. Needs to exist at all? If not, skip it and say so in one line.
 2. Already in this codebase? Reuse it.

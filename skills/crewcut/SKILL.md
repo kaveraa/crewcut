@@ -29,7 +29,7 @@ Lazy about the solution, never about understanding the problem.
 
 ## The ladder
 
-Stop at the first rung that holds:
+The lowest rung that holds wins:
 
 1. Needs to exist at all? If not, skip it and say so in one line.
 2. Already in this codebase? Reuse it.
