@@ -421,3 +421,87 @@ test('the real ruleset carries the modern-by-default rule at every active level'
     assert.match(text, /never a feature the version lacks/, level);
   }
 });
+
+test('parseCommand turns the review and audit skills into the review state', () => {
+  assert.deepEqual(parseCommand('/crewcut-review'), { command: 'review' });
+  assert.deepEqual(parseCommand('/crewcut:crewcut-review main..HEAD'), { command: 'review' });
+  assert.deepEqual(parseCommand('/crewcut-audit src'), { command: 'review' });
+  assert.equal(parseCommand('/crewcut-help'), null);
+});
+
+test('prompt /crewcut-review enters the read-only review state for the session', () => {
+  const dir = tempDir();
+  fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'ultra\n');
+  const out = run('prompt', promptInput('/crewcut-review'), { CLAUDE_CONFIG_DIR: dir });
+  const text = payload(out).additionalContext;
+  assert.match(text, /^crewcut: review\n\nCREWCUT ACTIVE - level: review\./);
+  assert.match(text, /change no file/);
+  assert.equal(levelIn(dir), 'review');
+  assert.equal(readLevel(dir), 'review');
+});
+
+test('review state is kept across compaction, reset on startup, left by a level switch', () => {
+  const dir = tempDir();
+  fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'review\n');
+  const compact = run('session', '{"source":"compact"}', { CLAUDE_CONFIG_DIR: dir });
+  assert.match(payload(compact).additionalContext, /^CREWCUT ACTIVE - level: review\./);
+  assert.equal(levelIn(dir), 'review');
+  const status = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir });
+  assert.equal(payload(status).additionalContext, 'crewcut: review (default: full; levels: off, lite, full, ultra)');
+  const sub = run('subagent', '{}', { CLAUDE_CONFIG_DIR: dir });
+  assert.match(payload(sub).additionalContext, /level: review\./);
+  const back = run('prompt', promptInput('/crewcut full'), { CLAUDE_CONFIG_DIR: dir });
+  assert.match(payload(back).additionalContext, /^crewcut: full\n\nCREWCUT ACTIVE - level: full\./);
+  assert.equal(levelIn(dir), 'full');
+  fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'review\n');
+  run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir });
+  assert.equal(levelIn(dir), 'full');
+});
+
+test('review is never a default', () => {
+  const dir = tempDir();
+  writeConfig(dir, { defaultLevel: 'review' });
+  run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir, CREWCUT_DEFAULT_MODE: 'review' });
+  assert.equal(levelIn(dir), 'full');
+  assert.deepEqual(parseCommand('/crewcut review'), { command: 'status' });
+  assert.deepEqual(parseCommand('/crewcut default review'), { command: 'status' });
+});
+
+test('session startup nudges once about the statusline when none is configured', () => {
+  const dir = tempDir();
+  const first = payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir })).additionalContext;
+  assert.match(first, /statusline\.js/);
+  assert.match(first, /"statusLine"/);
+  assert.ok(fs.existsSync(path.join(dir, 'crewcut-nudged')));
+  const second = payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir })).additionalContext;
+  assert.doesNotMatch(second, /statusline\.js/);
+});
+
+test('session startup does not nudge when a statusline exists, on compact, or when off', () => {
+  const withStatus = tempDir();
+  fs.writeFileSync(path.join(withStatus, 'settings.json'), '{"statusLine":{"type":"command","command":"x"}}');
+  const text = payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: withStatus })).additionalContext;
+  assert.doesNotMatch(text, /statusline\.js/);
+  assert.ok(!fs.existsSync(path.join(withStatus, 'crewcut-nudged')));
+  const compact = tempDir();
+  fs.writeFileSync(path.join(compact, 'crewcut-mode'), 'full\n');
+  assert.doesNotMatch(payload(run('session', '{"source":"compact"}', { CLAUDE_CONFIG_DIR: compact })).additionalContext, /statusline\.js/);
+  const off = tempDir();
+  assert.equal(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: off, CREWCUT_DEFAULT_MODE: 'off' }), '');
+});
+
+test('statusline.js prints the level, the model and the directory', () => {
+  const dir = tempDir();
+  fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'ultra\n');
+  const script = path.join(__dirname, '..', 'hooks', 'statusline.js');
+  const input = JSON.stringify({ model: { display_name: 'Opus' }, workspace: { current_dir: 'C:/work/shop' } });
+  const out = execFileSync(process.execPath, [script], { input, env: { ...process.env, CLAUDE_CONFIG_DIR: dir }, encoding: 'utf8' });
+  assert.equal(out.trim(), 'crewcut: ultra | Opus | shop');
+});
+
+test('statusline.js survives empty stdin and a missing level file', () => {
+  const dir = tempDir();
+  const script = path.join(__dirname, '..', 'hooks', 'statusline.js');
+  const out = execFileSync(process.execPath, [script], { input: '', env: { ...process.env, CLAUDE_CONFIG_DIR: dir }, encoding: 'utf8' });
+  assert.equal(out.trim(), 'crewcut: full');
+});

@@ -6,15 +6,22 @@ const os = require('os');
 const path = require('path');
 
 const LEVELS = ['off', 'lite', 'full', 'ultra'];
+const REVIEW = 'review'; // session-only state entered by the review and audit skills
 const DEFAULT_LEVEL = 'full';
 const LEVEL_FILE = 'crewcut-mode';
 const CONFIG_FILE = 'crewcut.json';
+const NUDGE_FILE = 'crewcut-nudged';
 const RULESET_FILE = path.join(__dirname, 'ruleset.md');
+const STATUSLINE_FILE = path.join(__dirname, 'statusline.js');
 const OFF_PHRASES = ['stop crewcut', 'normal mode'];
 const COMMAND = /^\/crewcut(?::crewcut)?(?:\s+(\S+)(?:\s+(\S+))?(?:\s.*)?)?$/;
+const READ_ONLY_SKILL = /^\/crewcut(?::crewcut)?-(review|audit)(?:\s.*)?$/;
 const TAG = /^\[(lite|full|ultra)\]\s?/;
 const KEEP_LEVEL_SOURCES = ['resume', 'compact'];
 const BOM = 0xfeff;
+
+const REVIEW_RULES = 'CREWCUT ACTIVE - level: review. Read-only: report findings, change no file, run no '
+  + 'command that writes. Back to coding with /crewcut off|lite|full|ultra.';
 
 function normalize(prompt) {
   if (typeof prompt !== 'string') return '';
@@ -24,6 +31,7 @@ function normalize(prompt) {
 function parseCommand(prompt) {
   const text = normalize(prompt);
   if (OFF_PHRASES.includes(text)) return { command: 'set', level: 'off' };
+  if (READ_ONLY_SKILL.test(text)) return { command: 'review' };
   const match = COMMAND.exec(text);
   if (!match) return null;
   const [, first, second] = match;
@@ -37,6 +45,7 @@ function parseCommand(prompt) {
 
 function renderRuleset(level, markdown) {
   if (level === 'off') return '';
+  if (level === REVIEW) return REVIEW_RULES;
   const kept = [];
   for (const line of String(markdown).split(/\r?\n/)) {
     const tag = TAG.exec(line);
@@ -54,13 +63,17 @@ function stripBom(text) {
   return text.charCodeAt(0) === BOM ? text.slice(1) : text;
 }
 
-function readConfig(dir) {
+function readJson(file) {
   try {
-    const value = JSON.parse(stripBom(fs.readFileSync(path.join(dir, CONFIG_FILE), 'utf8')));
+    const value = JSON.parse(stripBom(fs.readFileSync(file, 'utf8')));
     return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
   } catch {
     return {};
   }
+}
+
+function readConfig(dir) {
+  return readJson(path.join(dir, CONFIG_FILE));
 }
 
 function writeConfig(dir, fields) {
@@ -83,7 +96,7 @@ function defaultLevel(env, dir) {
 function readLevel(dir) {
   try {
     const text = fs.readFileSync(path.join(dir, LEVEL_FILE), 'utf8').trim().toLowerCase();
-    return LEVELS.includes(text) ? text : null;
+    return LEVELS.includes(text) || text === REVIEW ? text : null;
   } catch {
     return null;
   }
@@ -100,7 +113,24 @@ function writeLevel(dir, level) {
 
 function loadRuleset(level) {
   try {
-    return renderRuleset(level, fs.readFileSync(RULESET_FILE, 'utf8'));
+    return renderRuleset(level, level === REVIEW ? '' : fs.readFileSync(RULESET_FILE, 'utf8'));
+  } catch {
+    return '';
+  }
+}
+
+// One-time offer to show the level in the status line, when none is configured.
+function statuslineNudge(dir) {
+  try {
+    if (readJson(path.join(dir, 'settings.json')).statusLine) return '';
+    const flag = path.join(dir, NUDGE_FILE);
+    if (fs.existsSync(flag)) return '';
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(flag, '');
+    const command = `node "${STATUSLINE_FILE}"`;
+    return 'Statusline, once: crewcut can show its level in the status line. Offer the user, in one '
+      + `line, to add to ${path.join(dir, 'settings.json')}: "statusLine": { "type": "command", `
+      + `"command": ${JSON.stringify(command)} }. Do it only on a yes; never mention it again.`;
   } catch {
     return '';
   }
@@ -125,7 +155,10 @@ function onSession(input, env, dir) {
   const keep = KEEP_LEVEL_SOURCES.includes(input.source);
   const level = (keep && readLevel(dir)) || defaultLevel(env, dir);
   if (!keep) writeLevel(dir, level);
-  return envelope('SessionStart', loadRuleset(level));
+  const rules = loadRuleset(level);
+  if (!rules) return '';
+  const nudge = keep ? '' : statuslineNudge(dir);
+  return envelope('SessionStart', nudge ? `${rules}\n\n${nudge}` : rules);
 }
 
 function onSubagent(env, dir) {
@@ -150,9 +183,10 @@ function onPrompt(input, env, dir) {
     writeConfig(dir, { subagents: command.enabled });
     return envelope('UserPromptSubmit', `crewcut: subagents ${command.enabled ? 'on' : 'off'}`);
   }
-  writeLevel(dir, command.level);
-  const rules = loadRuleset(command.level);
-  const text = rules ? `crewcut: ${command.level}\n\n${rules}` : `crewcut: ${command.level}`;
+  const level = command.command === 'review' ? REVIEW : command.level;
+  writeLevel(dir, level);
+  const rules = loadRuleset(level);
+  const text = rules ? `crewcut: ${level}\n\n${rules}` : `crewcut: ${level}`;
   return envelope('UserPromptSubmit', text);
 }
 
@@ -186,7 +220,7 @@ function main() {
 
 module.exports = {
   LEVELS, DEFAULT_LEVEL, parseCommand, renderRuleset, configDir,
-  readLevel, writeLevel, readConfig, writeConfig, run,
+  readLevel, writeLevel, readConfig, writeConfig, defaultLevel, run,
 };
 
 if (require.main === module) main();
