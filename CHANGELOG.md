@@ -5,6 +5,18 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-10-01
+
+### Added
+
+- Modern-by-default rule in the ruleset, the skill and the README: check
+  the project's versions and use the idioms and features they allow, never
+  an old pattern the version has replaced, never a feature the version lacks.
+
+### Changed
+
+- Ruleset budget raised from 500 to 550 estimated tokens (full: 534, ultra: 537).
+
 ## [0.2.1] - 2026-10-01
 
 ### Added
