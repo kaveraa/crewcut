@@ -66,3 +66,8 @@ test('rendered ruleset carries no level tag', () => {
     assert.doesNotMatch(renderRuleset(level, markdown), /^\[(lite|full|ultra)\]/m);
   }
 });
+
+test('the crewcut skill stays under 1500 estimated tokens', () => {
+  const text = fs.readFileSync(path.join(root, 'skills', 'crewcut', 'SKILL.md'), 'utf8');
+  assert.ok(Math.ceil(text.length / 4) < 1500, `about ${Math.ceil(text.length / 4)} tokens`);
+});
