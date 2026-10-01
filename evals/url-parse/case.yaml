@@ -45,5 +45,9 @@ graders:
   - type: llm
     name: short-answer
     criteria: >
-      The final message is at most 20 lines, shows or names the added
-      function, and contains no explanation that the user did not ask for.
+      The final message is at most 10 lines, counting blank lines and code.
+      It names the added function and says it uses the URL parser's hostname.
+      It does not list the three sample links with their results, and it does
+      not repeat the whole function in a code block when it already described
+      it in a sentence. One caveat in one sentence (for example that an
+      invalid URL throws) is fine.

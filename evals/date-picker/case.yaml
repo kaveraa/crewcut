@@ -40,6 +40,8 @@ graders:
   - type: llm
     name: short-answer
     criteria: >
-      The final message is at most 15 lines. It does not restate the request,
-      does not explain alternatives at length and does not recap the edit
-      beyond one line.
+      The final message is at most 12 lines, counting blank lines. It names
+      the file and the field in one or two sentences. It adds no attribute the
+      user did not ask for beyond a label, type, name, id and required (for
+      example no max, min or pattern), and it does not list follow-up ideas
+      as bullet points. One caveat in one sentence is fine.
