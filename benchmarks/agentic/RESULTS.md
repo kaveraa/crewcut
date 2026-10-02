@@ -1,6 +1,6 @@
 # Agentic benchmark, ponytail's harness, 2026-10-02
 
-Crewcut 0.4.1 measured on two repositories with the benchmark ponytail published for itself
+Crewcut 0.4.1 measured on two repositories and two model tiers with the benchmark ponytail published for itself
 (`benchmarks/agentic/run.py` in DietrichGebert/ponytail, as of its commit of
 2026-10-02): the same twelve one-line tickets against
 [fastapi/full-stack-fastapi-template](https://github.com/fastapi/full-stack-fastapi-template)
@@ -152,6 +152,64 @@ What it says:
 - Every cell of every arm created a new frontend source file, the harness's
   correctness gate for these open tasks. Safety is the same repository-free
   tier as above.
+
+## Model tier: Sonnet 5.5
+
+The same twelve tickets on full-stack-fastapi-template, three arms (caveman
+dropped: its role as a terse-prose control is settled above), three runs per
+cell, Claude Sonnet 5.5 as the working model. 108 feature cells,
+9.78 USD, no timeout; the seven safety tasks, 63 cells, 3.05 USD.
+
+| vs no-plugin baseline | LOC | tokens | cost | time | safe |
+|---|--:|--:|--:|--:|--:|
+| **crewcut** | **-8 %** | **+9 %** | **+2 %** | **-2 %** | **100 %** |
+| "YAGNI + one-liners" prompt | -31 % | -1 % | -12 % | -14 % | 100 % |
+
+Sum over the twelve tickets: baseline 606 / crewcut 556 / yagni-oneliner 417. Crewcut is under the baseline on
+8 tickets out of twelve.
+
+Frontend:
+
+| task | baseline | **crewcut** | yagni-oneliner |
+|---|--:|--:|--:|
+| date picker | 22 | **13** | 10 |
+| color picker | 50 | **32** | 17 |
+| dropzone | 81 | **72** | 53 |
+| wizard | 100 | **80** | 66 |
+| star rating | 53 | **52** | 36 |
+| command palette | 126 | **138** | 86 |
+
+Backend:
+
+| task | baseline | **crewcut** | yagni-oneliner |
+|---|--:|--:|--:|
+| archive | 59 | **59** | 59 |
+| search | 28 | **25** | 15 |
+| CSV export | 29 | **32** | 25 |
+| bulk delete | 27 | **21** | 21 |
+| duplicate | 21 | **21** | 18 |
+| count | 11 | **11** | 10 |
+
+What it says:
+
+- The Sonnet baseline is already lean: 51 lines per task against 113 on
+  Haiku, 7.3 turns against 12.9, a 22-line date picker. There is less to
+  cut, and crewcut cuts less: -8 % of the lines, within noise on cost.
+- Tokens go up with crewcut on this model (+9 %): same number of turns,
+  and the ruleset is read back on every one of them (107k cached tokens
+  per cell against 97k). Where the model does not over-build, the
+  ruleset is pure overhead.
+- The seven-word prompt cuts more here (-31 %) and costs less. It gets there
+  by writing tests in 22 % of the cells against 50 % for crewcut
+  and 50 % for the baseline, and by shipping barer components. Crewcut's
+  rules keep the tests and the guards, which on a strong model is where its
+  lines go.
+- Safety on Sonnet: baseline 21/21, crewcut 21/21, yagni-oneliner 21/21. No arm dropped a guard.
+- Taken with the Haiku runs: the gain in lines is real on every model but
+  shrinks as the model gets leaner on its own; the gain in tokens only shows
+  where the plugin removes turns, which needs a repository big enough that
+  reading discipline matters. On a small repository with a strong model,
+  crewcut's value is the quality floor, not the token bill.
 
 ## Reproduce
 
