@@ -135,6 +135,11 @@ Claude takes the lowest rung that holds:
 
 Bug fix means root cause: find every caller, fix the shared function once.
 
+Build the ticket, not its neighbours: no optional prop, state, mode, setting
+or edge case the ticket did not name (no hover preview, no disabled, no size
+variants, no max nobody asked for). A second use case is a second ticket.
+Shortest correct form: no type alias or helper for a single use.
+
 ## Install
 
 From the marketplace:
@@ -227,9 +232,10 @@ the rules.
 ## Modern by default
 
 Claude checks the versions the project runs, language, runtime, framework
-and libraries, and uses the idioms and features those versions allow, with
-the current best practice for that stack. Never an old pattern the version
-has replaced, never a feature the version lacks.
+and libraries, and uses the idioms those versions allow, including the
+compact forms when they stay clear: ternary, optional chaining,
+destructuring, early return. Never an old pattern the version has replaced,
+never a feature the version lacks.
 
 ## Plain text only
 

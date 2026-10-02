@@ -45,13 +45,15 @@ The lowest rung that holds wins:
 Bug fix = root cause. Grep every caller, fix the shared function once, never
 patch each call site.
 
+Build the ticket only: no optional prop, state, mode or edge case it did not
+name (no hover preview, no disabled, no variants). A second use case is a
+second ticket. No type alias or helper for a single use.
+
 ## Writing
 
-- No abstraction with a single implementation. No scaffolding for a future
-  that may not come.
-- Delete before you add. Boring beats clever. As few files as possible.
-- Two standard options of the same size: take the one that is right on edge
-  cases.
+- No scaffolding for a future that may not come. Delete before you add.
+  Boring beats clever. As few files as possible.
+- Two standard options of the same size: take the one right on edge cases.
 - Mark a cut corner with a one-line comment that names the limit and the
   upgrade path: `// crewcut: no retry, add when the API flakes`.
 - Ship the simple version and question the complex request in the same
@@ -60,9 +62,9 @@ patch each call site.
 ## Output
 
 Code first. Then at most three short lines in the shape
-`skipped: <what>, add when: <condition>`. No preamble, no restating of the
-request, no recap of what you just did. An explanation the user asked for is
-given in full; only unrequested prose is banned.
+`skipped: <what>, add when: <condition>`. No preamble, no restating, no
+recap. An explanation the user asked for is given in full; only unrequested
+prose is banned.
 
 ## Token discipline
 
@@ -72,10 +74,10 @@ given in full; only unrequested prose is banned.
 - Writing: targeted edits, never a whole-file rewrite; no unrequested docs or
   refactors; run the suite once at the end, not after every edit.
 - Tests: none unless the task asks, or an existing test file covers the
-  touched code, then extend that file. Never create a test file on your own,
-  even when invited to add tests "if you normally would".
-- Tools: batch independent calls in one turn; never print large outputs; no
-  subagent for what one read answers.
+  touched code, then extend it. Never create a test file, even when invited
+  to add tests "if you normally would".
+- Tools: batch independent calls; never print large outputs; no subagent
+  for what one read answers.
 
 ## Levels
 
@@ -96,11 +98,10 @@ Example, "add a cache for the API responses":
 
 ## Modern by default
 
-Before writing, check the versions the project actually runs: language,
-runtime, framework, main libraries (lock files, manifests, CI config). Use
-the idioms and features those versions allow and the current best practice
-for that stack. Never an old pattern the version has replaced, never a
-feature the version lacks. When the version is unknown, read it, do not
+Before writing, check the versions the project runs (lock files, manifests,
+CI config). Use the idioms those versions allow and their compact forms when
+clear (ternary, optional chaining, destructuring, early return). Never an old
+pattern the version has replaced, never a feature the version lacks. When the version is unknown, read it, do not
 guess.
 
 ## Plain text only
@@ -133,4 +134,4 @@ last read is read again before you edit it. When unsure, read more, not less.
 ## Boundaries
 
 Crewcut governs what you build and how much you say. The level persists until
-changed or until the session ends.
+changed or the session ends.

@@ -5,6 +5,18 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-10-02
+
+### Added
+
+- "Build the ticket, not its neighbours" in the ruleset, the skill and the
+  README: no optional prop, state, mode, setting or edge case the ticket did
+  not name; a second use case is a second ticket; shortest correct form, no
+  type alias or helper for a single use. Found on the Sonnet tier, where
+  crewcut shipped a hover preview and a disabled prop nobody asked for.
+- "Modern by default" names the compact forms to use when they stay clear:
+  ternary, optional chaining, destructuring, early return.
+
 ## [0.5.0] - 2026-10-02
 
 ### Changed
