@@ -2,8 +2,9 @@
 
 [![tests](https://github.com/kaveraa/crewcut/actions/workflows/tests.yml/badge.svg)](https://github.com/kaveraa/crewcut/actions/workflows/tests.yml)
 
-Short hair, short code. A Claude Code plugin that spends fewer tokens:
-the simplest code that works, short answers, few tool calls, and no cut on
+Short hair, short code. A Claude Code plugin for the simplest code that
+works: less code on every repository and model measured, fewer tokens where
+there is something not to read or not to write, short answers, and no cut on
 safety.
 
 ## Agentic benchmark
@@ -33,15 +34,26 @@ four runs per cell, 2026-10-02.
 | caveman (terse-prose control) | -15 % | +16 % | +8 % | -4 % | 100 % |
 | "YAGNI + one-liners" prompt | -29 % | -23 % | -7 % | -23 % | 96 % |
 
+**Sonnet 5.5** (same template and tickets, three arms, three runs):
+
+| vs no-plugin baseline | LOC | tokens | cost | time | safe |
+|---|--:|--:|--:|--:|--:|
+| **crewcut** | **-8 %** | **+9 %** | **+2 %** | **-2 %** | **100 %** |
+| "YAGNI + one-liners" prompt | -31 % | -1 % | -12 % | -14 % | 100 % |
+
 Each cell is that arm's mean over all cells as a percent of the no-plugin
-baseline, the same reading as the chart. Crewcut is the only arm that cuts
-lines on both repositories, and the only one besides the baseline that never
-drops a guard. The cut is biggest where a native element replaces a component
-(color picker -67 % on the template, -58 % on the boilerplate; date picker
--39 % and -55 %) and near zero on irreducible endpoints. The second baseline
-over-builds more, so every margin grows there, and crewcut is under it on
-eleven tickets out of twelve. Method, per-task tables, limits and how to
-reproduce:
+baseline, the same reading as the chart. Crewcut cuts lines on
+every repository and model measured and never drops a guard. The cut is
+biggest where a native element replaces a component (color picker -67 % on
+the template, -58 % on the boilerplate; date picker -39 % and -55 %) and near
+zero on irreducible endpoints. The margin follows the baseline: Next.js's
+over-builds more, so crewcut is under it on eleven tickets out of twelve;
+Sonnet's is already lean, so crewcut trims 8 % of the lines there and the
+seven-word prompt, which skips the tests, trims more. Tokens only fall where
+the plugin removes turns, which takes a repository big enough that reading
+discipline matters; on a small repository with a strong model the ruleset is
+read back on every turn for little gain. Method, per-task tables, limits and
+how to reproduce:
 [benchmarks/agentic/RESULTS.md](benchmarks/agentic/RESULTS.md).
 
 ## Measured
