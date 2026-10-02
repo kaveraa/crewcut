@@ -5,6 +5,23 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-02
+
+### Changed
+
+- Reading rule hardened in the ruleset, the skill and the README: grep for
+  the symbols the change touches, then ranged reads of those files only; one
+  grep beats three reads; never read a file twice; never open a file to
+  confirm what grep already showed.
+- Tests rule split out and hardened: no test unless the task asks or an
+  existing test file covers the touched code, then extend that file; never
+  create a test file, even when invited to add tests "if you normally
+  would". The old "leave one runnable check behind" line now applies only
+  when a test file already exists.
+- Plugin and skill descriptions say what was measured: less code, fewer
+  reads, no safety cuts, instead of "spend fewer tokens".
+- Ruleset budget raised from 600 to 700 estimated tokens.
+
 ## [0.4.2] - 2026-10-02
 
 ### Changed
