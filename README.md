@@ -17,19 +17,31 @@ four runs per cell, 2026-10-02.
 
 <p align="center"><img src="assets/benchmark-agentic.svg" width="860" alt="Each arm as a percent of the no-plugin baseline across LOC, tokens, cost and time (Haiku 4.5). Crewcut is the only arm under 100 percent on every metric: LOC 86, tokens 97, cost 96, time 93. Caveman and the yagni prompt rise above 100 on LOC and cost. Safety: baseline, caveman and crewcut 100 percent, yagni-oneliner 96."></p>
 
-| vs no-plugin baseline | LOC | turns | cost | correct | safe |
-|---|--:|--:|--:|--:|--:|
-| **crewcut** | **-11 %** | +3 % | -3 % | 98 % | **100 %** |
-| caveman | +12 % | +5 % | +8 % | 96 % | 100 % |
-| yagni-oneliner | +11 % | -8 % | +6 % | 100 % | 96 % |
+**full-stack-fastapi-template** (ponytail's repository and tickets):
 
-Crewcut is the only arm that writes less than the baseline, and it stays
-fully safe while doing it. The cut is biggest where a native element replaces
-a component (color picker -67 %, date picker -39 %, dropzone -35 %) and near
-zero on irreducible endpoints. On a second repository, Next-js-Boilerplate,
-whose baseline over-builds more, the same twelve-ticket protocol gives crewcut
-LOC 60 %, cost 87 % and time 80 % of the baseline, under it on eleven tickets
-out of twelve. Method, per-task tables, limits and how to reproduce:
+| vs no-plugin baseline | LOC | tokens | cost | time | safe |
+|---|--:|--:|--:|--:|--:|
+| **crewcut** | **-14 %** | **-3 %** | **-4 %** | **-7 %** | **100 %** |
+| caveman (terse-prose control) | +4 % | +9 % | +6 % | +3 % | 100 % |
+| "YAGNI + one-liners" prompt | +12 % | -15 % | +11 % | -5 % | 96 % |
+
+**Next-js-Boilerplate** (same protocol, second repository):
+
+| vs no-plugin baseline | LOC | tokens | cost | time | safe |
+|---|--:|--:|--:|--:|--:|
+| **crewcut** | **-40 %** | **-10 %** | **-13 %** | **-20 %** | **100 %** |
+| caveman (terse-prose control) | -15 % | +16 % | +8 % | -4 % | 100 % |
+| "YAGNI + one-liners" prompt | -29 % | -23 % | -7 % | -23 % | 96 % |
+
+Each cell is that arm's mean over all cells as a percent of the no-plugin
+baseline, the same reading as the chart. Crewcut is the only arm that cuts
+lines on both repositories, and the only one besides the baseline that never
+drops a guard. The cut is biggest where a native element replaces a component
+(color picker -67 % on the template, -58 % on the boilerplate; date picker
+-39 % and -55 %) and near zero on irreducible endpoints. The second baseline
+over-builds more, so every margin grows there, and crewcut is under it on
+eleven tickets out of twelve. Method, per-task tables, limits and how to
+reproduce:
 [benchmarks/agentic/RESULTS.md](benchmarks/agentic/RESULTS.md).
 
 ## Measured
