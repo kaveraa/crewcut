@@ -1,0 +1,76 @@
+diff --git a/benchmarks/agentic/run.py b/benchmarks/agentic/run.py
+index 1057d00..8033dd3 100644
+--- a/benchmarks/agentic/run.py
++++ b/benchmarks/agentic/run.py
+@@ -23,6 +23,8 @@ ponytail: the claude CLI is the harness (already installed, we run inside it). N
+ dependency. The CLI's JSON output already carries cost/tokens/duration/permission_denials.
+ """
+ import argparse, concurrent.futures, datetime, json, os, re, shutil, signal, statistics, subprocess, sys, tempfile
++import functools
++tempfile.TemporaryDirectory = functools.partial(tempfile.TemporaryDirectory, ignore_cleanup_errors=True)  # Windows: a killed child can hold the dir briefly
+ from collections import defaultdict
+ from pathlib import Path
+ 
+@@ -40,7 +42,7 @@ ARMS = {
+     "yagni":          lambda: "Follow YAGNI principles.",
+     "yagni-oneliner": lambda: "Follow YAGNI principles, and prefer one-liner solutions.",
+ }
+-MODELS = {"haiku": "claude-haiku-4-5-20251001", "sonnet": "claude-sonnet-4-6", "opus": "claude-opus-4-8"}
++MODELS = {"haiku": "claude-haiku-4-5-20251001", "sonnet": "claude-sonnet-5-5", "opus": "claude-opus-5-5"}
+ 
+ # Skills are plugins activated by a SessionStart hook. To test exactly one at a time we exclude the
+ # user's globally-enabled plugins (--setting-sources project,local) and load one plugin from its
+@@ -157,8 +159,21 @@ def _git_snapshot(workdir):
+     """Commit the seeded repo so we can diff exactly what the agent changes."""
+     _git(workdir, "init", "-q")
+     _git(workdir, "add", "-A")
+-    _git(workdir, "-c", "user.email=bench@local", "-c", "user.name=bench",
+-         "commit", "-q", "-m", "base", "--no-verify")
++    import time
++    errs = []
++    for attempt in range(6):                           # transient failures seen under 6 workers on Windows
++        r = _git(workdir, "-c", "user.email=bench@local", "-c", "user.name=bench",
++                 "commit", "-q", "-m", "base", "--no-verify")
++        if _git(workdir, "rev-parse", "-q", "--verify", "HEAD").returncode == 0: return
++        errs.append(f"attempt {attempt}: rc={r.returncode} {r.stderr.strip()[-300:]} | {r.stdout.strip()[-200:]}")
++        time.sleep(2 + attempt)
++        lock = Path(workdir) / ".git" / "index.lock"
++        if lock.exists():
++            try: lock.unlink()
++            except Exception: pass
++        _git(workdir, "add", "-A")
++    (Path(workdir) / "_snapshot_error.txt").write_text(chr(10).join(errs), encoding="utf-8")
++    raise RuntimeError(f"git snapshot failed in {workdir}")
+ 
+ _SKIP_DIFF = ("-lock", ".lock", ".gen.ts", "lock.json", "routeTree.gen")
+ def git_diff_stats(workdir):
+diff --git a/benchmarks/agentic/tasks.py b/benchmarks/agentic/tasks.py
+index 45015c3..3543c00 100644
+--- a/benchmarks/agentic/tasks.py
++++ b/benchmarks/agentic/tasks.py
+@@ -966,3 +966,25 @@ TASKS = {
+     "tmpl-be-csv":         {"prompt": "Add an endpoint to export the current user's items as CSV.",
+                             "fixture": _TMPL, "score": score_fixture, "open": True},
+ }
++
++
++# Second repository for the crewcut measure: ixartz/Next-js-Boilerplate, pinned, path in
++# CREWCUT_NEXT_TMPL. Frontend prompts are the same six; backend prompts fit that repo's
++# counter and portfolio instead of the template's items.
++_NEXT = os.environ.get("CREWCUT_NEXT_TMPL")
++if _NEXT:
++    for _k, _p in {
++        "next-fe-datepicker":  "Add a date picker component to the frontend.",
++        "next-fe-colorpicker": "Add a color picker component to the frontend.",
++        "next-fe-command":     "Add a command palette (searchable command menu) to the frontend.",
++        "next-fe-dropzone":    "Add a file upload dropzone component to the frontend.",
++        "next-fe-wizard":      "Add a multi-step form wizard component to the frontend.",
++        "next-fe-rating":      "Add a star rating input component to the frontend.",
++        "next-be-get":         "Add a GET handler to /api/counter that returns the current count.",
++        "next-be-reset":       "Add a DELETE handler to /api/counter that resets the count to zero.",
++        "next-be-csv":         "Add an API route that exports every counter row as CSV.",
++        "next-be-search":      "Add a search query parameter to the portfolio page that filters entries by name.",
++        "next-be-pagination":  "Paginate the portfolio page, six entries per page.",
++        "next-be-log":         "Record every counter increment with its timestamp and add an endpoint that returns the last ten.",
++    }.items():
++        TASKS[_k] = {"prompt": _p, "fixture": _NEXT, "score": score_fixture, "open": True}

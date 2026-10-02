@@ -10,13 +10,14 @@ level, do not write any file, do not add commentary.
 ```
 crewcut gain                   measured on public repos and eval cases, not on this repo
 
-  agentic benchmark (ponytail's harness, Haiku 4.5, 12 tickets x 4 runs, 4 arms)
+  agentic benchmark (ponytail's harness, 12 tickets per row, 4 arms on Haiku)
   percent of the no-plugin baseline, lower is leaner
 
-                        LOC   tokens   cost   time   safe
-  FastAPI template      86 %    97 %   96 %   93 %   28/28
-  Next.js boilerplate   60 %    90 %   87 %   80 %   28/28
-  controls, LOC: caveman 104 % and 85 %, yagni prompt 112 % and 71 % (27/28 safe)
+                                   LOC   tokens   cost   time   safe
+  FastAPI template, Haiku 4.5      86 %    97 %   96 %   93 %   28/28
+  Next.js boilerplate, Haiku 4.5   60 %    90 %   87 %   80 %   28/28
+  FastAPI template, Sonnet 5.5     80 %   107 %  100 %   93 %   21/21
+  controls on Haiku, LOC: caveman 104 % and 85 %, yagni prompt 112 % and 71 %
 
   eval cases (seven, three runs each, same model with and without)
 
