@@ -5,6 +5,13 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-10-02
+
+### Changed
+
+- README and `/crewcut-gain` show the measure on two working models side by
+  side: Fable 5.1 (crewcut 0.4.0) and Sonnet 5.5 (crewcut 0.3.3).
+
 ## [0.4.0] - 2026-10-01
 
 ### Added
