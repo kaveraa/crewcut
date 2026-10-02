@@ -202,7 +202,7 @@ Settings live in `crewcut.json` next to your Claude settings (`~/.claude`, or
 `CLAUDE_CONFIG_DIR`): `{ "defaultLevel": "ultra", "subagents": true }`. The
 `CREWCUT_DEFAULT_MODE` environment variable wins over the file. With
 `subagents` on, every subagent Claude starts receives the ruleset of the
-current level, about 580 tokens each; switch it off to save them, or limit
+current level, about 650 tokens each; switch it off to save them, or limit
 it to some agent types with a regular expression, case-insensitive, on the
 agent type: `"subagentMatcher": "explore|general"` in the file, or the
 `CREWCUT_SUBAGENT_MATCHER` environment variable, which wins. A subagent
@@ -213,10 +213,14 @@ the rules.
 
 - Output: no preamble, no restating the request, no recap, no unrequested
   explanation. Code first.
-- Reading: only what the change touches; grep before cat; a line range before
-  a whole file; never re-read a file.
-- Writing: targeted edits, never a whole-file rewrite; no unrequested tests,
-  docs or refactors; one test run at the end.
+- Reading: grep for the symbols the change touches, then read only those
+  files, by line range; one grep beats three reads; never read a file twice;
+  never open a file to confirm what grep already showed.
+- Writing: targeted edits, never a whole-file rewrite; no unrequested docs or
+  refactors; one test run at the end.
+- Tests: none unless the task asks or an existing test file covers the
+  touched code, then extend that file; never create a test file on your own,
+  even when invited to add tests "if you normally would".
 - Tools: batch independent calls; never print large outputs; no subagent for
   what one read answers.
 

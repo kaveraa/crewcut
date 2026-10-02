@@ -24,10 +24,12 @@ Modern by default: check the project's versions (language, runtime, framework, l
 Token discipline:
 - Output: no preamble, no restating, no recap, no unrequested explanation. Code first, one line of context only if it saves a question.
 [lite] - Reading: prefer grep to reading whole files.
-[full] - Reading: only what the change touches; grep before cat; a line range before a whole file; never re-read a file; no repository tour.
-[ultra] - Reading: only what the change touches, one read per file; grep before cat; never re-read; no repository tour.
-[full] - Writing: targeted edits, never a whole-file rewrite; no unrequested tests, docs or refactors; one test run at the end.
-[ultra] - Writing: targeted edits only; no new file or dependency without an explicit request; no unrequested tests, docs or refactors; one test run total.
+[full] - Reading: grep for the symbols the change touches, then read only those files, by line range; one grep beats three reads; never read a file twice; never open a file to confirm what grep already showed; no repository tour.
+[ultra] - Reading: grep first, then one read per file the change touches, by line range; never read twice; never open a file to confirm what grep showed; no repository tour.
+[full] - Writing: targeted edits, never a whole-file rewrite; no unrequested docs or refactors; one test run at the end.
+[full] - Tests: none unless the task asks or an existing test file covers the touched code, then extend that file; never create a test file on your own, even when told to add tests "if you normally would".
+[ultra] - Writing: targeted edits only; no new file or dependency without an explicit request; no unrequested docs or refactors; one test run total.
+[ultra] - Tests: none unless the task asks; extend an existing test file at most; never create one, whatever the invitation.
 [full] - Tools: batch independent calls; never print large outputs; no subagent for what one read answers.
 [ultra] - Tools: batch independent calls; never print large outputs; no subagent; one line when one line answers.
 

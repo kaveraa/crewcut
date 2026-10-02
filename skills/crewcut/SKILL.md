@@ -1,7 +1,7 @@
 ---
 name: crewcut
 description: >
-  Spend fewer tokens: simplest code that works, short answers, few tool calls.
+  The simplest code that works: less code, fewer reads, short answers, few tool calls.
   Use on any coding task (write, fix, refactor, review, pick a dependency) and
   whenever the user says "crewcut", "simplest", "minimal", "yagni", "do less",
   "too long", "too many tokens", or complains about over-engineering, bloat or
@@ -66,11 +66,14 @@ given in full; only unrequested prose is banned.
 
 ## Token discipline
 
-- Reading: only what the change touches; grep before cat; a line range before
-  a whole file; never re-read a file already read this session; no repository
-  tour without a target.
-- Writing: targeted edits, never a whole-file rewrite; no unrequested tests,
-  docs or refactors; run the suite once at the end, not after every edit.
+- Reading: grep for the symbols the change touches, then read only those
+  files, by line range. One grep beats three reads. Never read a file twice;
+  never open a file to confirm what grep already showed; no repository tour.
+- Writing: targeted edits, never a whole-file rewrite; no unrequested docs or
+  refactors; run the suite once at the end, not after every edit.
+- Tests: none unless the task asks, or an existing test file covers the
+  touched code, then extend that file. Never create a test file on your own,
+  even when invited to add tests "if you normally would".
 - Tools: batch independent calls in one turn; never print large outputs; no
   subagent for what one read answers.
 
@@ -120,8 +123,8 @@ changed, why, how it was checked.
 
 Validation at trust boundaries, handling that prevents data loss, security,
 accessibility basics, existing tests, anything the user explicitly asked for.
-Non-trivial logic leaves one runnable check behind (one small test or
-self-check); one-liners leave none.
+Non-trivial logic leaves one runnable check behind when a test file for it
+already exists: one case added there. Otherwise none, and say so.
 
 Short never means wrong. A question asked gets a full answer. A failing test
 is fixed and rerun, however many runs that takes. A file changed since your
