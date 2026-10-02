@@ -1,5 +1,16 @@
 # Agentic benchmark
 
+Two harnesses live here.
+
+**The published measure** uses ponytail's own benchmark, unchanged except for a
+`crewcut` arm: same repository, tickets, scorer and controls, so the numbers
+read against ponytail's. Results and the exact procedure:
+[RESULTS.md](RESULTS.md). The chart in the README is drawn by `chart.mjs` from
+the means of a run.
+
+**`run.mjs`** is the lighter harness used for the pilot on a second repository
+(ixartz/Next-js-Boilerplate), described below.
+
 A real agent doing real work: one headless Claude Code session per (task,
 arm, run) on a fresh clone of a pinned public repository, scored on the diff
 it leaves behind. The baseline is the same agent with no plugin, so any
