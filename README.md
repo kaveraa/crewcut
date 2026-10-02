@@ -41,6 +41,9 @@ four runs per cell, 2026-10-02.
 | **crewcut** | **-8 %** | **+9 %** | **+2 %** | **-2 %** | **100 %** |
 | "YAGNI + one-liners" prompt | -31 % | -1 % | -12 % | -14 % | 100 % |
 
+Crewcut 0.5.1, re-measured on the Sonnet tier after the "build the ticket
+only" rule, crewcut arm only: LOC -20 %, tokens +7 %, cost 0 %, time -7 %.
+
 Each cell is that arm's mean over all cells as a percent of the no-plugin
 baseline, the same reading as the chart. Crewcut cuts lines on
 every repository and model measured and never drops a guard. The cut is

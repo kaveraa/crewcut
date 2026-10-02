@@ -213,6 +213,13 @@ What it says:
   turn, ruleset plus always-loaded descriptions, about 1k tokens on a 14k
   context; on this model and repository it is not behaviour the rules can
   change.
+- Re-measured with crewcut 0.5.1 ("build the ticket only": no optional
+  prop, state, mode or edge case the ticket did not name), crewcut arm only,
+  36 cells: lines -20 %, tokens +7 %, cost 0 %, time -7 %, 6.8 turns,
+  tests in 39 % of the cells, correct 100 %. The rule found its
+  target: star rating 59 lines to 45, dropzone 71 to 56, wizard 91 to 75,
+  color picker 24 to 21. The gap to the seven-word prompt (35 lines) is now
+  the accessibility and validation crewcut keeps on purpose.
 - Taken with the Haiku runs: the gain in lines is real on every model but
   shrinks as the model gets leaner on its own; the gain in tokens only shows
   where the plugin removes turns, which needs a repository big enough that
