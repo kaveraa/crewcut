@@ -8,11 +8,12 @@ import { readFileSync, writeFileSync } from 'node:fs';
 const [, , input, output] = process.argv;
 if (!input || !output) { console.error('usage: node chart.mjs <means.json> <out.svg>'); process.exit(2); }
 const { features } = JSON.parse(readFileSync(input, 'utf8'));
-const label = (t) => t.replace(/^tmpl-(fe|be)-/, '').replace('datepicker', 'date picker').replace('colorpicker', 'color picker')
-  .replace('command', 'command palette').replace('rating', 'star rating').replace('bulkdelete', 'bulk delete').replace('csv', 'CSV export');
-const order = ['tmpl-fe-datepicker', 'tmpl-fe-colorpicker', 'tmpl-fe-dropzone', 'tmpl-fe-wizard', 'tmpl-fe-rating', 'tmpl-fe-command',
-  'tmpl-be-archive', 'tmpl-be-search', 'tmpl-be-csv', 'tmpl-be-bulkdelete', 'tmpl-be-duplicate', 'tmpl-be-count'];
-const tasks = order.filter((t) => features.rows[t]);
+const names = { datepicker: 'date picker', colorpicker: 'color picker', command: 'command palette', rating: 'star rating', bulkdelete: 'bulk delete',
+  csv: 'CSV export', get: 'GET count', reset: 'reset count', log: 'increment log' };
+const label = (t) => { const k = t.replace(/^(tmpl|next)-(fe|be)-/, ''); return names[k] || k; };
+const order = ['datepicker', 'colorpicker', 'dropzone', 'wizard', 'rating', 'command',
+  'archive', 'search', 'csv', 'bulkdelete', 'duplicate', 'count', 'get', 'reset', 'pagination', 'log'];
+const tasks = Object.keys(features.rows).sort((a, b) => order.indexOf(a.replace(/^(tmpl|next)-(fe|be)-/, '')) - order.indexOf(b.replace(/^(tmpl|next)-(fe|be)-/, '')));
 const max = Math.max(...tasks.flatMap((t) => Object.values(features.rows[t]).map((a) => a.src_loc)));
 const scale = Math.ceil(max / 50) * 50;
 
