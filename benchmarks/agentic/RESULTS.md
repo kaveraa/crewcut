@@ -205,6 +205,14 @@ What it says:
   rules keep the tests and the guards, which on a strong model is where its
   lines go.
 - Safety on Sonnet: baseline 21/21, crewcut 21/21, yagni-oneliner 21/21. No arm dropped a guard.
+- Re-measured with crewcut 0.5.0 (reading and tests rules hardened), crewcut
+  arm only, 36 cells: lines -9 %, tokens +9 %, cost -1 %, 6.8 turns against
+  7.3, tests written in 33 % of the cells against 50 %. The remaining tests
+  are extensions of the template's existing `test_items.py`, which the rule
+  allows. The token overhead that stays is the plugin's fixed weight per
+  turn, ruleset plus always-loaded descriptions, about 1k tokens on a 14k
+  context; on this model and repository it is not behaviour the rules can
+  change.
 - Taken with the Haiku runs: the gain in lines is real on every model but
   shrinks as the model gets leaner on its own; the gain in tokens only shows
   where the plugin removes turns, which needs a repository big enough that
