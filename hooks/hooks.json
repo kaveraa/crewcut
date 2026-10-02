@@ -7,7 +7,8 @@
           {
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/crewcut.js\" session",
-            "timeout": 5
+            "timeout": 5,
+            "statusMessage": "crewcut: loading the ruleset"
           }
         ]
       }
@@ -18,7 +19,8 @@
           {
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/crewcut.js\" subagent",
-            "timeout": 5
+            "timeout": 5,
+            "statusMessage": "crewcut: briefing the subagent"
           }
         ]
       }
@@ -29,7 +31,8 @@
           {
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/crewcut.js\" prompt",
-            "timeout": 5
+            "timeout": 5,
+            "statusMessage": "crewcut: checking the level"
           }
         ]
       }

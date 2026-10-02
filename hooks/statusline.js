@@ -38,8 +38,18 @@ function level(env) {
   return 'full';
 }
 
+// 256-colour codes per level; NO_COLOR (https://no-color.org) switches them off.
+const COLOURS = { off: 245, lite: 114, full: 114, ultra: 214, review: 80 };
+const ESC = String.fromCharCode(27);
+
+function badge(name, env) {
+  const text = `crewcut: ${name}`;
+  if (env.NO_COLOR !== undefined && env.NO_COLOR !== '') return text;
+  return `${ESC}[38;5;${COLOURS[name]}m${text}${ESC}[0m`;
+}
+
 function render(input, env) {
-  const parts = [`crewcut: ${level(env)}`];
+  const parts = [badge(level(env), env)];
   const model = input && input.model && input.model.display_name;
   if (model) parts.push(String(model));
   const cwd = input && input.workspace && input.workspace.current_dir;

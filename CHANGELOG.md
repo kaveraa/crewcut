@@ -5,6 +5,29 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-01
+
+### Added
+
+- `/crewcut-debt`: read-only ledger of the `crewcut:` comments, one line per
+  corner cut, flagging those without a condition to revisit.
+- `/crewcut-gain`: the measured gain as a card, with the honest limit that no
+  per-repository saving can be computed.
+- `/crewcut uninstall`, and `node hooks/crewcut.js uninstall`: remove the
+  files the plugin keeps next to the Claude settings, and the `statusLine`
+  entry when it points at crewcut's own script.
+- `subagentMatcher` in `crewcut.json` and `CREWCUT_SUBAGENT_MATCHER`: inject
+  the rules only into subagents whose type matches a regular expression;
+  unknown types and broken patterns still receive the rules.
+- Status line colours per level, off with `NO_COLOR`.
+- Update and uninstall instructions in the README and the help card.
+
+### Changed
+
+- The hook answers after one second when stdin never closes instead of
+  waiting for the hook timeout.
+- Hook status messages while the hooks run.
+
 ## [0.3.3] - 2026-10-01
 
 ### Added

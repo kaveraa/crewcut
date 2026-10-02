@@ -14,6 +14,8 @@ const NUDGE_FILE = 'crewcut-nudged';
 const RULESET_FILE = path.join(__dirname, 'ruleset.md');
 const STATUSLINE_FILE = path.join(__dirname, 'statusline.js');
 const STATUSLINE_COPY = 'crewcut-statusline.js';
+const SETTINGS_FILE = 'settings.json';
+const STDIN_GRACE_MS = 1000; // never hang a session on a stdin that never closes
 const OFF_PHRASES = ['stop crewcut', 'normal mode'];
 const COMMAND = /^\/crewcut(?::crewcut)?(?:\s+(\S+)(?:\s+(\S+))?(?:\s.*)?)?$/;
 const READ_ONLY_SKILL = /^\/crewcut(?::crewcut)?-(review|audit)(?:\s.*)?$/;
@@ -40,6 +42,7 @@ function parseCommand(prompt) {
   if (first === 'subagents' && (second === 'on' || second === 'off')) {
     return { command: 'subagents', enabled: second === 'on' };
   }
+  if (first === 'uninstall' && !second) return { command: 'uninstall' };
   if (LEVELS.includes(first)) return { command: 'set', level: first };
   return { command: 'status' };
 }
@@ -92,6 +95,45 @@ function defaultLevel(env, dir) {
   if (LEVELS.includes(fromEnv)) return fromEnv;
   const fromFile = String(readConfig(dir).defaultLevel || '').trim().toLowerCase();
   return LEVELS.includes(fromFile) ? fromFile : DEFAULT_LEVEL;
+}
+
+// Regex that limits subagent injection to matching agent types; empty means all.
+function subagentMatcher(env, dir) {
+  const source = env.CREWCUT_SUBAGENT_MATCHER !== undefined
+    ? env.CREWCUT_SUBAGENT_MATCHER
+    : readConfig(dir).subagentMatcher;
+  if (typeof source !== 'string' || source.trim() === '') return null;
+  try {
+    return new RegExp(source, 'i');
+  } catch {
+    return null; // a broken pattern never silences the rules
+  }
+}
+
+// Removes everything the plugin wrote next to the Claude settings.
+function uninstall(dir) {
+  const removed = [];
+  for (const name of [LEVEL_FILE, NUDGE_FILE, STATUSLINE_COPY, CONFIG_FILE]) {
+    try {
+      fs.unlinkSync(path.join(dir, name));
+      removed.push(name);
+    } catch {
+      // not there: nothing to remove
+    }
+  }
+  try {
+    const file = path.join(dir, SETTINGS_FILE);
+    const settings = readJson(file);
+    const command = settings.statusLine && String(settings.statusLine.command || '');
+    if (command && command.includes(STATUSLINE_COPY)) {
+      delete settings.statusLine;
+      fs.writeFileSync(file, JSON.stringify(settings, null, 2) + '\n');
+      removed.push('statusLine in ' + SETTINGS_FILE);
+    }
+  } catch {
+    // unreadable settings: left alone
+  }
+  return removed;
 }
 
 function readLevel(dir) {
@@ -195,8 +237,11 @@ function onSession(input, env, dir) {
   return envelope('SessionStart', nudge ? `${rules}\n\n${nudge}` : rules);
 }
 
-function onSubagent(env, dir) {
+function onSubagent(input, env, dir) {
   if (readConfig(dir).subagents === false) return '';
+  const matcher = subagentMatcher(env, dir);
+  const agentType = typeof input.agent_type === 'string' ? input.agent_type.trim() : '';
+  if (matcher && agentType && !matcher.test(agentType)) return '';
   const level = readLevel(dir) || defaultLevel(env, dir);
   return envelope('SubagentStart', loadRuleset(level));
 }
@@ -217,6 +262,11 @@ function onPrompt(input, env, dir) {
     writeConfig(dir, { subagents: command.enabled });
     return envelope('UserPromptSubmit', `crewcut: subagents ${command.enabled ? 'on' : 'off'}`);
   }
+  if (command.command === 'uninstall') {
+    const removed = uninstall(dir);
+    const what = removed.length ? `removed ${removed.join(', ')}` : 'nothing to remove';
+    return envelope('UserPromptSubmit', `crewcut: ${what}. Tell the user to finish with /plugin remove crewcut.`);
+  }
   const level = command.command === 'review' ? REVIEW : command.level;
   writeLevel(dir, level);
   const rules = loadRuleset(level);
@@ -229,32 +279,46 @@ function run(mode, stdinText, env) {
   if (!input) return '';
   const dir = configDir(env);
   if (mode === 'session') return onSession(input, env, dir);
-  if (mode === 'subagent') return onSubagent(env, dir);
+  if (mode === 'subagent') return onSubagent(input, env, dir);
   if (mode === 'prompt') return onPrompt(input, env, dir);
   return '';
 }
 
 function main() {
+  if (process.argv[2] === 'uninstall') {
+    const removed = uninstall(configDir(process.env));
+    process.stdout.write((removed.length ? 'removed ' + removed.join(', ') : 'nothing to remove') + '\n');
+    return;
+  }
   let text = '';
+  let done = false;
+  const finish = (exitAfter) => {
+    if (done) return;
+    done = true;
+    const output = run(process.argv[2], text, process.env);
+    const after = exitAfter ? () => process.exit(0) : undefined;
+    if (!output) {
+      if (after) after();
+      return;
+    }
+    try {
+      process.stdout.write(output + '\n', after);
+    } catch {
+      if (after) after(); // closed stdout: nothing to do
+    }
+  };
   process.stdin.setEncoding('utf8');
   process.stdin.on('data', (chunk) => { text += chunk; });
-  process.stdin.on('error', () => {});
+  process.stdin.on('error', () => finish(true));
   process.stdout.on('error', () => {});
-  process.stdin.on('end', () => {
-    const output = run(process.argv[2], text, process.env);
-    if (output) {
-      try {
-        process.stdout.write(output + '\n');
-      } catch {
-        // closed stdout: nothing to do
-      }
-    }
-  });
+  process.stdin.on('end', () => finish(false));
+  // A shell wrapper can swallow the end of stdin; run with what arrived instead of hanging.
+  setTimeout(() => finish(true), STDIN_GRACE_MS).unref();
 }
 
 module.exports = {
   LEVELS, DEFAULT_LEVEL, parseCommand, renderRuleset, configDir,
-  readLevel, writeLevel, readConfig, writeConfig, defaultLevel, run,
+  readLevel, writeLevel, readConfig, writeConfig, defaultLevel, run, subagentMatcher, uninstall,
 };
 
 if (require.main === module) main();

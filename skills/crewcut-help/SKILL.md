@@ -23,7 +23,11 @@ Commands
   /crewcut subagents on|off  inject the rules into subagents (on by default)
   /crewcut-review [scope]    read-only review of a diff: what to cut
   /crewcut-audit [path]      read-only audit of a whole tree: what to cut
+  /crewcut-debt [path]       read-only ledger of the "crewcut:" corners cut
+  /crewcut-gain              what the plugin saves, as measured on its evals
   /crewcut-help              this card
+  /crewcut uninstall         remove the plugin's files next to your settings,
+                             then finish with /plugin remove crewcut
 
 Also: "stop crewcut" or "normal mode" as a whole message = /crewcut off.
 A resumed session and a context compaction keep the level you chose.
@@ -32,9 +36,15 @@ A resumed session and a context compaction keep the level you chose.
 
 Settings
   CREWCUT_DEFAULT_MODE       env var, wins over the config file
-  ~/.claude/crewcut.json     { "defaultLevel": "...", "subagents": true|false }
+  ~/.claude/crewcut.json     { "defaultLevel": "...", "subagents": true|false,
+                               "subagentMatcher": "<regex on the agent type>" }
+  CREWCUT_SUBAGENT_MATCHER   env var, wins over subagentMatcher in the file
   ~/.claude/crewcut-mode     the level of the current session (per user)
   statusline                 "statusLine": { "type": "command",
                              "command": "node \"~/.claude/crewcut-statusline.js\"" }
-                             (the hook keeps that copy up to date)
+                             (the hook keeps that copy up to date; NO_COLOR=1
+                             turns its colours off)
+
+Update
+  /plugin marketplace update crewcut  then  /reload-plugins
 ```

@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
-const { renderRuleset, parseCommand, LEVELS, readLevel, writeLevel, readConfig, writeConfig, run } = require('../hooks/crewcut.js');
+const { renderRuleset, parseCommand, LEVELS, readLevel, writeLevel, readConfig, writeConfig, run, subagentMatcher, uninstall } = require('../hooks/crewcut.js');
 
 const sample = [
   'HEAD {level}',
@@ -227,14 +227,14 @@ test('the script runs end to end as a child process', () => {
   const script = path.join(__dirname, '..', 'hooks', 'crewcut.js');
   const out = execFileSync(process.execPath, [script, 'prompt'], {
     input: promptInput('/crewcut ultra'),
-    env: { ...process.env, CLAUDE_CONFIG_DIR: dir },
+    env: { ...process.env, CLAUDE_CONFIG_DIR: dir, NO_COLOR: '1' },
     encoding: 'utf8',
   });
   assert.match(payload(out).additionalContext, /^crewcut: ultra/);
   assert.equal(levelIn(dir), 'ultra');
   const silent = execFileSync(process.execPath, [script, 'prompt'], {
     input: 'garbage',
-    env: { ...process.env, CLAUDE_CONFIG_DIR: dir },
+    env: { ...process.env, CLAUDE_CONFIG_DIR: dir, NO_COLOR: '1' },
     encoding: 'utf8',
   });
   assert.equal(silent, '');
@@ -516,14 +516,14 @@ test('statusline.js prints the level, the model and the directory', () => {
   fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'ultra\n');
   const script = path.join(__dirname, '..', 'hooks', 'statusline.js');
   const input = JSON.stringify({ model: { display_name: 'Opus' }, workspace: { current_dir: 'C:/work/shop' } });
-  const out = execFileSync(process.execPath, [script], { input, env: { ...process.env, CLAUDE_CONFIG_DIR: dir }, encoding: 'utf8' });
+  const out = execFileSync(process.execPath, [script], { input, env: { ...process.env, CLAUDE_CONFIG_DIR: dir, NO_COLOR: '1' }, encoding: 'utf8' });
   assert.equal(out.trim(), 'crewcut: ultra | Opus | shop');
 });
 
 test('statusline.js survives empty stdin and a missing level file', () => {
   const dir = tempDir();
   const script = path.join(__dirname, '..', 'hooks', 'statusline.js');
-  const out = execFileSync(process.execPath, [script], { input: '', env: { ...process.env, CLAUDE_CONFIG_DIR: dir }, encoding: 'utf8' });
+  const out = execFileSync(process.execPath, [script], { input: '', env: { ...process.env, CLAUDE_CONFIG_DIR: dir, NO_COLOR: '1' }, encoding: 'utf8' });
   assert.equal(out.trim(), 'crewcut: full');
 });
 
@@ -534,7 +534,7 @@ test('the copied statusline script is standalone and gets refreshed at startup',
   fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'lite\n');
   const out = execFileSync(process.execPath, [copy], {
     input: JSON.stringify({ model: { display_name: 'Opus' }, workspace: { current_dir: 'C:/work/shop' } }),
-    env: { ...process.env, CLAUDE_CONFIG_DIR: dir },
+    env: { ...process.env, CLAUDE_CONFIG_DIR: dir, NO_COLOR: '1' },
     encoding: 'utf8',
   });
   assert.equal(out.trim(), 'crewcut: lite | Opus | shop');
@@ -560,6 +560,102 @@ test('statusline.js accepts status JSON with a byte order mark', () => {
   fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'ultra\n');
   const script = path.join(__dirname, '..', 'hooks', 'statusline.js');
   const input = String.fromCharCode(0xfeff) + JSON.stringify({ model: { display_name: 'Opus' }, workspace: { current_dir: 'C:/work/shop' } });
-  const out = execFileSync(process.execPath, [script], { input, env: { ...process.env, CLAUDE_CONFIG_DIR: dir }, encoding: 'utf8' });
+  const out = execFileSync(process.execPath, [script], { input, env: { ...process.env, CLAUDE_CONFIG_DIR: dir, NO_COLOR: '1' }, encoding: 'utf8' });
   assert.equal(out.trim(), 'crewcut: ultra | Opus | shop');
+});
+
+test('statusline.js colours the level unless NO_COLOR is set', () => {
+  const dir = tempDir();
+  fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'ultra\n');
+  const script = path.join(__dirname, '..', 'hooks', 'statusline.js');
+  const env = { ...process.env, CLAUDE_CONFIG_DIR: dir };
+  delete env.NO_COLOR;
+  const coloured = execFileSync(process.execPath, [script], { input: '', env, encoding: 'utf8' });
+  const esc = String.fromCharCode(27);
+  assert.equal(coloured.trim(), `${esc}[38;5;214mcrewcut: ultra${esc}[0m`);
+  const plain = execFileSync(process.execPath, [script], { input: '', env: { ...env, NO_COLOR: '1' }, encoding: 'utf8' });
+  assert.equal(plain.trim(), 'crewcut: ultra');
+});
+
+test('parseCommand recognises uninstall and nothing that looks like it', () => {
+  assert.deepEqual(parseCommand('/crewcut uninstall'), { command: 'uninstall' });
+  assert.deepEqual(parseCommand('/crewcut:crewcut uninstall'), { command: 'uninstall' });
+  assert.deepEqual(parseCommand('/crewcut uninstall now'), { command: 'status' });
+  assert.equal(parseCommand('uninstall crewcut'), null);
+});
+
+test('uninstall removes the plugin state and only its own status line entry', () => {
+  const dir = tempDir();
+  run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir });
+  writeConfig(dir, { defaultLevel: 'lite' });
+  const settings = path.join(dir, 'settings.json');
+  const command = 'node "' + path.join(dir, 'crewcut-statusline.js') + '"';
+  fs.writeFileSync(settings, JSON.stringify({ theme: 'dark', statusLine: { type: 'command', command } }));
+  const removed = uninstall(dir);
+  assert.deepEqual(removed, ['crewcut-mode', 'crewcut-nudged', 'crewcut-statusline.js', 'crewcut.json', 'statusLine in settings.json']);
+  assert.deepEqual(JSON.parse(fs.readFileSync(settings, 'utf8')), { theme: 'dark' });
+  for (const name of ['crewcut-mode', 'crewcut-nudged', 'crewcut-statusline.js', 'crewcut.json']) {
+    assert.ok(!fs.existsSync(path.join(dir, name)), name);
+  }
+  assert.deepEqual(uninstall(dir), []);
+  const foreign = tempDir();
+  fs.writeFileSync(path.join(foreign, 'settings.json'), '{"statusLine":{"type":"command","command":"my-own-script"}}');
+  assert.deepEqual(uninstall(foreign), []);
+  assert.match(fs.readFileSync(path.join(foreign, 'settings.json'), 'utf8'), /my-own-script/);
+});
+
+test('prompt /crewcut uninstall cleans up and asks to finish with the plugin command', () => {
+  const dir = tempDir();
+  run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir });
+  const text = payload(run('prompt', promptInput('/crewcut uninstall'), { CLAUDE_CONFIG_DIR: dir })).additionalContext;
+  assert.match(text, /^crewcut: removed crewcut-mode/);
+  assert.match(text, /\/plugin remove crewcut/);
+  assert.ok(!fs.existsSync(path.join(dir, 'crewcut-mode')));
+});
+
+test('the uninstall command line removes the state and reports it', () => {
+  const dir = tempDir();
+  run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir });
+  const script = path.join(__dirname, '..', 'hooks', 'crewcut.js');
+  const out = execFileSync(process.execPath, [script, 'uninstall'], { env: { ...process.env, CLAUDE_CONFIG_DIR: dir }, encoding: 'utf8' });
+  assert.match(out, /^removed crewcut-mode/);
+  assert.ok(!fs.existsSync(path.join(dir, 'crewcut-nudged')));
+});
+
+test('subagentMatcher reads the environment first, then the config, and drops a broken pattern', () => {
+  const dir = tempDir();
+  assert.equal(subagentMatcher({}, dir), null);
+  writeConfig(dir, { subagentMatcher: 'reviewer' });
+  assert.ok(subagentMatcher({}, dir).test('crewcut-REVIEWER'));
+  assert.ok(!subagentMatcher({}, dir).test('Explore'));
+  assert.ok(subagentMatcher({ CREWCUT_SUBAGENT_MATCHER: '^explore$' }, dir).test('Explore'));
+  assert.equal(subagentMatcher({ CREWCUT_SUBAGENT_MATCHER: '(' }, dir), null);
+  assert.equal(subagentMatcher({ CREWCUT_SUBAGENT_MATCHER: '' }, dir), null);
+});
+
+test('subagent injects only into matching agent types when a matcher is set, and fails open', () => {
+  const dir = tempDir();
+  fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'full\n');
+  const env = { CLAUDE_CONFIG_DIR: dir, CREWCUT_SUBAGENT_MATCHER: 'explore|general' };
+  assert.match(payload(run('subagent', '{"agent_type":"Explore"}', env)).additionalContext, /CREWCUT ACTIVE/);
+  assert.equal(run('subagent', '{"agent_type":"crewcut-reviewer"}', env), '');
+  assert.match(payload(run('subagent', '{}', env)).additionalContext, /CREWCUT ACTIVE/);
+  assert.match(payload(run('subagent', '{"agent_type":"Plan"}', { ...env, CREWCUT_SUBAGENT_MATCHER: '[' })).additionalContext, /CREWCUT ACTIVE/);
+});
+
+test('the script answers within a second when stdin never closes', async () => {
+  const { spawn } = require('node:child_process');
+  const dir = tempDir();
+  const script = path.join(__dirname, '..', 'hooks', 'crewcut.js');
+  const started = Date.now();
+  const child = spawn(process.execPath, [script, 'session'], { env: { ...process.env, CLAUDE_CONFIG_DIR: dir } });
+  let stdout = '';
+  child.stdout.setEncoding('utf8');
+  child.stdout.on('data', (chunk) => { stdout += chunk; });
+  child.stdin.write('{"source":"startup"}');
+  const code = await new Promise((resolve) => child.on('close', resolve));
+  assert.equal(code, 0);
+  assert.ok(Date.now() - started < 4000, 'did not exit on its own');
+  assert.match(payload(stdout).additionalContext, /^CREWCUT ACTIVE/);
+  assert.equal(levelIn(dir), 'full');
 });
