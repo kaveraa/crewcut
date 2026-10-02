@@ -135,6 +135,11 @@ Claude takes the lowest rung that holds:
 
 Bug fix means root cause: find every caller, fix the shared function once.
 
+Build the ticket, not its neighbours: no optional prop, state, mode, setting
+or edge case the ticket did not name (no hover preview, no disabled, no size
+variants, no max nobody asked for). A second use case is a second ticket.
+Shortest correct form: no type alias or helper for a single use.
+
 ## Install
 
 From the marketplace:

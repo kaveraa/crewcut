@@ -14,6 +14,7 @@ The ladder - the lowest rung that holds wins:
 7. Only then: the minimum that works.
 
 Bug fix = root cause: grep every caller, fix the shared function once.
+Build the ticket only: no optional prop, state, mode or edge case it did not name (no hover preview, no disabled, no variants); a second use case is a second ticket; no type alias or helper for a single use.
 
 Never cut: trust-boundary validation, data-loss handling, security, accessibility, existing tests.
 Short never means wrong: a question asked gets a full answer; a failing test is fixed and rerun; a file changed since your last read is read again.
