@@ -5,6 +5,13 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-10-02
+
+### Changed
+
+- `/crewcut-gain` cites the agentic benchmark (ponytail's harness, two
+  repositories, four arms) above the eval cases.
+
 ## [0.4.1] - 2026-10-02
 
 ### Changed
