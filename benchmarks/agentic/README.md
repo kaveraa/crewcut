@@ -11,8 +11,12 @@ difference is the plugin's effect, not a chatty bare model.
 - Tasks: one-line tickets in `tasks.json`, written for this benchmark. Two
   kinds: `over-build room` (the agent chooses how much to build) and
   `surgical room` (one handler, little room, does minimizing drop a check).
-- Arms: `baseline` (no plugin), `crewcut` (this checkout as `--plugin-dir`),
-  `ponytail` (a checkout of DietrichGebert/ponytail as `--plugin-dir`).
+- Arms, the same controls as ponytail's agentic benchmark: `baseline` (no
+  plugin), `crewcut` (this checkout as `--plugin-dir`), `caveman` (a checkout
+  of JuliusBrussee/caveman as `--plugin-dir`: terse prose, builds normally,
+  so it tells brevity apart from the lazy-code discipline), `yagni` (the
+  seven-word prompt "Follow YAGNI principles, and prefer one-liner
+  solutions." appended to the system prompt, no plugin).
 - Isolation: `--setting-sources project,local` keeps the user's installed
   plugins out of every arm; exactly one plugin is loaded per arm. `--check`
   reads the session init event and prints which plugins each arm loaded.
@@ -25,9 +29,9 @@ difference is the plugin's effect, not a chatty bare model.
 
 ```
 git clone https://github.com/ixartz/Next-js-Boilerplate target && git -C target checkout <commit from tasks.json>
-git clone https://github.com/DietrichGebert/ponytail ponytail
-node run.mjs --target target --ponytail ponytail --check
-node run.mjs --target target --ponytail ponytail --runs 4 --model haiku -j 3
+git clone https://github.com/JuliusBrussee/caveman caveman
+node run.mjs --target target --caveman caveman --check
+node run.mjs --target target --caveman caveman --runs 4 --model haiku -j 3
 ```
 
 Raw results land in `results/` (ignored by git); the summary table prints at

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Agentic benchmark: one headless Claude Code session per (task, arm, run) on a
 // fresh clone of a pinned public repo, scored on the diff it leaves behind.
-// Usage: node run.mjs --target <pristine clone> [--ponytail <plugin dir>]
-//        [--arms baseline,crewcut,ponytail] [--tasks id,id] [--runs 2]
+// Usage: node run.mjs --target <pristine clone> [--caveman <plugin dir>]
+//        [--arms baseline,crewcut,caveman,yagni] [--tasks id,id] [--runs 2]
 //        [--model haiku] [-j 3] [--check]
 import { spawn, execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
@@ -14,9 +14,9 @@ const here = dirname(fileURLToPath(import.meta.url));
 const arg = (name, dflt) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : dflt; };
 const target = arg('--target');
 if (!target) { console.error('--target <pristine clone> is required'); process.exit(2); }
-const ponytail = arg('--ponytail');
+const caveman = arg('--caveman');
 const crewcut = join(here, '..', '..');
-const arms = arg('--arms', 'baseline,crewcut' + (ponytail ? ',ponytail' : '')).split(',');
+const arms = arg('--arms', 'baseline,crewcut,yagni' + (caveman ? ',caveman' : '')).split(',');
 const runs = Number(arg('--runs', 2));
 const model = arg('--model', 'haiku');
 const jobs = Number(arg('-j', 3));
@@ -24,7 +24,9 @@ const check = process.argv.includes('--check');
 const spec = JSON.parse(readFileSync(join(here, 'tasks.json'), 'utf8'));
 const wanted = arg('--tasks');
 const tasks = spec.tasks.filter((t) => !wanted || wanted.split(',').includes(t.id));
-const pluginDir = { baseline: null, crewcut, ponytail };
+const pluginDir = { baseline: null, crewcut, caveman, yagni: null };
+// The seven-word control from ponytail's benchmark (Colin Eberhardt, ponytail issue 126).
+const YAGNI = 'Follow YAGNI principles, and prefer one-liner solutions.';
 
 const sh = (cmd, args, cwd) => execFileSync(cmd, args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
 
@@ -33,6 +35,7 @@ function session(cwd, prompt, arm) {
     '--setting-sources', 'project,local', '--no-session-persistence', '--max-turns', '40',
     '--allowedTools', 'Read', 'Edit', 'Write', 'MultiEdit', 'Glob', 'Grep'];
   if (pluginDir[arm]) args.push('--plugin-dir', pluginDir[arm]);
+  if (arm === 'yagni') args.push('--append-system-prompt', JSON.stringify(YAGNI));
   return new Promise((resolve, reject) => {
     const child = spawn('claude', args, { cwd, shell: true, stdio: ['pipe', 'pipe', 'pipe'] });
     let out = '';
@@ -120,7 +123,7 @@ if (check) {
     const ws = mkdtempSync(join(tmpdir(), 'crewcut-bench-'));
     sh('git', ['clone', '-q', target, ws]);
     const { plugins } = await session(ws, 'Reply with the word ok.', arm);
-    console.log(`${arm}: plugins loaded = ${plugins.join(', ') || 'none'}`);
+    console.log(`${arm}: plugins loaded = ${plugins.join(', ') || 'none'}${arm === 'yagni' ? ', system prompt appended' : ''}`);
     rmSync(ws, { recursive: true, force: true });
   }
   process.exit(0);
