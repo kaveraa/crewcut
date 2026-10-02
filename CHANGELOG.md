@@ -5,6 +5,16 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-10-02
+
+### Changed
+
+- `/crewcut-gain` adds the Sonnet 5.5 row of the agentic benchmark (crewcut
+  0.5.1: LOC 80 %, tokens 107 %, cost 100 %, time 93 %, safe 21/21).
+- `benchmarks/agentic/ponytail-harness.patch`: the exact changes applied to
+  ponytail's harness for the measure (crewcut arm, current model ids,
+  snapshot retries, the Next.js task set).
+
 ## [0.5.1] - 2026-10-02
 
 ### Added
