@@ -14,6 +14,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
   not name; a second use case is a second ticket; shortest correct form, no
   type alias or helper for a single use. Found on the Sonnet tier, where
   crewcut shipped a hover preview and a disabled prop nobody asked for.
+- "Modern by default" names the compact forms to use when they stay clear:
+  ternary, optional chaining, destructuring, early return.
 
 ## [0.5.0] - 2026-10-02
 

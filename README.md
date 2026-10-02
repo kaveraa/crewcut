@@ -232,9 +232,10 @@ the rules.
 ## Modern by default
 
 Claude checks the versions the project runs, language, runtime, framework
-and libraries, and uses the idioms and features those versions allow, with
-the current best practice for that stack. Never an old pattern the version
-has replaced, never a feature the version lacks.
+and libraries, and uses the idioms those versions allow, including the
+compact forms when they stay clear: ternary, optional chaining,
+destructuring, early return. Never an old pattern the version has replaced,
+never a feature the version lacks.
 
 ## Plain text only
 

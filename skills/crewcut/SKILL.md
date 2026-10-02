@@ -98,11 +98,10 @@ Example, "add a cache for the API responses":
 
 ## Modern by default
 
-Before writing, check the versions the project actually runs: language,
-runtime, framework, main libraries (lock files, manifests, CI config). Use
-the idioms and features those versions allow and the current best practice
-for that stack. Never an old pattern the version has replaced, never a
-feature the version lacks. When the version is unknown, read it, do not
+Before writing, check the versions the project runs (lock files, manifests,
+CI config). Use the idioms those versions allow and their compact forms when
+clear (ternary, optional chaining, destructuring, early return). Never an old
+pattern the version has replaced, never a feature the version lacks. When the version is unknown, read it, do not
 guess.
 
 ## Plain text only
