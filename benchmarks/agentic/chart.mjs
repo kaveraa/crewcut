@@ -5,9 +5,9 @@
 // Usage: node chart.mjs results/<run>/means.json ../../assets/benchmark-cut.svg
 import { readFileSync, writeFileSync } from 'node:fs';
 
-const [, , input, output] = process.argv;
-if (!input || !output) { console.error('usage: node chart.mjs <means.json> <out.svg>'); process.exit(2); }
-const { features } = JSON.parse(readFileSync(input, 'utf8'));
+const [, , input, output, key = 'features'] = process.argv;
+if (!input || !output) { console.error('usage: node chart.mjs <means.json> <out.svg> [key]'); process.exit(2); }
+const features = JSON.parse(readFileSync(input, 'utf8'))[key];
 const names = { datepicker: 'date picker', colorpicker: 'color picker', command: 'command palette', rating: 'star rating', bulkdelete: 'bulk delete',
   csv: 'CSV export', get: 'GET count', reset: 'reset count', log: 'increment log' };
 const label = (t) => { const k = t.replace(/^(tmpl|next)-(fe|be)-/, ''); return names[k] || k; };
@@ -17,7 +17,7 @@ const tasks = Object.keys(features.rows).sort((a, b) => order.indexOf(a.replace(
 const max = Math.max(...tasks.flatMap((t) => Object.values(features.rows[t]).map((a) => a.src_loc)));
 const scale = Math.ceil(max / 50) * 50;
 
-const W = 920, x0 = 150, x1 = 760, rowH = 58, top = 56;
+const W = 920, x0 = 150, x1 = 700, rowH = 58, top = 56;
 const H = top + tasks.length * rowH + 40;
 const sx = (v) => x0 + (v / scale) * (x1 - x0);
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
@@ -56,13 +56,13 @@ tasks.forEach((t, i) => {
   if (sx(c) - x0 > 86) add(`<text x="${x0 + 8}" y="${y + 17}" class="onbar">crewcut ${Math.round(c)}</text>`);
   else add(`<text x="${sx(c) + 6}" y="${y - 9}" class="v">crewcut ${Math.round(c)}</text>`);
   add(`<text x="${(Math.max(sx(b), sx(c)) + 8).toFixed(1)}" y="${y + 17}" class="v">baseline ${Math.round(b)}</text>`);
-  add(`<text x="${x1 + 92}" y="${y + 17}" text-anchor="end" class="pct">${pct > 0 ? '+' : ''}${pct} %</text>`);
+  add(`<text x="${x1 + 150}" y="${y + 17}" text-anchor="end" class="pct">${pct > 0 ? '+' : ''}${pct} %</text>`);
   [['caveman', r.caveman.src_loc], ['yagni', r['yagni-oneliner'].src_loc]].forEach(([a, v], k) => {
     const yy = y + 34 + k * 7;
     add(`<line x1="${x0}" x2="${sx(v).toFixed(1)}" y1="${yy}" y2="${yy}" class="${a}" stroke-width="3" stroke-linecap="round"/>`);
   });
 });
-add(`<text x="${x1 + 92}" y="${H - 14}" text-anchor="end">crewcut against the baseline; a negative number is code not written</text>`);
+add(`<text x="${x1 + 150}" y="${H - 14}" text-anchor="end">crewcut against the baseline; a negative number is code not written</text>`);
 add('</svg>');
 writeFileSync(output, s);
 console.log(`wrote ${output} (${tasks.length} tasks, scale ${scale} lines)`);

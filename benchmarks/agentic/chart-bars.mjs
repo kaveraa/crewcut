@@ -39,7 +39,6 @@ add(`<style>
   text { font: 12px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: #52514e; }
   .ink { fill: #0b0b0b; } .grid { stroke: #8a8985; } .base { fill: #8a8985; }
   .crewcut { fill: #2a78d6; } .caveman { fill: #eb6834; } .yagni { fill: #1baf7a; } .bad { fill: #e34948; }
-  text.crewcut, text.caveman, text.yagni, text.base, text.bad { fill: inherit; }
   @media (prefers-color-scheme: dark) {
     text { fill: #c3c2b7; } .ink { fill: #ffffff; } .grid { stroke: #8a8985; } .base { fill: #8a8985; }
     .crewcut { fill: #3987e5; } .caveman { fill: #d95926; } .yagni { fill: #199e70; } .bad { fill: #e66767; }
@@ -59,7 +58,7 @@ metrics.forEach((m, i) => {
   arms.forEach((a, j) => {
     const p = pct[m.key][a], x = gx + j * (barW + gap), y = sy(p);
     add(`<rect x="${x}" y="${y.toFixed(1)}" width="${barW}" height="${(plotBottom - y).toFixed(1)}" rx="2" class="${cls[a]}"/>`);
-    add(`<text x="${x + barW / 2}" y="${(y - 5).toFixed(1)}" font-size="10" text-anchor="middle" class="${cls[a]}"${a === 'crewcut' ? ' font-weight="600"' : ''}>${p}%</text>`);
+    add(`<text x="${x + barW / 2}" y="${(y - 5).toFixed(1)}" font-size="10" text-anchor="middle" class="ink"${a === 'crewcut' ? ' font-weight="600"' : ''}>${p}%</text>`);
   });
   const cx = gx + (arms.length * (barW + gap) - gap) / 2;
   add(`<text x="${cx}" y="${plotBottom + 20}" font-size="13" text-anchor="middle">${m.key}</text>`);
@@ -71,7 +70,7 @@ add(`<text x="20" y="460" font-size="11" opacity="0.9">Safety, separate ${nSafeT
 let sx = 90;
 for (const a of arms) {
   const p = safePct[a], bad = p < 100;
-  add(`<text x="${sx}" y="478" class="${cls[a]}"${a === 'crewcut' ? ' font-weight="600"' : ''}>${a} ${bad ? `<tspan class="bad" font-weight="600">${p}%</tspan>` : `${p}%`}</text>`);
+  add(`<rect x="${sx}" y="468" width="10" height="10" rx="2" class="${cls[a]}"/><text x="${sx + 15}" y="478" class="ink"${a === 'crewcut' ? ' font-weight="600"' : ''}>${a} ${bad ? `<tspan class="bad" font-weight="600">${p}%</tspan>` : `${p}%`}</text>`);
   sx += 140 + (a.length > 9 ? 20 : 0);
 }
 add('</svg>');

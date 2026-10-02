@@ -26,8 +26,11 @@ four runs per cell, 2026-10-02.
 Crewcut is the only arm that writes less than the baseline, and it stays
 fully safe while doing it. The cut is biggest where a native element replaces
 a component (color picker -67 %, date picker -39 %, dropzone -35 %) and near
-zero on irreducible endpoints. Method, per-task tables, limits and how to
-reproduce: [benchmarks/agentic/RESULTS.md](benchmarks/agentic/RESULTS.md).
+zero on irreducible endpoints. On a second repository, Next-js-Boilerplate,
+whose baseline over-builds more, the same twelve-ticket protocol gives crewcut
+LOC 60 %, cost 87 % and time 80 % of the baseline, under it on eleven tickets
+out of twelve. Method, per-task tables, limits and how to reproduce:
+[benchmarks/agentic/RESULTS.md](benchmarks/agentic/RESULTS.md).
 
 ## Measured
 

@@ -1,6 +1,6 @@
 # Agentic benchmark, ponytail's harness, 2026-10-02
 
-Crewcut 0.4.1 measured with the benchmark ponytail published for itself
+Crewcut 0.4.1 measured on two repositories with the benchmark ponytail published for itself
 (`benchmarks/agentic/run.py` in DietrichGebert/ponytail, as of its commit of
 2026-10-02): the same twelve one-line tickets against
 [fastapi/full-stack-fastapi-template](https://github.com/fastapi/full-stack-fastapi-template)
@@ -90,6 +90,69 @@ Safe runs: baseline 28/28, caveman 28/28, crewcut 28/28, yagni-oneliner 27/28. T
 same failure ponytail reported for that control. Minimising did not cost
 crewcut a guard anywhere.
 
+## Second repository: Next-js-Boilerplate
+
+The same protocol on [ixartz/Next-js-Boilerplate](https://github.com/ixartz/Next-js-Boilerplate)
+at `6acd079` (Next 16, React 19, Drizzle, zod, react-hook-form), so the measure
+does not rest on one codebase. The six frontend prompts are ponytail's, word
+for word; the six backend prompts fit this repository's counter and portfolio
+instead of the template's items (GET count, reset count, CSV export, search,
+pagination, increment log). Twelve tickets, four arms, four runs, 192 cells,
+18.86 USD.
+
+<p align="center"><img src="../../assets/benchmark-agentic-nextjs.svg" width="860" alt="Each arm as a percent of the no-plugin baseline on Next-js-Boilerplate: crewcut LOC 60, tokens 90, cost 87, time 80; caveman 85, 116, 108, 96; yagni-oneliner 71, 77, 93, 77."></p>
+
+| vs no-plugin baseline | LOC | turns | cost | correct |
+|---|--:|--:|--:|--:|
+| caveman | -11 % | +7 % | +11 % | 100 % |
+| **crewcut** | -30 % | -3 % | -7 % | 100 % |
+| yagni-oneliner | -22 % | -15 % | -13 % | 100 % |
+
+Sum over the twelve tickets: baseline 2948 / caveman 2492 / crewcut 1756 / yagni-oneliner 2082. Crewcut is under the baseline on
+11 tickets out of twelve.
+
+<p align="center"><img src="../../assets/benchmark-cut-nextjs.svg" width="860" alt="Lines added per task on Next-js-Boilerplate, the baseline bar hatched, the crewcut bar solid on top."></p>
+
+Frontend:
+
+| task | baseline | caveman | **crewcut** | yagni-oneliner |
+|---|--:|--:|--:|--:|
+| date picker | 579 | 344 | **260** | 210 |
+| color picker | 301 | 368 | **125** | 240 |
+| dropzone | 521 | 474 | **316** | 371 |
+| wizard | 781 | 562 | **448** | 567 |
+| star rating | 234 | 228 | **175** | 203 |
+| command palette | 334 | 351 | **285** | 338 |
+
+Backend:
+
+| task | baseline | caveman | **crewcut** | yagni-oneliner |
+|---|--:|--:|--:|--:|
+| GET count | 18 | 16 | **15** | 15 |
+| reset count | 18 | 19 | **18** | 20 |
+| CSV export | 37 | 30 | **27** | 22 |
+| search | 50 | 34 | **25** | 35 |
+| pagination | 48 | 36 | **35** | 36 |
+| increment log | 27 | 30 | **26** | 25 |
+
+What it says:
+
+- This baseline over-builds far more than the FastAPI one (date picker 579
+  lines against 95, wizard 781 against 323), and every arm's margin grows with
+  it. The ranking does not change: crewcut cuts the most, the seven-word
+  prompt second, terse prose last.
+- Crewcut's cut is the largest on the five tickets with a native element or an
+  existing helper to reuse (color picker -58 %, date picker -55 %, search -50 %,
+  wizard -43 %, dropzone -39 %) and within a few lines of the baseline on the
+  two irreducible handlers (reset count +3 %, increment log -4 %).
+- Six `yagni-oneliner` cells hit the 300 s timeout (two color picker, two
+  command palette, one dropzone, one wizard) and four did on the FastAPI run.
+  A killed cell keeps the lines it had written but has no cost, which flatters
+  that arm on tokens and cost. No cell of the other arms was killed.
+- Every cell of every arm created a new frontend source file, the harness's
+  correctness gate for these open tasks. Safety is the same repository-free
+  tier as above.
+
 ## Reproduce
 
 ```
@@ -115,6 +178,10 @@ twenty of the 192 feature cells lost their base commit when six workers ran
 `git add` at once; we rebuilt those bases from the pinned template and
 re-scored offline with `--rescore`. Raw `results.json` and `summary.json` for
 both tiers are kept in `results/ponytail-harness-2026-10-02/`.
+
+For the second repository, twelve `next-*` tasks were added to the local copy
+of `tasks.py`, reading their fixture from `CREWCUT_NEXT_TMPL`; the six frontend
+prompts are the template's, the six backend prompts are listed above.
 
 Not run: ponytail's two LLM judges (over-engineering, completeness), which
 call the API directly and need an `ANTHROPIC_API_KEY`.
