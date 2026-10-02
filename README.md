@@ -15,7 +15,7 @@ same controls (caveman for terse prose, the seven-word YAGNI prompt) and seven
 safety tasks whose output is executed against adversarial input. Haiku 4.5,
 four runs per cell, 2026-10-02.
 
-<p align="center"><img src="assets/benchmark-cut.svg" width="860" alt="Lines added per task: the baseline bar hatched, the crewcut bar solid on top, caveman and the yagni prompt as thin lines. Crewcut is under the baseline on nine tickets out of twelve, by 67 percent on the color picker and 39 percent on the date picker."></p>
+<p align="center"><img src="assets/benchmark-agentic.svg" width="860" alt="Each arm as a percent of the no-plugin baseline across LOC, tokens, cost and time (Haiku 4.5). Crewcut is the only arm under 100 percent on every metric: LOC 86, tokens 97, cost 96, time 93. Caveman and the yagni prompt rise above 100 on LOC and cost. Safety: baseline, caveman and crewcut 100 percent, yagni-oneliner 96."></p>
 
 | vs no-plugin baseline | LOC | turns | cost | correct | safe |
 |---|--:|--:|--:|--:|--:|

@@ -24,6 +24,8 @@ through `--plugin-dir` like the other plugin arms.
 
 ## Twelve features, lines added (mean of 4 runs)
 
+<p align="center"><img src="../../assets/benchmark-cut.svg" width="860" alt="Lines added per task: the baseline bar hatched, the crewcut bar solid on top, caveman and the yagni prompt as thin lines."></p>
+
 | vs no-plugin baseline | LOC | turns | cost | correct | safe |
 |---|--:|--:|--:|--:|--:|
 | caveman | +12 % | +5 % | +8 % | 96 % | 100 % |
