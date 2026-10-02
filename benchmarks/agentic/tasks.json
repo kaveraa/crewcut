@@ -1,0 +1,21 @@
+{
+  "repo": "https://github.com/ixartz/Next-js-Boilerplate",
+  "commit": "6acd079673a4eaaf7df6875d8025d2bec1240985",
+  "tasks": [
+    {
+      "id": "count-date",
+      "kind": "over-build room",
+      "ticket": "On the counter page, let the visitor choose the day the increment should be recorded for. The form must send that day to the API together with the increment, and the API must validate it."
+    },
+    {
+      "id": "count-get",
+      "kind": "surgical room",
+      "ticket": "Add a GET handler to /api/counter that returns the current count as JSON, using the same x-e2e-random-id header convention as the PUT handler."
+    },
+    {
+      "id": "count-screenshot",
+      "kind": "over-build room",
+      "ticket": "Let the visitor attach a screenshot (PNG or JPEG, 2 MB max) to the counter form. The file is sent with the increment request and the API rejects anything else."
+    }
+  ]
+}

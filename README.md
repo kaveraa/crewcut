@@ -6,6 +6,32 @@ Short hair, short code. A Claude Code plugin that spends fewer tokens:
 the simplest code that works, short answers, few tool calls, and no cut on
 safety.
 
+## Agentic benchmark
+
+Crewcut run through the benchmark ponytail published for itself: twelve
+one-line tickets against a real FastAPI + React repository, a headless Claude
+Code session per cell, scored on the `git diff` it leaves behind, with the
+same controls (caveman for terse prose, the seven-word YAGNI prompt) and seven
+safety tasks whose output is executed against adversarial input. Haiku 4.5,
+four runs per cell, 2026-10-02.
+
+<p align="center"><img src="assets/benchmark-agentic.svg" width="860" alt="Each arm as a percent of the no-plugin baseline across LOC, tokens, cost and time (Haiku 4.5). Crewcut is the only arm under 100 percent on every metric: LOC 86, tokens 97, cost 96, time 93. Caveman and the yagni prompt rise above 100 on LOC and cost. Safety: baseline, caveman and crewcut 100 percent, yagni-oneliner 96."></p>
+
+| vs no-plugin baseline | LOC | turns | cost | correct | safe |
+|---|--:|--:|--:|--:|--:|
+| **crewcut** | **-11 %** | +3 % | -3 % | 98 % | **100 %** |
+| caveman | +12 % | +5 % | +8 % | 96 % | 100 % |
+| yagni-oneliner | +11 % | -8 % | +6 % | 100 % | 96 % |
+
+Crewcut is the only arm that writes less than the baseline, and it stays
+fully safe while doing it. The cut is biggest where a native element replaces
+a component (color picker -67 %, date picker -39 %, dropzone -35 %) and near
+zero on irreducible endpoints. On a second repository, Next-js-Boilerplate,
+whose baseline over-builds more, the same twelve-ticket protocol gives crewcut
+LOC 60 %, cost 87 % and time 80 % of the baseline, under it on eleven tickets
+out of twelve. Method, per-task tables, limits and how to reproduce:
+[benchmarks/agentic/RESULTS.md](benchmarks/agentic/RESULTS.md).
+
 ## Measured
 
 Two measures of the same seven cases, three runs each, with and without

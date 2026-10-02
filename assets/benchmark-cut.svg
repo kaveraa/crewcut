@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 792" width="920" height="792" role="img" aria-label="Lines added per task: the baseline bar hatched, the crewcut bar solid, caveman and the yagni prompt as thin lines">
+<title>Lines added per task, Claude Code on Haiku 4.5, four runs per cell</title>
+<style>
+  text { font: 12px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: #52514e; }
+  .t { fill: #0b0b0b; font-weight: 600; font-size: 13px; }
+  .v { fill: #0b0b0b; font-variant-numeric: tabular-nums; }
+  .pct { fill: #0b0b0b; font-weight: 700; font-size: 15px; }
+  .hatch { stroke: #8a8985; }
+  .frame { stroke: #8a8985; fill: none; }
+  .cut { stroke: #0b0b0b; }
+  .crewcut { fill: #2a78d6; } .caveman { stroke: #eb6834; } .yagni { stroke: #1baf7a; }
+  .onbar { fill: #ffffff; font-weight: 600; }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #c3c2b7; } .t, .v, .pct { fill: #ffffff; }
+    .cut { stroke: #ffffff; } .crewcut { fill: #3987e5; } .caveman { stroke: #d95926; } .yagni { stroke: #199e70; }
+  }
+</style>
+<defs><pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line class="hatch" x1="0" y1="0" x2="0" y2="8" stroke-width="2"/></pattern></defs>
+<text x="150" y="22" class="t">Lines added per task, mean of 4 runs</text>
+<text x="150" y="40">hatched: what the baseline wrote and crewcut did not. Thin lines: caveman (orange) and the yagni prompt (green).</text>
+<text x="138" y="73" text-anchor="end" class="t">date picker</text>
+<rect x="150" y="56" width="116.4" height="26" rx="5" fill="url(#hatch)"/>
+<rect x="150" y="56" width="116.4" height="26" rx="5" class="frame"/>
+<rect x="150" y="56" width="71.5" height="26" rx="5" class="crewcut"/>
+<line x1="221.5" x2="221.5" y1="50" y2="88" class="cut" stroke-width="2" stroke-dasharray="3 3"/>
+<text x="227.5" y="47" class="v">crewcut 59</text>
+<text x="274.4" y="73" class="v">baseline 95</text>
+<text x="850" y="73" text-anchor="end" class="pct">-39 %</text>
+<line x1="150" x2="412.5" y1="90" y2="90" class="caveman" stroke-width="3" stroke-linecap="round"/>
+<line x1="150" x2="354.7" y1="97" y2="97" class="yagni" stroke-width="3" stroke-linecap="round"/>
+<text x="138" y="131" text-anchor="end" class="t">color picker</text>
+<rect x="150" y="114" width="87.7" height="26" rx="5" fill="url(#hatch)"/>
+<rect x="150" y="114" width="87.7" height="26" rx="5" class="frame"/>
+<rect x="150" y="114" width="29.0" height="26" rx="5" class="crewcut"/>
+<line x1="179.0" x2="179.0" y1="108" y2="146" class="cut" stroke-width="2" stroke-dasharray="3 3"/>
+<text x="185.02777777777777" y="105" class="v">crewcut 24</text>
+<text x="245.7" y="131" class="v">baseline 72</text>
+<text x="850" y="131" text-anchor="end" class="pct">-67 %</text>
+<line x1="150" x2="274.7" y1="148" y2="148" class="caveman" stroke-width="3" stroke-linecap="round"/>
+<line x1="150" x2="350.4" y1="155" y2="155" class="yagni" stroke-width="3" stroke-linecap="round"/>
+<text x="138" y="189" text-anchor="end" class="t">dropzone</text>
+<rect x="150" y="172" width="325.4" height="26" rx="5" fill="url(#hatch)"/>
+<rect x="150" y="172" width="325.4" height="26" rx="5" class="frame"/>
+<rect x="150" y="172" width="211.1" height="26" rx="5" class="crewcut"/>
+<line x1="361.1" x2="361.1" y1="166" y2="204" class="cut" stroke-width="2" stroke-dasharray="3 3"/>
+<text x="158" y="189" class="onbar">crewcut 173</text>
+<text x="483.4" y="189" class="v">baseline 266</text>
+<text x="850" y="189" text-anchor="end" class="pct">-35 %</text>
+<line x1="150" x2="421.3" y1="206" y2="206" class="caveman" stroke-width="3" stroke-linecap="round"/>
+<line x1="150" x2="372.1" y1="213" y2="213" class="yagni" stroke-width="3" stroke-linecap="round"/>
+<text x="138" y="247" text-anchor="end" class="t">wizard</text>
+<rect x="150" y="230" width="394.8" height="26" rx="5" fill="url(#hatch)"/>
+<rect x="150" y="230" width="394.8" height="26" rx="5" class="frame"/>
+<rect x="150" y="230" width="364.8" height="26" rx="5" class="crewcut"/>
+<line x1="514.8" x2="514.8" y1="224" y2="262" class="cut" stroke-width="2" stroke-dasharray="3 3"/>
+<text x="158" y="247" class="onbar">crewcut 299</text>
+<text x="552.8" y="247" class="v">baseline 323</text>
+<text x="850" y="247" text-anchor="end" class="pct">-8 %</text>
+<line x1="150" x2="378.3" y1="264" y2="264" class="caveman" stroke-width="3" stroke-linecap="round"/>
+<line x1="150" x2="656.0" y1="271" y2="271" class="yagni" stroke-width="3" stroke-linecap="round"/>
+<text x="138" y="305" text-anchor="end" class="t">star rating</text>
+<rect x="150" y="288" width="121.3" height="26" rx="5" fill="url(#hatch)"/>
+<rect x="150" y="288" width="121.3" height="26" rx="5" class="frame"/>
+<rect x="150" y="288" width="106.3" height="26" rx="5" class="crewcut"/>
+<line x1="256.3" x2="256.3" y1="282" y2="320" class="cut" stroke-width="2" stroke-dasharray="3 3"/>
+<text x="158" y="305" class="onbar">crewcut 87</text>
+<text x="279.3" y="305" class="v">baseline 99</text>
+<text x="850" y="305" text-anchor="end" class="pct">-12 %</text>
+<line x1="150" x2="258.2" y1="322" y2="322" class="caveman" stroke-width="3" stroke-linecap="round"/>
+<line x1="150" x2="234.0" y1="329" y2="329" class="yagni" stroke-width="3" stroke-linecap="round"/>
+<text x="138" y="363" text-anchor="end" class="t">command palette</text>
+<rect x="150" y="346" width="233.8" height="26" rx="5" fill="url(#hatch)"/>
+<rect x="150" y="346" width="233.8" height="26" rx="5" class="frame"/>
+<rect x="150" y="346" width="294.3" height="26" rx="5" class="crewcut"/>
+<line x1="444.3" x2="444.3" y1="340" y2="378" class="cut" stroke-width="2" stroke-dasharray="3 3"/>
+<text x="158" y="363" class="onbar">crewcut 241</text>
+<text x="452.3" y="363" class="v">baseline 191</text>
+<text x="850" y="363" text-anchor="end" class="pct">+26 %</text>
+<line x1="150" x2="501.4" y1="380" y2="380" class="caveman" stroke-width="3" stroke-linecap="round"/>
+<line x1="150" x2="444.6" y1="387" y2="387" class="yagni" stroke-width="3" stroke-linecap="round"/>
+<text x="138" y="421" text-anchor="end" class="t">archive</text>
+<rect x="150" y="404" width="207.2" height="26" rx="5" fill="url(#hatch)"/>
+<rect x="150" y="404" width="207.2" height="26" rx="5" class="frame"/>
+<rect x="150" y="404" width="171.7" height="26" rx="5" class="crewcut"/>
+<line x1="321.7" x2="321.7" y1="398" y2="436" class="cut" stroke-width="2" stroke-dasharray="3 3"/>
+<text x="158" y="421" class="onbar">crewcut 141</text>
+<text x="365.2" y="421" class="v">baseline 170</text>
+<text x="850" y="421" text-anchor="end" class="pct">-17 %</text>
+<line x1="150" x2="349.8" y1="438" y2="438" class="caveman" stroke-width="3" stroke-linecap="round"/>
+<line x1="150" x2="353.8" y1="445" y2="445" class="yagni" stroke-width="3" stroke-linecap="round"/>
+<text x="138" y="479" text-anchor="end" class="t">search</text>
+<rect x="150" y="462" width="51.0" height="26" rx="5" fill="url(#hatch)"/>
+<rect x="150" y="462" width="51.0" height="26" rx="5" class="frame"/>
+<rect x="150" y="462" width="56.8" height="26" rx="5" class="crewcut"/>
+<line x1="206.8" x2="206.8" y1="456" y2="494" class="cut" stroke-width="2" stroke-dasharray="3 3"/>
+<text x="212.83333333333334" y="453" class="v">crewcut 47</text>
+<text x="214.8" y="479" class="v">baseline 42</text>
+<text x="850" y="479" text-anchor="end" class="pct">+11 %</text>
+<line x1="150" x2="195.2" y1="496" y2="496" class="caveman" stroke-width="3" stroke-linecap="round"/>
+<line x1="150" x2="183.0" y1="503" y2="503" class="yagni" stroke-width="3" stroke-linecap="round"/>
+<text x="138" y="537" text-anchor="end" class="t">CSV export</text>
+<rect x="150" y="520" width="38.8" height="26" rx="5" fill="url(#hatch)"/>
+<rect x="150" y="520" width="38.8" height="26" rx="5" class="frame"/>
+<rect x="150" y="520" width="48.3" height="26" rx="5" class="crewcut"/>
+<line x1="198.3" x2="198.3" y1="514" y2="552" class="cut" stroke-width="2" stroke-dasharray="3 3"/>
+<text x="204.27777777777777" y="511" class="v">crewcut 40</text>
+<text x="206.3" y="537" class="v">baseline 32</text>
+<text x="850" y="537" text-anchor="end" class="pct">+24 %</text>
+<line x1="150" x2="196.8" y1="554" y2="554" class="caveman" stroke-width="3" stroke-linecap="round"/>
+<line x1="150" x2="192.2" y1="561" y2="561" class="yagni" stroke-width="3" stroke-linecap="round"/>
+<text x="138" y="595" text-anchor="end" class="t">bulk delete</text>
+<rect x="150" y="578" width="33.9" height="26" rx="5" fill="url(#hatch)"/>
+<rect x="150" y="578" width="33.9" height="26" rx="5" class="frame"/>
+<rect x="150" y="578" width="31.8" height="26" rx="5" class="crewcut"/>
+<line x1="181.8" x2="181.8" y1="572" y2="610" class="cut" stroke-width="2" stroke-dasharray="3 3"/>
+<text x="187.77777777777777" y="569" class="v">crewcut 26</text>
+<text x="191.9" y="595" class="v">baseline 28</text>
+<text x="850" y="595" text-anchor="end" class="pct">-6 %</text>
+<line x1="150" x2="184.5" y1="612" y2="612" class="caveman" stroke-width="3" stroke-linecap="round"/>
+<line x1="150" x2="179.9" y1="619" y2="619" class="yagni" stroke-width="3" stroke-linecap="round"/>
+<text x="138" y="653" text-anchor="end" class="t">duplicate</text>
+<rect x="150" y="636" width="29.0" height="26" rx="5" fill="url(#hatch)"/>
+<rect x="150" y="636" width="29.0" height="26" rx="5" class="frame"/>
+<rect x="150" y="636" width="28.4" height="26" rx="5" class="crewcut"/>
+<line x1="178.4" x2="178.4" y1="630" y2="668" class="cut" stroke-width="2" stroke-dasharray="3 3"/>
+<text x="184.41666666666666" y="627" class="v">crewcut 23</text>
+<text x="187.0" y="653" class="v">baseline 24</text>
+<text x="850" y="653" text-anchor="end" class="pct">-2 %</text>
+<line x1="150" x2="178.1" y1="670" y2="670" class="caveman" stroke-width="3" stroke-linecap="round"/>
+<line x1="150" x2="176.3" y1="677" y2="677" class="yagni" stroke-width="3" stroke-linecap="round"/>
+<text x="138" y="711" text-anchor="end" class="t">count</text>
+<rect x="150" y="694" width="25.1" height="26" rx="5" fill="url(#hatch)"/>
+<rect x="150" y="694" width="25.1" height="26" rx="5" class="frame"/>
+<rect x="150" y="694" width="22.6" height="26" rx="5" class="crewcut"/>
+<line x1="172.6" x2="172.6" y1="688" y2="726" class="cut" stroke-width="2" stroke-dasharray="3 3"/>
+<text x="178.61111111111111" y="685" class="v">crewcut 19</text>
+<text x="183.1" y="711" class="v">baseline 21</text>
+<text x="850" y="711" text-anchor="end" class="pct">-10 %</text>
+<line x1="150" x2="172.0" y1="728" y2="728" class="caveman" stroke-width="3" stroke-linecap="round"/>
+<line x1="150" x2="171.1" y1="735" y2="735" class="yagni" stroke-width="3" stroke-linecap="round"/>
+<text x="850" y="778" text-anchor="end">crewcut against the baseline; a negative number is code not written</text>
+</svg>
