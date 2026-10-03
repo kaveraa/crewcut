@@ -89,6 +89,8 @@ coût : la 0.6.0 l'a réduit d'un sixième et Sonnet est passé de +7 % à -5 %
 en tokens.
 Méthode, tableaux par tâche, limites et reproduction :
 [benchmarks/agentic/RESULTS.md](benchmarks/agentic/RESULTS.md) (en anglais).
+Cinq de ces cellules avec le diff et la réponse de chaque bras, tels quels :
+[examples/](examples/) (en anglais).
 
 ## Mesuré
 
