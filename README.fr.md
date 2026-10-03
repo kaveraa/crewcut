@@ -48,7 +48,9 @@ ticket only", bras crewcut seul : lignes -20 %, tokens +7 %, coût 0 %,
 temps -7 %. Crewcut 0.6.0, avec un ruleset relu à chaque tour réduit
 d'environ 695 à 580 tokens : lignes -15 %, tokens -5 %, coût -15 %,
 temps -6 %, sûr 21/21. Sur Sonnet, crewcut consomme désormais moins de tokens
-que la baseline.
+que la baseline. Crewcut 0.6.3, six runs par ticket : lignes -13 %, tokens
+0 %, coût -11 %, temps 0 % ; deux tirages de trois runs ont donné -10 % et
+-17 % de lignes, ce qui est la bande de bruit sur ce palier.
 
 **Opus 5.5** (même template et mêmes tickets, trois bras, trois runs, crewcut 0.5.3) :
 
@@ -139,12 +141,16 @@ Remesuré avec crewcut 0.6.0 (2026-10-03, Claude Code 2.1.288) : score 0,95
 contre 0,83, tours 5,3 contre 5,9, coût par run 0,107 contre 0,099 USD ;
 `explain-bug` 1,00 contre 0,83. Remesuré avec crewcut 0.6.1 : score 1,00 sur
 chaque cas contre 0,84 sans, tours 5,0 contre 5,7, coût par run 0,106 contre
-0,100 USD.
+0,100 USD. Avec crewcut 0.6.3 et les graders de `date-picker` refaits (plus
+bas) : 0,98 contre 0,83, tours 5,2 contre 5,9, coût par run 0,101 contre
+0,099 USD ; `date-picker` 0,86 dans les deux bras.
 
 Crewcut 0.6.1 sur les deux autres modèles (2026-10-03, Claude Code
 2.1.288) : Fable 5.1 obtient 0,96 contre 0,81, en 6,2 tours contre 9,0, à
 0,309 contre 0,404 USD par run (-24 %) ; Sonnet 5.5 obtient 0,97 contre
-0,89, en 5,7 tours contre 6,3, à 0,066 contre 0,062 USD (+6 %). Les runs de
+0,89, en 5,7 tours contre 6,3, à 0,066 contre 0,062 USD (+6 %). Sonnet avec
+crewcut 0.6.3 : 0,96 contre 0,88, 5,4 tours contre 6,0, 0,061 contre
+0,062 USD. Les runs de
 Fable coûtent environ trois fois la mesure 0.4.0 dans les deux bras, seul
 le rapport se compare.
 
@@ -185,8 +191,19 @@ Ce que ça dit :
   depuis que la règle de sortie interdit de recoller le code écrit et
   n'autorise qu'une mise en garde. En 0.6.1, `url-parse` passe sur Sonnet et
   2 runs sur 3 sur Fable, `date-picker` passe sur Fable ; sur Sonnet,
-  `date-picker` échoue encore au grader de réponse courte 3 runs sur 3, dans
-  les deux bras.
+  `date-picker` échouait dans les deux bras, et les réponses disaient
+  pourquoi : un attribut `max` à la date du jour que personne n'avait
+  demandé, puis deux mises en garde à son sujet. La 0.6.3 ajoute "no
+  unasked max or min" à la règle du ticket et "in one sentence, no bullet
+  list" à celle de la mise en garde, et sépare le grader : une regex vérifie
+  le fichier (`max`, `min`, `pattern`, `placeholder` ; elle passe 3 runs sur
+  3 dans les deux bras sur Sonnet et Opus), et le juge de réponse courte ne
+  mesure plus que le message : 8 lignes au plus, pas de puces, deux phrases
+  de mise en garde au plus. Ce dernier critère échoue encore dans les deux
+  bras sur les deux modèles : les modèles disent ce qu'ils n'ont pas vérifié
+  et demandent si le champ doit être obligatoire, trois phrases là où la
+  règle en demande une. C'est la cible ouverte, et elle coûte autant avec
+  que sans le plugin.
 
 Chaque cas note la justesse autant que la taille : une réponse plus courte
 mais fausse vaut zéro. `keep-validation` demande de simplifier un handler à
@@ -300,7 +317,7 @@ les nomme les réintègre.
 
 - Sortie : pas de préambule, pas de reformulation de la demande, pas de
   récapitulatif, pas d'explication non demandée. Ne jamais recoller le code
-  qui vient d'être écrit ; une mise en garde au plus.
+  qui vient d'être écrit ; une mise en garde au plus, sans liste à puces.
 - Lecture : grep sur les symboles que le changement touche, puis lire
   seulement ces fichiers, par plage de lignes ; un grep vaut mieux que trois
   lectures ; ne jamais relire un fichier ; ne jamais ouvrir un fichier pour

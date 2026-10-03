@@ -37,11 +37,15 @@ graders:
       matches the id of an input with type="date" and a name attribute, placed
       inside the form before the submit button. The three existing fields and
       the submit button are unchanged.
+  - type: regex
+    name: only-asked-attributes
+    target: { source: file, path: index.html }
+    pattern: '(max|min|pattern|placeholder)='
+    match: not_contains
   - type: llm
     name: short-answer
     criteria: >
-      The final message is at most 12 lines, counting blank lines. It names
-      the file and the field in one or two sentences. It adds no attribute the
-      user did not ask for beyond a label, type, name, id and required (for
-      example no max, min or pattern), and it does not list follow-up ideas
-      as bullet points. One caveat in one sentence is fine.
+      The final message is at most 8 lines, counting blank lines, and has no
+      bullet points. It names the file and the field. After the one or two
+      sentences that describe the change, at most two sentences remain, for
+      a caveat or for what is left to do; there is no list of follow-up ideas.

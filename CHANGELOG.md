@@ -5,6 +5,22 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.6.3] - 2026-10-03
+
+### Changed
+
+- Build the ticket only: "no unasked max or min" joins the examples, after
+  Sonnet set a `max` on a date field nobody asked for, with and without the
+  plugin. Output: one caveat at most, in one sentence, no bullet list.
+  Ruleset at `full` stays under 600 tokens.
+- `date-picker` eval: a regex grader checks the file for `max`, `min`,
+  `pattern` or `placeholder`; the short-answer judge only measures the
+  message (8 lines, no bullets, two sentences of caveat at most).
+- Measures on 0.6.3: Sonnet agentic tier over six runs per ticket, lines
+  -13 %, tokens 0 %, cost -11 %; evals Sonnet 0.96 against 0.88, Opus 0.98
+  against 0.83. The short-answer criterion on `date-picker` fails in both
+  arms on both models and is the open target.
+
 ## [0.6.2] - 2026-10-03
 
 ### Changed
