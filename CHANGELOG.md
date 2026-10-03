@@ -5,6 +5,14 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.6.4] - 2026-10-03
+
+### Changed
+
+- Measure on Fable 5.1 with crewcut 0.6.3, 42 clean cells: score 0.97
+  against 0.82, turns -29 %, cost -22 %, `date-picker` 3/3 with the plugin
+  against 0/3; README, README.fr and the gain card updated.
+
 ## [0.6.3] - 2026-10-03
 
 ### Changed
