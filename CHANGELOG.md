@@ -5,6 +5,15 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.5.3] - 2026-10-03
+
+### Changed
+
+- README and `/crewcut-gain` add the eval measure on Opus 5.5 (crewcut
+  0.5.2): score 0.91 against 0.84, turns -17 %, cost +11 %; `shared-bug`
+  fixed at the root 3/3 against 0/3, `explain-bug` loses the fix hint with
+  the plugin.
+
 ## [0.5.2] - 2026-10-02
 
 ### Changed
