@@ -60,6 +60,13 @@ que la baseline.
 Crewcut 0.6.1 sur le palier Opus, bras crewcut seul : lignes -68 %, tokens
 -39 %, coût -41 %, temps -45 %, sûr 21/21, comme la 0.5.3 au bruit près.
 
+**Opus 5.5 sur Next-js-Boilerplate** (mêmes tickets que plus haut, trois bras, trois runs, crewcut 0.6.1) :
+
+| vs baseline sans plugin | lignes | tokens | coût | temps | sûr |
+|---|--:|--:|--:|--:|--:|
+| **crewcut** | **-82 %** | **-55 %** | **-60 %** | **-67 %** | **100 %** |
+| prompt "YAGNI + one-liners" | -88 % | -62 % | -66 % | -72 % | 100 % |
+
 Chaque case est la moyenne du bras sur toutes les cellules, en pourcentage
 de la baseline sans plugin, la même lecture que le graphique. Crewcut coupe
 des lignes sur chaque dépôt et chaque modèle mesurés et ne retire jamais un
@@ -134,6 +141,13 @@ contre 0,83, tours 5,3 contre 5,9, coût par run 0,107 contre 0,099 USD ;
 chaque cas contre 0,84 sans, tours 5,0 contre 5,7, coût par run 0,106 contre
 0,100 USD.
 
+Crewcut 0.6.1 sur les deux autres modèles (2026-10-03, Claude Code
+2.1.288) : Fable 5.1 obtient 0,96 contre 0,81, en 6,2 tours contre 9,0, à
+0,309 contre 0,404 USD par run (-24 %) ; Sonnet 5.5 obtient 0,97 contre
+0,89, en 5,7 tours contre 6,3, à 0,066 contre 0,062 USD (+6 %). Les runs de
+Fable coûtent environ trois fois la mesure 0.4.0 dans les deux bras, seul
+le rapport se compare.
+
 Ce que ça dit :
 
 - L'économie apparaît avec la taille du projet. `csv-export` fait vingt
@@ -169,7 +183,10 @@ Ce que ça dit :
   reçoit une réponse complète, y compris où irait le correctif, et le cas
   passe 3 runs sur 3. `date-picker` et `url-parse` passent en 0.6.1 sur Opus
   depuis que la règle de sortie interdit de recoller le code écrit et
-  n'autorise qu'une mise en garde ; pas encore remesuré sur Fable et Sonnet.
+  n'autorise qu'une mise en garde. En 0.6.1, `url-parse` passe sur Sonnet et
+  2 runs sur 3 sur Fable, `date-picker` passe sur Fable ; sur Sonnet,
+  `date-picker` échoue encore au grader de réponse courte 3 runs sur 3, dans
+  les deux bras.
 
 Chaque cas note la justesse autant que la taille : une réponse plus courte
 mais fausse vaut zéro. `keep-validation` demande de simplifier un handler à

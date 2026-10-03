@@ -59,6 +59,13 @@ On Sonnet, crewcut now spends fewer tokens than the baseline.
 Crewcut 0.6.1 on the Opus tier, crewcut arm only: LOC -68 %, tokens -39 %,
 cost -41 %, time -45 %, safe 21/21, the same as 0.5.3 within noise.
 
+**Opus 5.5 on Next-js-Boilerplate** (same tickets as above, three arms, three runs, crewcut 0.6.1):
+
+| vs no-plugin baseline | LOC | tokens | cost | time | safe |
+|---|--:|--:|--:|--:|--:|
+| **crewcut** | **-82 %** | **-55 %** | **-60 %** | **-67 %** | **100 %** |
+| "YAGNI + one-liners" prompt | -88 % | -62 % | -66 % | -72 % | 100 % |
+
 Each cell is that arm's mean over all cells as a percent of the no-plugin
 baseline, the same reading as the chart. Crewcut cuts lines on
 every repository and model measured and never drops a guard. The cut is
@@ -130,6 +137,12 @@ against 0.83, turns 5.3 against 5.9, cost per run 0.107 against 0.099 USD;
 on every case against 0.84 without, turns 5.0 against 5.7, cost per run
 0.106 against 0.100 USD.
 
+Crewcut 0.6.1 on the other two models (2026-10-03, Claude Code 2.1.288):
+Fable 5.1 scores 0.96 against 0.81, in 6.2 turns against 9.0, at 0.309
+against 0.404 USD per run (-24 %); Sonnet 5.5 scores 0.97 against 0.89, in
+5.7 turns against 6.3, at 0.066 against 0.062 USD (+6 %). Fable's runs cost
+about three times the 0.4.0 measure in both arms, so only the ratio compares.
+
 What it says:
 
 - The savings show up with the size of the project. `csv-export` is twenty
@@ -164,8 +177,10 @@ What it says:
   the question needed. Fixed in 0.6.0: a question gets a full answer,
   including where a fix would go, and the case passes 3 runs out of 3.
   `date-picker` and `url-parse` passed in 0.6.1 on Opus once the output
-  rule forbade pasting back the code just written and allowed one caveat;
-  not yet re-measured on Fable and Sonnet.
+  rule forbade pasting back the code just written and allowed one caveat.
+  In 0.6.1 `url-parse` passes on Sonnet and in 2 runs out of 3 on Fable,
+  `date-picker` passes on Fable; on Sonnet `date-picker` still fails the
+  short-answer grader in 3 runs out of 3, in both arms.
 
 Every case grades correctness as well as size: a shorter answer that is
 wrong scores zero. `keep-validation` asks to simplify a handler at a trust
