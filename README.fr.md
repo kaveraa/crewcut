@@ -57,6 +57,9 @@ que la baseline.
 | **crewcut** | **-70 %** | **-40 %** | **-43 %** | **-49 %** | **100 %** |
 | prompt "YAGNI + one-liners" | -72 % | -44 % | -49 % | -56 % | 100 % |
 
+Crewcut 0.6.1 sur le palier Opus, bras crewcut seul : lignes -68 %, tokens
+-39 %, coût -41 %, temps -45 %, sûr 21/21, comme la 0.5.3 au bruit près.
+
 Chaque case est la moyenne du bras sur toutes les cellules, en pourcentage
 de la baseline sans plugin, la même lecture que le graphique. Crewcut coupe
 des lignes sur chaque dépôt et chaque modèle mesurés et ne retire jamais un
@@ -127,7 +130,9 @@ la part des graders passés. À modèle fixe, le coût tient lieu de tokens.
 
 Remesuré avec crewcut 0.6.0 (2026-10-03, Claude Code 2.1.288) : score 0,95
 contre 0,83, tours 5,3 contre 5,9, coût par run 0,107 contre 0,099 USD ;
-`explain-bug` 1,00 contre 0,83.
+`explain-bug` 1,00 contre 0,83. Remesuré avec crewcut 0.6.1 : score 1,00 sur
+chaque cas contre 0,84 sans, tours 5,0 contre 5,7, coût par run 0,106 contre
+0,100 USD.
 
 Ce que ça dit :
 
@@ -150,7 +155,9 @@ Ce que ça dit :
 - La règle de la cause racine dépend du modèle. Sur Fable et Opus,
   `shared-bug` est corrigé dans la fonction partagée 3 runs sur 3 avec le
   plugin contre 0 sans ; sur Sonnet, tous les runs ont patché l'appelant, au
-  motif que les deux autres appelants passent déjà des nombres.
+  motif que les deux autres appelants passent déjà des nombres. Depuis la
+  0.6.1, la règle dit "même si les autres appelants semblent sûrs", et
+  Sonnet corrige la fonction partagée 3 runs sur 3 avec le plugin, 0 sans.
   `keep-validation` montre le même schéma : sur Fable et Opus, les runs sans
   plugin ont retiré une vérification ou surestimé ce qu'ils gardaient.
 - Des échecs honnêtes, avec ou sans plugin, sur les trois modèles : sur
@@ -160,7 +167,9 @@ Ce que ça dit :
   irait le correctif, ce que le cas demande. La règle de sortie a coupé une
   phrase dont la question avait besoin. Corrigé en 0.6.0 : une question
   reçoit une réponse complète, y compris où irait le correctif, et le cas
-  passe 3 runs sur 3.
+  passe 3 runs sur 3. `date-picker` et `url-parse` passent en 0.6.1 sur Opus
+  depuis que la règle de sortie interdit de recoller le code écrit et
+  n'autorise qu'une mise en garde ; pas encore remesuré sur Fable et Sonnet.
 
 Chaque cas note la justesse autant que la taille : une réponse plus courte
 mais fausse vaut zéro. `keep-validation` demande de simplifier un handler à
@@ -183,7 +192,8 @@ Claude prend le barreau le plus bas qui tient :
 7. Seulement ensuite : le minimum qui marche.
 
 Corriger un bug, c'est corriger la cause : trouver chaque appelant, corriger
-la fonction partagée une fois.
+la fonction partagée une fois, même quand les autres appelants semblent sûrs
+aujourd'hui.
 
 Construire le ticket, pas ses voisins : aucune prop, état, mode, réglage ou
 cas limite optionnel que le ticket n'a pas nommé (pas d'aperçu au survol, pas
@@ -272,7 +282,8 @@ les nomme les réintègre.
 ## Discipline de tokens
 
 - Sortie : pas de préambule, pas de reformulation de la demande, pas de
-  récapitulatif, pas d'explication non demandée. Le code d'abord.
+  récapitulatif, pas d'explication non demandée. Ne jamais recoller le code
+  qui vient d'être écrit ; une mise en garde au plus.
 - Lecture : grep sur les symboles que le changement touche, puis lire
   seulement ces fichiers, par plage de lignes ; un grep vaut mieux que trois
   lectures ; ne jamais relire un fichier ; ne jamais ouvrir un fichier pour

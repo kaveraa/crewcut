@@ -56,6 +56,9 @@ On Sonnet, crewcut now spends fewer tokens than the baseline.
 | **crewcut** | **-70 %** | **-40 %** | **-43 %** | **-49 %** | **100 %** |
 | "YAGNI + one-liners" prompt | -72 % | -44 % | -49 % | -56 % | 100 % |
 
+Crewcut 0.6.1 on the Opus tier, crewcut arm only: LOC -68 %, tokens -39 %,
+cost -41 %, time -45 %, safe 21/21, the same as 0.5.3 within noise.
+
 Each cell is that arm's mean over all cells as a percent of the no-plugin
 baseline, the same reading as the chart. Crewcut cuts lines on
 every repository and model measured and never drops a guard. The cut is
@@ -123,7 +126,9 @@ share of graders passed. Cost stands in for tokens at a fixed model.
 
 Re-measured with crewcut 0.6.0 (2026-10-03, Claude Code 2.1.288): score 0.95
 against 0.83, turns 5.3 against 5.9, cost per run 0.107 against 0.099 USD;
-`explain-bug` 1.00 against 0.83.
+`explain-bug` 1.00 against 0.83. Re-measured with crewcut 0.6.1: score 1.00
+on every case against 0.84 without, turns 5.0 against 5.7, cost per run
+0.106 against 0.100 USD.
 
 What it says:
 
@@ -146,7 +151,9 @@ What it says:
 - The root-cause rule depends on the model. On Fable and Opus,
   `shared-bug` is fixed in the shared function in 3 runs out of 3 with the
   plugin against 0 without; on Sonnet all runs patched the caller instead,
-  arguing that the two other callers already pass numbers.
+  arguing that the two other callers already pass numbers. Since 0.6.1 the
+  rule says "even if other callers look safe", and Sonnet fixes the shared
+  function in 3 runs out of 3 with the plugin, 0 without.
   `keep-validation` shows the same pattern: on Fable and Opus the runs
   without the plugin dropped a check or overstated what they kept.
 - Honest misses, with or without the plugin, on all three models: on
@@ -156,6 +163,9 @@ What it says:
   a fix would go, which the case asks for. The output rule cut a sentence
   the question needed. Fixed in 0.6.0: a question gets a full answer,
   including where a fix would go, and the case passes 3 runs out of 3.
+  `date-picker` and `url-parse` passed in 0.6.1 on Opus once the output
+  rule forbade pasting back the code just written and allowed one caveat;
+  not yet re-measured on Fable and Sonnet.
 
 Every case grades correctness as well as size: a shorter answer that is
 wrong scores zero. `keep-validation` asks to simplify a handler at a trust
@@ -176,7 +186,8 @@ Claude takes the lowest rung that holds:
 6. One line? One line.
 7. Only then: the minimum that works.
 
-Bug fix means root cause: find every caller, fix the shared function once.
+Bug fix means root cause: find every caller, fix the shared function once,
+even when the other callers look safe today.
 
 Build the ticket, not its neighbours: no optional prop, state, mode, setting
 or edge case the ticket did not name (no hover preview, no disabled, no size
@@ -262,7 +273,7 @@ names them brings them back.
 ## Token discipline
 
 - Output: no preamble, no restating the request, no recap, no unrequested
-  explanation. Code first.
+  explanation. Never paste back code just written; one caveat at most.
 - Reading: grep for the symbols the change touches, then read only those
   files, by line range; one grep beats three reads; never read a file twice;
   never open a file to confirm what grep already showed.

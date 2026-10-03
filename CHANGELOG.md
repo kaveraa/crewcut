@@ -5,6 +5,23 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-10-03
+
+### Fixed
+
+- Root cause: "fix the shared function once, even if other callers look
+  safe". On Sonnet, `shared-bug` is fixed at the root in 3 runs out of 3
+  with the plugin, 0 without (was 0 and 0).
+- Output: never paste back code you wrote, one caveat at most, in place of
+  "Code first", which the model read as "show the code again". On Opus,
+  `date-picker` and `url-parse` pass the short-answer grader 3 runs out of
+  3; the eval score is 1.00 on every case against 0.84 without the plugin.
+
+### Changed
+
+- Opus tier of the agentic benchmark re-measured with crewcut 0.6.1: lines
+  -68 %, tokens -39 %, cost -41 %, safe 21/21, unchanged within noise.
+
 ## [0.6.0] - 2026-10-03
 
 ### Changed
