@@ -45,6 +45,9 @@ four runs per cell, 2026-10-02.
 
 Crewcut 0.5.1, re-measured on the Sonnet tier after the "build the ticket
 only" rule, crewcut arm only: LOC -20 %, tokens +7 %, cost 0 %, time -7 %.
+Crewcut 0.6.0, with the ruleset read back on every turn cut from about 695
+to 580 tokens: LOC -15 %, tokens -5 %, cost -15 %, time -6 %, safe 21/21.
+On Sonnet, crewcut now spends fewer tokens than the baseline.
 
 **Opus 5.5** (same template and tickets, three arms, three runs, crewcut 0.5.3):
 
@@ -66,8 +69,9 @@ most (a 369-line date picker with two new dependencies against crewcut's
 10-line native input), so crewcut cuts 70 % of the lines there. Tokens only
 fall where the plugin removes turns: on Opus they drop from 12.1 to 7.5 per
 ticket and the bill falls 43 %; on a small repository with a model that does
-not over-build, the ruleset is read back on every turn for little gain. Method, per-task tables, limits and
-how to reproduce:
+not over-build, the ruleset is read back on every turn, so its size is the
+cost: 0.6.0 cut it by a sixth and Sonnet went from +7 % to -5 % in tokens.
+Method, per-task tables, limits and how to reproduce:
 [benchmarks/agentic/RESULTS.md](benchmarks/agentic/RESULTS.md).
 
 ## Measured
@@ -117,6 +121,10 @@ share of graders passed. Cost stands in for tokens at a fixed model.
 | csv-export      | 0.96       | 0.78          | 0.135 USD         | 0.141 USD            | 7.3        | 13.0          |
 | all             | 0.91       | 0.84          | 0.113 USD         | 0.102 USD            | 5.0        | 6.0           |
 
+Re-measured with crewcut 0.6.0 (2026-10-03, Claude Code 2.1.288): score 0.95
+against 0.83, turns 5.3 against 5.9, cost per run 0.107 against 0.099 USD;
+`explain-bug` 1.00 against 0.83.
+
 What it says:
 
 - The savings show up with the size of the project. `csv-export` is twenty
@@ -146,7 +154,8 @@ What it says:
   rule asks. On Opus with the plugin, `explain-bug` loses a grader in 3
   runs out of 3: the explanation is complete, but it no longer says where
   a fix would go, which the case asks for. The output rule cut a sentence
-  the question needed.
+  the question needed. Fixed in 0.6.0: a question gets a full answer,
+  including where a fix would go, and the case passes 3 runs out of 3.
 
 Every case grades correctness as well as size: a shorter answer that is
 wrong scores zero. `keep-validation` asks to simplify a handler at a trust
@@ -241,12 +250,14 @@ Settings live in `crewcut.json` next to your Claude settings (`~/.claude`, or
 `CLAUDE_CONFIG_DIR`): `{ "defaultLevel": "ultra", "subagents": true }`. The
 `CREWCUT_DEFAULT_MODE` environment variable wins over the file. With
 `subagents` on, every subagent Claude starts receives the ruleset of the
-current level, about 650 tokens each; switch it off to save them, or limit
+current level, about 500 tokens each; switch it off to save them, or limit
 it to some agent types with a regular expression, case-insensitive, on the
 agent type: `"subagentMatcher": "explore|general"` in the file, or the
 `CREWCUT_SUBAGENT_MATCHER` environment variable, which wins. A subagent
 whose type is unknown, or a pattern that does not compile, still receives
-the rules.
+the rules. Without a pattern, the two built-in agents that never touch code,
+`claude-code-guide` and `statusline-setup`, receive nothing; a pattern that
+names them brings them back.
 
 ## Token discipline
 

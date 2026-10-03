@@ -641,6 +641,11 @@ test('subagent injects only into matching agent types when a matcher is set, and
   assert.equal(run('subagent', '{"agent_type":"crewcut-reviewer"}', env), '');
   assert.match(payload(run('subagent', '{}', env)).additionalContext, /CREWCUT ACTIVE/);
   assert.match(payload(run('subagent', '{"agent_type":"Plan"}', { ...env, CREWCUT_SUBAGENT_MATCHER: '[' })).additionalContext, /CREWCUT ACTIVE/);
+  const plain = { CLAUDE_CONFIG_DIR: dir };
+  assert.equal(run('subagent', '{"agent_type":"claude-code-guide"}', plain), '');
+  assert.equal(run('subagent', '{"agent_type":"statusline-setup"}', plain), '');
+  assert.match(payload(run('subagent', '{"agent_type":"Explore"}', plain)).additionalContext, /CREWCUT ACTIVE/);
+  assert.match(payload(run('subagent', '{"agent_type":"claude-code-guide"}', { ...plain, CREWCUT_SUBAGENT_MATCHER: 'guide' })).additionalContext, /CREWCUT ACTIVE/);
 });
 
 test('the script answers within a second when stdin never closes', async () => {

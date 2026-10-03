@@ -52,11 +52,11 @@ test('commit messages use plain punctuation and carry no trailer', () => {
   assert.doesNotMatch(log, /^[A-Za-z-]+: .+$/m, 'trailer line found in a commit message');
 });
 
-test('compact ruleset stays under 700 estimated tokens at every level', () => {
+test('compact ruleset stays under 600 estimated tokens at every level', () => {
   const markdown = fs.readFileSync(path.join(root, 'hooks', 'ruleset.md'), 'utf8');
   for (const level of LEVELS) {
     const tokens = Math.ceil(renderRuleset(level, markdown).length / 4);
-    assert.ok(tokens < 700, `${level}: about ${tokens} tokens`);
+    assert.ok(tokens < 600, `${level}: about ${tokens} tokens`);
   }
 });
 

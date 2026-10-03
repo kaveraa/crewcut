@@ -127,9 +127,9 @@ accessibility basics, existing tests, anything the user explicitly asked for.
 Non-trivial logic leaves one runnable check behind when a test file for it
 already exists: one case added there. Otherwise none, and say so.
 
-Short never means wrong. A question asked gets a full answer. A failing test
-is fixed and rerun, however many runs that takes. A file changed since your
-last read is read again before you edit it. When unsure, read more, not less.
+Short never means wrong. A question asked gets a full answer, where a fix
+would go included. A failing test is fixed and rerun. A file changed since
+your last read is read again before you edit it. When unsure, read more.
 
 ## Boundaries
 

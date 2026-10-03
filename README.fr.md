@@ -45,7 +45,10 @@ hostiles. Haiku 4.5, quatre runs par cellule, 2026-10-02.
 
 Crewcut 0.5.1, remesuré sur le palier Sonnet après la règle "build the
 ticket only", bras crewcut seul : lignes -20 %, tokens +7 %, coût 0 %,
-temps -7 %.
+temps -7 %. Crewcut 0.6.0, avec un ruleset relu à chaque tour réduit
+d'environ 695 à 580 tokens : lignes -15 %, tokens -5 %, coût -15 %,
+temps -6 %, sûr 21/21. Sur Sonnet, crewcut consomme désormais moins de tokens
+que la baseline.
 
 **Opus 5.5** (même template et mêmes tickets, trois bras, trois runs, crewcut 0.5.3) :
 
@@ -69,7 +72,9 @@ nouvelles dépendances contre l'input natif de 10 lignes de crewcut), crewcut
 y coupe donc 70 % des lignes. Les tokens ne baissent que là où le plugin
 retire des tours : sur Opus ils passent de 12,1 à 7,5 par ticket et la
 facture baisse de 43 % ; sur un petit dépôt avec un modèle qui ne
-sur-construit pas, le ruleset est relu à chaque tour pour peu de gain.
+sur-construit pas, le ruleset est relu à chaque tour, donc sa taille est le
+coût : la 0.6.0 l'a réduit d'un sixième et Sonnet est passé de +7 % à -5 %
+en tokens.
 Méthode, tableaux par tâche, limites et reproduction :
 [benchmarks/agentic/RESULTS.md](benchmarks/agentic/RESULTS.md) (en anglais).
 
@@ -120,6 +125,10 @@ la part des graders passés. À modèle fixe, le coût tient lieu de tokens.
 | csv-export      | 0,96       | 0,78       | 0,135 USD         | 0,141 USD         | 7,3        | 13,0       |
 | tous            | 0,91       | 0,84       | 0,113 USD         | 0,102 USD         | 5,0        | 6,0        |
 
+Remesuré avec crewcut 0.6.0 (2026-10-03, Claude Code 2.1.288) : score 0,95
+contre 0,83, tours 5,3 contre 5,9, coût par run 0,107 contre 0,099 USD ;
+`explain-bug` 1,00 contre 0,83.
+
 Ce que ça dit :
 
 - L'économie apparaît avec la taille du projet. `csv-export` fait vingt
@@ -149,7 +158,9 @@ Ce que ça dit :
   règle de sortie demande. Sur Opus avec le plugin, `explain-bug` perd un
   grader 3 runs sur 3 : l'explication est complète, mais elle ne dit plus où
   irait le correctif, ce que le cas demande. La règle de sortie a coupé une
-  phrase dont la question avait besoin.
+  phrase dont la question avait besoin. Corrigé en 0.6.0 : une question
+  reçoit une réponse complète, y compris où irait le correctif, et le cas
+  passe 3 runs sur 3.
 
 Chaque cas note la justesse autant que la taille : une réponse plus courte
 mais fausse vaut zéro. `keep-validation` demande de simplifier un handler à
@@ -248,12 +259,15 @@ Les réglages vivent dans `crewcut.json` à côté de vos réglages Claude
 `{ "defaultLevel": "ultra", "subagents": true }`. La variable
 d'environnement `CREWCUT_DEFAULT_MODE` l'emporte sur le fichier. Avec
 `subagents` actif, chaque sous-agent que Claude démarre reçoit le ruleset du
-niveau courant, environ 650 tokens chacun ; coupez-le pour les économiser,
+niveau courant, environ 500 tokens chacun ; coupez-le pour les économiser,
 ou limitez-le à certains types d'agents avec une expression régulière,
 insensible à la casse, sur le type d'agent : `"subagentMatcher":
 "explore|general"` dans le fichier, ou la variable d'environnement
 `CREWCUT_SUBAGENT_MATCHER`, qui l'emporte. Un sous-agent dont le type est
 inconnu, ou un motif qui ne compile pas, reçoit quand même les règles.
+Sans motif, les deux agents intégrés qui ne touchent jamais au code,
+`claude-code-guide` et `statusline-setup`, ne reçoivent rien ; un motif qui
+les nomme les réintègre.
 
 ## Discipline de tokens
 

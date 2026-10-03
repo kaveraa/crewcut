@@ -220,6 +220,18 @@ What it says:
   target: star rating 59 lines to 45, dropzone 71 to 56, wizard 91 to 75,
   color picker 24 to 21. The gap to the seven-word prompt (35 lines) is now
   the accessibility and validation crewcut keeps on purpose.
+- Re-measured with crewcut 0.6.0, crewcut arm only, 36 feature cells and 21
+  safety cells: lines -15 %, tokens -5 %, cost -15 %, time -6 %, 7.1 turns,
+  tests in 39 % of the cells, correct 36/36, safe 21/21. The ruleset read
+  back on every turn went from about 695 to 580 tokens, and that was enough
+  to put crewcut under the baseline in tokens on this tier; the fixed weight
+  noted for 0.5.0 was the rules' length, not something they could not
+  change. A first draft cut it to 510 tokens by also shortening the "build
+  the ticket only" examples, the answer to the harness's "include tests if
+  you normally would" and the persona line: lines fell back to -3 %, turns
+  rose to 8.2 and tests to 50 %, for tokens +6 %. The same draft at `lite`
+  gave lines -1 %, tokens +1 %. Those three phrasings carry the effect and
+  stayed word for word.
 - Taken with the Haiku runs: the gain in lines is real on every model but
   shrinks as the model gets leaner on its own; the gain in tokens only shows
   where the plugin removes turns, which needs a repository big enough that
