@@ -306,6 +306,45 @@ What it says:
   The same as 0.5.3 within noise: on Opus the saving comes from the turns
   removed, and the shorter ruleset neither adds nor takes away.
 
+## Model tier: Opus 5.5 on Next-js-Boilerplate
+
+The twelve `next-*` tickets, three arms, three runs, crewcut 0.6.1. A first
+pass hit the account's session limit: nine tickets came back empty in every
+arm with an HTTP 429 on the first turn. Those nine were re-run once the
+limit reset and merged with the three tickets that had completed (no 429 in
+any kept cell). 108 cells, about 22 USD in all.
+
+| vs no-plugin baseline | LOC | tokens | cost | time | safe |
+|---|--:|--:|--:|--:|--:|
+| **crewcut** | **-82 %** | **-55 %** | **-60 %** | **-67 %** | **100 %** |
+| "YAGNI + one-liners" prompt | -88 % | -62 % | -66 % | -72 % | 100 % |
+
+Sum over the twelve tickets: baseline 2404 / crewcut 439 / yagni-oneliner 298. Crewcut is under the baseline on
+all twelve tickets.
+
+| task | baseline | **crewcut** | yagni-oneliner |
+|---|--:|--:|--:|
+| date picker | 597 | **22** | 9 |
+| color picker | 243 | **19** | 8 |
+| command palette | 419 | **129** | 84 |
+| dropzone | 338 | **39** | 36 |
+| wizard | 326 | **76** | 60 |
+| star rating | 174 | **31** | 21 |
+| GET counter | 18 | **12** | 8 |
+| request log | 55 | **35** | 14 |
+| pagination | 131 | **26** | 15 |
+| reset | 22 | **18** | 15 |
+| search | 56 | **10** | 9 |
+| CSV export | 26 | **20** | 19 |
+
+What it says:
+
+- The largest cut measured so far. The Opus baseline on this repository
+  takes 17.3 turns per ticket and 200 lines on average; crewcut takes 7.9
+  turns and 37 lines, at 40 % of the baseline's cost.
+- Tests: baseline in 39 % of the cells, crewcut in 19 %, the seven-word
+  prompt in none. All 108 cells are correct.
+
 ## Reproduce
 
 ```

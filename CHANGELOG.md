@@ -5,6 +5,16 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.6.2] - 2026-10-03
+
+### Changed
+
+- Opus 5.5 tier on Next-js-Boilerplate (crewcut 0.6.1): lines -82 %, tokens
+  -55 %, cost -60 %, time -67 %, under the baseline on all twelve tickets.
+- Eval suite re-measured with 0.6.1 on Fable 5.1 (0.96 against 0.81, cost
+  -24 %) and Sonnet 5.5 (0.97 against 0.89, cost +6 %). README, `RESULTS.md`
+  and `/crewcut-gain` carry the new rows.
+
 ## [0.6.1] - 2026-10-03
 
 ### Fixed
