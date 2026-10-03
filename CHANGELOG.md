@@ -5,6 +5,21 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-03
+
+### Changed
+
+- The ruleset read back on every turn goes from about 695 to 580 tokens at
+  `full` (lite 450, ultra 550): the ladder, the commit, plain-text and
+  modern rules and the token lines are shorter; the phrasings that carry the
+  measured effect stay word for word. On the Sonnet tier of the agentic
+  benchmark: lines -15 %, tokens -5 % (was +7 %), cost -15 %, safe 21/21.
+- A question gets a full answer, including where a fix would go. On Opus,
+  `explain-bug` passes 3 runs out of 3 again; eval score 0.95 against 0.83.
+- Subagents: without a `subagentMatcher`, the built-in `claude-code-guide`
+  and `statusline-setup` agents, which never touch code, no longer receive
+  the ruleset.
+
 ## [0.5.4] - 2026-10-03
 
 ### Changed

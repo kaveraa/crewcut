@@ -97,6 +97,9 @@ function defaultLevel(env, dir) {
   return LEVELS.includes(fromFile) ? fromFile : DEFAULT_LEVEL;
 }
 
+// Built-in agents that never touch code: no ruleset unless a matcher asks for them.
+const NO_CODE_AGENTS = /^(claude-code-guide|statusline-setup)$/i;
+
 // Regex that limits subagent injection to matching agent types; empty means all.
 function subagentMatcher(env, dir) {
   const source = env.CREWCUT_SUBAGENT_MATCHER !== undefined
@@ -241,7 +244,7 @@ function onSubagent(input, env, dir) {
   if (readConfig(dir).subagents === false) return '';
   const matcher = subagentMatcher(env, dir);
   const agentType = typeof input.agent_type === 'string' ? input.agent_type.trim() : '';
-  if (matcher && agentType && !matcher.test(agentType)) return '';
+  if (matcher ? agentType && !matcher.test(agentType) : NO_CODE_AGENTS.test(agentType)) return '';
   const level = readLevel(dir) || defaultLevel(env, dir);
   return envelope('SubagentStart', loadRuleset(level));
 }
