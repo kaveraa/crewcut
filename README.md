@@ -146,8 +146,12 @@ Fable 5.1 scores 0.96 against 0.81, in 6.2 turns against 9.0, at 0.309
 against 0.404 USD per run (-24 %); Sonnet 5.5 scores 0.97 against 0.89, in
 5.7 turns against 6.3, at 0.066 against 0.062 USD (+6 %). Sonnet with
 crewcut 0.6.3: 0.96 against 0.88, 5.4 turns against 6.0, 0.061 against
-0.062 USD. Fable's runs cost
-about three times the 0.4.0 measure in both arms, so only the ratio compares.
+0.062 USD. Fable with crewcut 0.6.3 (2026-10-03, Claude Code 2.1.287,
+42 clean cells): 0.97 against 0.82, 6.5 turns against 9.1 (-29 %), 0.296
+against 0.378 USD (-22 %); `csv-export` reads 3.3 files against 9.0,
+`vat-country` 3.0 against 11.0, and `date-picker` passes 3 runs out of 3
+with the plugin against 0 without. Fable's runs cost about three times the
+0.4.0 measure in both arms, so only the ratio compares.
 
 What it says:
 

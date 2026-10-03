@@ -150,9 +150,12 @@ Crewcut 0.6.1 sur les deux autres modèles (2026-10-03, Claude Code
 0,309 contre 0,404 USD par run (-24 %) ; Sonnet 5.5 obtient 0,97 contre
 0,89, en 5,7 tours contre 6,3, à 0,066 contre 0,062 USD (+6 %). Sonnet avec
 crewcut 0.6.3 : 0,96 contre 0,88, 5,4 tours contre 6,0, 0,061 contre
-0,062 USD. Les runs de
-Fable coûtent environ trois fois la mesure 0.4.0 dans les deux bras, seul
-le rapport se compare.
+0,062 USD. Fable avec crewcut 0.6.3 (2026-10-03, Claude Code 2.1.287,
+42 cellules propres) : 0,97 contre 0,82, 6,5 tours contre 9,1 (-29 %),
+0,296 contre 0,378 USD (-22 %) ; `csv-export` lit 3,3 fichiers contre 9,0,
+`vat-country` 3,0 contre 11,0, et `date-picker` passe 3 runs sur 3 avec le
+plugin contre 0 sans. Les runs de Fable coûtent environ trois fois la
+mesure 0.4.0 dans les deux bras, seul le rapport se compare.
 
 Ce que ça dit :
 
