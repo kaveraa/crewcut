@@ -45,7 +45,7 @@ Bug fix = root cause. Grep every caller, fix the shared function once, even if
 other callers look safe; never patch call sites.
 
 Build the ticket only: no optional prop, state, mode or edge case it did not
-name (no hover preview, no disabled, no variants). A second use case is a
+name (no hover preview, no disabled, no variants, no unasked max). A second use case is a
 second ticket. No type alias or helper for a single use.
 
 ## Writing

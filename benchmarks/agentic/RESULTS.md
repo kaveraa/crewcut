@@ -232,6 +232,13 @@ What it says:
   rose to 8.2 and tests to 50 %, for tokens +6 %. The same draft at `lite`
   gave lines -1 %, tokens +1 %. Those three phrasings carry the effect and
   stayed word for word.
+- Re-measured with crewcut 0.6.3 (the ticket rule names unasked `max` and
+  `min`, the caveat rule asks for one sentence and no bullets), crewcut arm
+  only, two draws of 36 cells: lines -10 % and -17 %, tokens +2 % and -2 %,
+  cost -8 % and -13 %. Over the 72 cells: lines -13 %, tokens 0 %, cost
+  -11 %, time 0 %, 7.3 turns, correct 72/72, tests in 42 % of the cells.
+  The spread between two identical draws is the noise band on this tier;
+  the 0.6.0 figures (-15 % and -5 %) sit inside it.
 - Taken with the Haiku runs: the gain in lines is real on every model but
   shrinks as the model gets leaner on its own; the gain in tokens only shows
   where the plugin removes turns, which needs a repository big enough that

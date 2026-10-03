@@ -1,6 +1,6 @@
 {
   "name": "crewcut",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "private": true,
   "description": "Short hair, short code. A Claude Code plugin that spends fewer tokens.",
   "license": "MIT",

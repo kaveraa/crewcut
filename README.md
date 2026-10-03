@@ -47,7 +47,9 @@ Crewcut 0.5.1, re-measured on the Sonnet tier after the "build the ticket
 only" rule, crewcut arm only: LOC -20 %, tokens +7 %, cost 0 %, time -7 %.
 Crewcut 0.6.0, with the ruleset read back on every turn cut from about 695
 to 580 tokens: LOC -15 %, tokens -5 %, cost -15 %, time -6 %, safe 21/21.
-On Sonnet, crewcut now spends fewer tokens than the baseline.
+On Sonnet, crewcut now spends fewer tokens than the baseline. Crewcut 0.6.3,
+six runs per ticket: LOC -13 %, tokens 0 %, cost -11 %, time 0 %; two draws
+of three runs gave LOC -10 % and -17 %, which is the noise band on this tier.
 
 **Opus 5.5** (same template and tickets, three arms, three runs, crewcut 0.5.3):
 
@@ -135,12 +137,16 @@ Re-measured with crewcut 0.6.0 (2026-10-03, Claude Code 2.1.288): score 0.95
 against 0.83, turns 5.3 against 5.9, cost per run 0.107 against 0.099 USD;
 `explain-bug` 1.00 against 0.83. Re-measured with crewcut 0.6.1: score 1.00
 on every case against 0.84 without, turns 5.0 against 5.7, cost per run
-0.106 against 0.100 USD.
+0.106 against 0.100 USD. With crewcut 0.6.3 and the reworked `date-picker`
+graders (below): 0.98 against 0.83, turns 5.2 against 5.9, cost per run
+0.101 against 0.099 USD; `date-picker` 0.86 in both arms.
 
 Crewcut 0.6.1 on the other two models (2026-10-03, Claude Code 2.1.288):
 Fable 5.1 scores 0.96 against 0.81, in 6.2 turns against 9.0, at 0.309
 against 0.404 USD per run (-24 %); Sonnet 5.5 scores 0.97 against 0.89, in
-5.7 turns against 6.3, at 0.066 against 0.062 USD (+6 %). Fable's runs cost
+5.7 turns against 6.3, at 0.066 against 0.062 USD (+6 %). Sonnet with
+crewcut 0.6.3: 0.96 against 0.88, 5.4 turns against 6.0, 0.061 against
+0.062 USD. Fable's runs cost
 about three times the 0.4.0 measure in both arms, so only the ratio compares.
 
 What it says:
@@ -179,8 +185,18 @@ What it says:
   `date-picker` and `url-parse` passed in 0.6.1 on Opus once the output
   rule forbade pasting back the code just written and allowed one caveat.
   In 0.6.1 `url-parse` passes on Sonnet and in 2 runs out of 3 on Fable,
-  `date-picker` passes on Fable; on Sonnet `date-picker` still fails the
-  short-answer grader in 3 runs out of 3, in both arms.
+  `date-picker` passes on Fable; on Sonnet `date-picker` failed in both
+  arms, and the answers said why: a `max` attribute set to today's date
+  that nobody asked for, then two caveats about it. 0.6.3 adds "no unasked
+  max or min" to the ticket rule and "in one sentence, no bullet list" to
+  the caveat rule, and splits the grader: a regex now checks the file for
+  `max`, `min`, `pattern` or `placeholder` (it passes 3 runs out of 3 in
+  both arms on Sonnet and Opus), and the short-answer judge only measures
+  the message: 8 lines at most, no bullets, two sentences of caveat at
+  most. That last criterion still fails in both arms on both models: the
+  models report what they did not verify and whether the field should be
+  required, three sentences where the rule asks one. It is the open target,
+  and it costs the same with or without the plugin.
 
 Every case grades correctness as well as size: a shorter answer that is
 wrong scores zero. `keep-validation` asks to simplify a handler at a trust
@@ -288,7 +304,8 @@ names them brings them back.
 ## Token discipline
 
 - Output: no preamble, no restating the request, no recap, no unrequested
-  explanation. Never paste back code just written; one caveat at most.
+  explanation. Never paste back code just written; one caveat at most, no
+  bullet list.
 - Reading: grep for the symbols the change touches, then read only those
   files, by line range; one grep beats three reads; never read a file twice;
   never open a file to confirm what grep already showed.
