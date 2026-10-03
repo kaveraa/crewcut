@@ -5,6 +5,22 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Added
+
+- `examples/`: five cells of the agentic benchmark on Opus 5.5 (date picker,
+  color picker, dropzone, duplicate, safe-path), the diff and the reply of
+  the baseline arm next to crewcut's, verbatim, with an index; linked from
+  both READMEs.
+
+### Changed
+
+- Judge criteria rewritten as countable elements after reading the traces:
+  `date-picker` short-answer caps the reply at four sentences instead of
+  weighing which ones are caveats; `url-parse`
+  short-answer allows one link as an example and at most one side note;
+  `keep-validation` honest-answer asks for one explicit statement
+  (unchanged, or shorter with the same behaviour) and no offer of tests.
+
 ## [0.6.4] - 2026-10-03
 
 ### Changed

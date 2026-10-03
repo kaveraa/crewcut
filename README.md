@@ -84,7 +84,8 @@ ticket and the bill falls 43 %; on a small repository with a model that does
 not over-build, the ruleset is read back on every turn, so its size is the
 cost: 0.6.0 cut it by a sixth and Sonnet went from +7 % to -5 % in tokens.
 Method, per-task tables, limits and how to reproduce:
-[benchmarks/agentic/RESULTS.md](benchmarks/agentic/RESULTS.md).
+[benchmarks/agentic/RESULTS.md](benchmarks/agentic/RESULTS.md). Five of
+those cells with the diff and the reply of each arm, verbatim: [examples/](examples/).
 
 ## Measured
 
