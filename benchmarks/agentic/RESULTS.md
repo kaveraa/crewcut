@@ -226,6 +226,69 @@ What it says:
   reading discipline matters. On a small repository with a strong model,
   crewcut's value is the quality floor, not the token bill.
 
+## Model tier: Opus 5.5
+
+The same twelve tickets on full-stack-fastapi-template, the same three arms,
+three runs per cell, Claude Opus 5.5 as the working model, crewcut 0.5.3.
+108 feature cells, 20.90 USD, no timeout (longest cell 121 s); the seven
+safety tasks, 63 cells, 5.09 USD.
+
+| vs no-plugin baseline | LOC | tokens | cost | time | safe |
+|---|--:|--:|--:|--:|--:|
+| **crewcut** | **-70 %** | **-40 %** | **-43 %** | **-49 %** | **100 %** |
+| "YAGNI + one-liners" prompt | -72 % | -44 % | -49 % | -56 % | 100 % |
+
+Sum over the twelve tickets: baseline 1704 / crewcut 515 / yagni-oneliner 482. Crewcut is under the baseline on
+11 tickets out of twelve.
+
+Frontend:
+
+| task | baseline | **crewcut** | yagni-oneliner |
+|---|--:|--:|--:|
+| date picker | 369 | **10** | 9 |
+| color picker | 151 | **25** | 21 |
+| dropzone | 221 | **51** | 47 |
+| wizard | 234 | **82** | 87 |
+| star rating | 138 | **48** | 44 |
+| command palette | 328 | **124** | 119 |
+
+Backend:
+
+| task | baseline | **crewcut** | yagni-oneliner |
+|---|--:|--:|--:|
+| archive | 102 | **59** | 56 |
+| search | 31 | **28** | 24 |
+| CSV export | 50 | **34** | 25 |
+| bulk delete | 35 | **22** | 20 |
+| duplicate | 20 | **21** | 20 |
+| count | 25 | **11** | 10 |
+
+What it says:
+
+- The Opus baseline over-builds the most of the three tiers: 142 lines per
+  ticket against 113 on Haiku and 51 on Sonnet, 12.1 turns, 183k tokens per
+  cell. Its date picker adds `react-day-picker` and a Radix popover, a
+  calendar component and a popover component, 300 to 440 lines in each of
+  the three runs. Crewcut's is the browser's `<input type="date">` wrapped
+  in the template's `Input`, 10 lines, three runs out of three, with the
+  trade-off stated in the reply.
+- Where the baseline over-builds, the ruleset pays for itself in tokens:
+  7.5 turns against 12.1, 111k tokens per cell against 183k, cost -43 %.
+  This is the lesson of the Sonnet tier seen from the other side: the token
+  gain follows the turns the plugin removes, and here it removes many.
+- Tests: the baseline writes tests in 61 % of the cells, crewcut in 50 %,
+  the seven-word prompt in 31 %. Every crewcut test is an extension of the
+  template's existing `test_items.py`, as the rule allows; its backend
+  tickets keep the test and lose the duplicate helper, the extra module and
+  the unasked variants (archive 102 lines to 59, count 25 to 11).
+- The seven-word prompt lands within 7 % of crewcut on lines (482 against
+  515) and cheaper; the gap is again the tests crewcut keeps. Both arms are
+  correct on 36 cells out of 36.
+- Safety on Opus: baseline 21/21, crewcut 21/21, yagni-oneliner 21/21. No arm
+  dropped a guard. On those seven small tasks crewcut writes 38 % fewer lines
+  and costs 12 % less; the baseline adds a test file in 81 % of the cells,
+  crewcut in none, since none was asked for.
+
 ## Reproduce
 
 ```
@@ -250,7 +313,7 @@ template has file names that pass the 260-character limit otherwise), and
 twenty of the 192 feature cells lost their base commit when six workers ran
 `git add` at once; we rebuilt those bases from the pinned template and
 re-scored offline with `--rescore`. Raw `results.json` and `summary.json` for
-both tiers are kept in `results/ponytail-harness-2026-10-02/`.
+all three tiers are kept in `results/ponytail-harness-2026-10-02/`.
 
 For the second repository, twelve `next-*` tasks were added to the local copy
 of `tasks.py`, reading their fixture from `CREWCUT_NEXT_TMPL`; the six frontend

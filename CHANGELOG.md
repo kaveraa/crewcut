@@ -5,6 +5,21 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.5.4] - 2026-10-03
+
+### Changed
+
+- Agentic benchmark: Opus 5.5 tier on the FastAPI template (crewcut 0.5.3,
+  three arms, three runs): LOC -70 %, tokens -40 %, cost -43 %, time -49 %,
+  21 of 21 safety runs. README, `RESULTS.md` and `/crewcut-gain` carry the
+  row.
+
+### Fixed
+
+- `benchmarks/agentic/ponytail-harness.patch` now adds the `crewcut` arm to
+  the harness, as `RESULTS.md` described; it only carried the model ids, the
+  snapshot retries and the `next-*` tasks.
+
 ## [0.5.3] - 2026-10-03
 
 ### Changed

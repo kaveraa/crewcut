@@ -1,5 +1,5 @@
 diff --git a/benchmarks/agentic/run.py b/benchmarks/agentic/run.py
-index 1057d00..8033dd3 100644
+index 5b090dd..439b6f9 100644
 --- a/benchmarks/agentic/run.py
 +++ b/benchmarks/agentic/run.py
 @@ -23,6 +23,8 @@ ponytail: the claude CLI is the harness (already installed, we run inside it). N
@@ -11,7 +11,11 @@ index 1057d00..8033dd3 100644
  from collections import defaultdict
  from pathlib import Path
  
-@@ -40,7 +42,7 @@ ARMS = {
+@@ -36,15 +38,16 @@ ARMS = {
+     "baseline":       lambda: None,
+     "ponytail":       lambda: _skill("skills/ponytail/SKILL.md"),
+     "caveman":        lambda: _skill("benchmarks/arms/caveman-SKILL.md"),
++    "crewcut":        lambda: None,
      "yagni":          lambda: "Follow YAGNI principles.",
      "yagni-oneliner": lambda: "Follow YAGNI principles, and prefer one-liner solutions.",
  }
@@ -20,7 +24,13 @@ index 1057d00..8033dd3 100644
  
  # Skills are plugins activated by a SessionStart hook. To test exactly one at a time we exclude the
  # user's globally-enabled plugins (--setting-sources project,local) and load one plugin from its
-@@ -157,8 +159,21 @@ def _git_snapshot(workdir):
+ # cache dir (--plugin-dir). The smoke test verifies activation by output style.
+-PLUGIN_ARMS = ("ponytail", "caveman")          # arms activated via --plugin-dir (vs raw --append prompts)
++PLUGIN_ARMS = ("ponytail", "caveman", "crewcut")          # arms activated via --plugin-dir (vs raw --append prompts)
+ PLUGIN_CACHE = Path.home() / ".claude" / "plugins" / "cache"
+ 
+ def _plugin_dir(name):
+@@ -156,8 +159,21 @@ def _git_snapshot(workdir):
      """Commit the seeded repo so we can diff exactly what the agent changes."""
      _git(workdir, "init", "-q")
      _git(workdir, "add", "-A")
@@ -45,7 +55,7 @@ index 1057d00..8033dd3 100644
  _SKIP_DIFF = ("-lock", ".lock", ".gen.ts", "lock.json", "routeTree.gen")
  def git_diff_stats(workdir):
 diff --git a/benchmarks/agentic/tasks.py b/benchmarks/agentic/tasks.py
-index 45015c3..3543c00 100644
+index 592bc87..f835ae0 100644
 --- a/benchmarks/agentic/tasks.py
 +++ b/benchmarks/agentic/tasks.py
 @@ -966,3 +966,25 @@ TASKS = {
