@@ -17,6 +17,7 @@ crewcut gain                   measured on public repos and eval cases, not on t
   FastAPI template, Haiku 4.5      86 %    97 %   96 %   93 %   28/28
   Next.js boilerplate, Haiku 4.5   60 %    90 %   87 %   80 %   28/28
   FastAPI template, Sonnet 5.5     80 %   107 %  100 %   93 %   21/21
+  FastAPI template, Opus 5.5       30 %    60 %   57 %   51 %   21/21
   controls on Haiku, LOC: caveman 104 % and 85 %, yagni prompt 112 % and 71 %
 
   eval cases (seven, three runs each, same model with and without)

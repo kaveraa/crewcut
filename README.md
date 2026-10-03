@@ -44,6 +44,13 @@ four runs per cell, 2026-10-02.
 Crewcut 0.5.1, re-measured on the Sonnet tier after the "build the ticket
 only" rule, crewcut arm only: LOC -20 %, tokens +7 %, cost 0 %, time -7 %.
 
+**Opus 5.5** (same template and tickets, three arms, three runs, crewcut 0.5.3):
+
+| vs no-plugin baseline | LOC | tokens | cost | time | safe |
+|---|--:|--:|--:|--:|--:|
+| **crewcut** | **-70 %** | **-40 %** | **-43 %** | **-49 %** | **100 %** |
+| "YAGNI + one-liners" prompt | -72 % | -44 % | -49 % | -56 % | 100 % |
+
 Each cell is that arm's mean over all cells as a percent of the no-plugin
 baseline, the same reading as the chart. Crewcut cuts lines on
 every repository and model measured and never drops a guard. The cut is
@@ -52,10 +59,12 @@ the template, -58 % on the boilerplate; date picker -39 % and -55 %) and near
 zero on irreducible endpoints. The margin follows the baseline: Next.js's
 over-builds more, so crewcut is under it on eleven tickets out of twelve;
 Sonnet's is already lean, so crewcut trims 8 % of the lines there and the
-seven-word prompt, which skips the tests, trims more. Tokens only fall where
-the plugin removes turns, which takes a repository big enough that reading
-discipline matters; on a small repository with a strong model the ruleset is
-read back on every turn for little gain. Method, per-task tables, limits and
+seven-word prompt, which skips the tests, trims more; Opus's over-builds the
+most (a 369-line date picker with two new dependencies against crewcut's
+10-line native input), so crewcut cuts 70 % of the lines there. Tokens only
+fall where the plugin removes turns: on Opus they drop from 12.1 to 7.5 per
+ticket and the bill falls 43 %; on a small repository with a model that does
+not over-build, the ruleset is read back on every turn for little gain. Method, per-task tables, limits and
 how to reproduce:
 [benchmarks/agentic/RESULTS.md](benchmarks/agentic/RESULTS.md).
 
