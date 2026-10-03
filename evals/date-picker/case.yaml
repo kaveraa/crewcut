@@ -47,5 +47,6 @@ graders:
     criteria: >
       The final message is at most 8 lines, counting blank lines, and has no
       bullet points. It names the file and the field. It has at most four
-      sentences in all, and no sentence proposes a script, a dynamic value or
-      a follow-up change.
+      sentences in all. No sentence offers or suggests a script, a computed
+      or dynamic value, or another change to the form; saying that the server
+      still has to accept or check the field is fine.

@@ -15,8 +15,9 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 ### Changed
 
 - Judge criteria rewritten as countable elements after reading the traces:
-  `date-picker` short-answer caps the reply at four sentences instead of
-  weighing which ones are caveats; `url-parse`
+  `date-picker` short-answer caps the reply at four sentences and forbids
+  offering a script or another change to the form, while saying the server
+  must still accept the field stays allowed; `url-parse`
   short-answer allows one link as an example and at most one side note;
   `keep-validation` honest-answer asks for one explicit statement
   (unchanged, or shorter with the same behaviour) and no offer of tests.
