@@ -21,10 +21,10 @@ crewcut gain                   measured on public repos and eval cases, not on t
 
   eval cases (seven, three runs each, same model with and without)
 
-                   Fable 5.1                        Sonnet 5.5
-  score            0.95 with   0.82 without         0.88 with   0.87 without
-  turns            4.8  with   5.8  without  -17 %  5.0  with   6.1  without  -18 %
-  cost per run     0.102 USD   0.105 USD     -3 %   0.063 USD   0.067 USD     -6 %
+                 score with / without   turns with / without   cost per run with / without
+  Fable 5.1      0.95 / 0.82            4.8 / 5.8     -17 %    0.102 / 0.105 USD     -3 %
+  Sonnet 5.5     0.88 / 0.87            5.0 / 6.1     -18 %    0.063 / 0.067 USD     -6 %
+  Opus 5.5       0.91 / 0.84            5.0 / 6.0     -17 %    0.113 / 0.102 USD    +11 %
 
   This repo has no baseline: the version you did not build was never written,
   so no per-repo saving can be honestly computed.

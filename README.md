@@ -61,10 +61,10 @@ how to reproduce:
 
 ## Measured
 
-Two measures of the same seven cases, three runs each, with and without
+Three measures of the same seven cases, three runs each, with and without
 the plugin, Sonnet as judge
 (`claude plugin eval . --ablation with-without --runs 3 --judge-model sonnet`,
-with `--allow-tools Edit Write`), on two working models. Score is the
+with `--allow-tools Edit Write`), on three working models. Score is the
 share of graders passed. Cost stands in for tokens at a fixed model.
 
 ### Fable 5.1 (crewcut 0.4.0, 2026-10-02, Claude Code 2.1.287)
@@ -93,29 +93,49 @@ share of graders passed. Cost stands in for tokens at a fixed model.
 | csv-export      | 1.00       | 0.89          | 0.063 USD         | 0.088 USD            | 7.0        | 11.0          |
 | all             | 0.88       | 0.87          | 0.063 USD         | 0.067 USD            | 5.0        | 6.1           |
 
+### Opus 5.5 (crewcut 0.5.2, 2026-10-03, Claude Code 2.1.287)
+
+| Case            | Score with | Score without | Cost per run with | Cost per run without | Turns with | Turns without |
+| --------------- | ---------- | ------------- | ----------------- | -------------------- | ---------- | ------------- |
+| date-picker     | 0.83       | 0.83          | 0.101 USD         | 0.081 USD            | 4.0        | 3.0           |
+| url-parse       | 0.86       | 0.86          | 0.097 USD         | 0.075 USD            | 4.0        | 3.3           |
+| shared-bug      | 1.00       | 0.62          | 0.098 USD         | 0.088 USD            | 4.0        | 5.3           |
+| keep-validation | 1.00       | 0.89          | 0.144 USD         | 0.117 USD            | 5.3        | 4.7           |
+| explain-bug     | 0.75       | 0.92          | 0.093 USD         | 0.091 USD            | 4.3        | 5.0           |
+| vat-country     | 1.00       | 1.00          | 0.120 USD         | 0.122 USD            | 6.3        | 8.0           |
+| csv-export      | 0.96       | 0.78          | 0.135 USD         | 0.141 USD            | 7.3        | 13.0          |
+| all             | 0.91       | 0.84          | 0.113 USD         | 0.102 USD            | 5.0        | 6.0           |
+
 What it says:
 
 - The savings show up with the size of the project. `csv-export` is twenty
   source and test files with a one-line bug: with the plugin, Fable reads
   2.3 files against 5.3 and takes 7 turns against 11.3, Sonnet reads 3.0
-  against 4.7 and takes 7 against 11; cost is 13 % and 28 % lower, and the
-  score is higher because every run without the plugin read more files
-  than the case allows. `vat-country`, seven modules, sits in between:
-  fewer files read, fewer turns, cost 34 % lower on Fable and equal on
-  Sonnet. The five one-file cases have nothing to cut, and the ruleset is
-  a fixed cost there: a few percent more per run on Sonnet, 15 to 30 %
-  more on Fable, same or better score.
-- Turns go down 17 % on Fable and 18 % on Sonnet. Quality holds or rises:
-  0.95 against 0.82 on Fable, 0.88 against 0.87 on Sonnet.
-- The root-cause rule depends on the model. On Fable, `shared-bug` is
-  fixed in the shared function in 3 runs out of 3 with the plugin against
-  0 without; on Sonnet all runs patched the caller instead, arguing that
-  the two other callers already pass numbers. `keep-validation` shows the
-  same pattern: on Fable the runs without the plugin dropped a check or
-  overstated what they kept.
-- Honest misses, with or without the plugin, on both models: on
+  against 4.7 and takes 7 against 11, Opus reads 2.0 against 6.3 and takes
+  7.3 against 13; cost is 13 %, 28 % and 4 % lower, and the score is higher
+  because every run without the plugin read more files than the case
+  allows. `vat-country`, seven modules, sits in between: fewer files read,
+  fewer turns, cost 34 % lower on Fable and equal on Sonnet and Opus. The
+  five one-file cases have nothing to cut, and the ruleset is a fixed cost
+  there: a few percent more per run on Sonnet, 15 to 30 % more on Fable and
+  Opus, same or better score.
+- Turns go down 17 % on Fable and Opus and 18 % on Sonnet. Quality holds
+  or rises: 0.95 against 0.82 on Fable, 0.88 against 0.87 on Sonnet, 0.91
+  against 0.84 on Opus. Cost per run over the whole suite is 3 % and 6 %
+  lower on Fable and Sonnet, 11 % higher on Opus, where the one-file cases
+  weigh more.
+- The root-cause rule depends on the model. On Fable and Opus,
+  `shared-bug` is fixed in the shared function in 3 runs out of 3 with the
+  plugin against 0 without; on Sonnet all runs patched the caller instead,
+  arguing that the two other callers already pass numbers.
+  `keep-validation` shows the same pattern: on Fable and Opus the runs
+  without the plugin dropped a check or overstated what they kept.
+- Honest misses, with or without the plugin, on all three models: on
   `date-picker` and `url-parse` the answer stayed longer than the output
-  rule asks.
+  rule asks. On Opus with the plugin, `explain-bug` loses a grader in 3
+  runs out of 3: the explanation is complete, but it no longer says where
+  a fix would go, which the case asks for. The output rule cut a sentence
+  the question needed.
 
 Every case grades correctness as well as size: a shorter answer that is
 wrong scores zero. `keep-validation` asks to simplify a handler at a trust
