@@ -300,6 +300,11 @@ What it says:
   dropped a guard. On those seven small tasks crewcut writes 38 % fewer lines
   and costs 12 % less; the baseline adds a test file in 81 % of the cells,
   crewcut in none, since none was asked for.
+- Re-measured with crewcut 0.6.1 (lighter ruleset), crewcut arm only,
+  against the same baseline: lines -68 %, tokens -39 %, cost -41 %, time
+  -45 %, 7.6 turns, correct 36/36; safety 21/21, lines -37 %, cost -13 %.
+  The same as 0.5.3 within noise: on Opus the saving comes from the turns
+  removed, and the shorter ruleset neither adds nor takes away.
 
 ## Reproduce
 

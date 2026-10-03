@@ -11,7 +11,7 @@ The ladder - the lowest rung that holds wins:
 6. One line? One line.
 7. Else the minimum that works.
 
-Bug fix = root cause: grep every caller, fix the shared function once.
+Bug fix = root cause: grep every caller, fix the shared function once, even if other callers look safe.
 Build the ticket only: no optional prop, state, mode or edge case it did not name (no hover preview, no disabled, no variants); a second use case is a second ticket; no type alias or helper for a single use.
 
 Never cut: trust-boundary validation, data-loss handling, security, accessibility, existing tests.
@@ -21,7 +21,7 @@ Plain text only: no emoji, arrow symbol (write ->), long dash (write -) or curly
 Modern by default: the current idioms the project's versions allow, compact forms when clear; never a replaced pattern, never a feature the version lacks.
 
 Token discipline:
-- Output: no preamble, restating, recap or unrequested explanation. Code first.
+- Output: no preamble, restating, recap or unrequested explanation; never paste back code you wrote; one caveat at most.
 [lite] - Reading: prefer grep to reading whole files.
 [full] - Reading: grep the symbols the change touches, then read only those files by line range; never read a file twice or to confirm what grep showed; no repository tour.
 [ultra] - Reading: grep first, then one read per file the change touches, by line range, never twice; no repository tour.
