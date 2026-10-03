@@ -2,6 +2,8 @@
 
 [![tests](https://github.com/kaveraa/crewcut/actions/workflows/tests.yml/badge.svg)](https://github.com/kaveraa/crewcut/actions/workflows/tests.yml)
 
+**English** - [Français](https://github.com/kaveraa/crewcut/blob/main/README.fr.md)
+
 Short hair, short code. A Claude Code plugin for the simplest code that
 works: less code on every repository and model measured, fewer tokens where
 there is something not to read or not to write, short answers, and no cut on
