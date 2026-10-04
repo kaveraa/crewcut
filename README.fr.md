@@ -287,6 +287,7 @@ rien n'est injecté au démarrage de la session.
 | `/crewcut ultra`            | Full, plus des réponses d'une ligne et aucun nouveau fichier ni dépendance sans demande explicite |
 | `/crewcut default <niveau>` | Fixe le niveau de départ des nouvelles sessions       |
 | `/crewcut subagents on|off` | Injecte aussi les règles dans les sous-agents (actif par défaut) |
+| `/crewcut lang <code>`      | Répond en anglais, espagnol, français, allemand, coréen ou chinois simplifié (`en`, `es`, `fr`, `de`, `ko`, `zh`) ; demandé une fois à la première session |
 | `/crewcut-review [portée]`  | Revue en lecture seule d'un diff, voir plus bas       |
 | `/crewcut-audit [chemin]`   | Même revue sur tout un arbre, classée par lignes à couper |
 | `/crewcut-debt [chemin]`    | Registre des coins coupés volontairement `crewcut:`, voir plus bas |

@@ -5,6 +5,13 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Added
+
+- `/crewcut lang en|es|fr|de|ko|zh`: reply language, stored in `crewcut.json`. The
+  first session asks it once (never in an eval run). English adds nothing
+  to the ruleset, so the measures are unchanged; another language adds one
+  line to the main session, not to subagents.
+
 ## [0.6.5] - 2026-10-04
 
 ### Changed

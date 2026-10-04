@@ -8,6 +8,7 @@ const path = require('path');
 const LEVELS = ['off', 'lite', 'full', 'ultra'];
 const REVIEW = 'review'; // session-only state entered by the review and audit skills
 const DEFAULT_LEVEL = 'full';
+const LANGUAGES = { en: 'English', es: 'Spanish', fr: 'French', de: 'German', ko: 'Korean', zh: 'Simplified Chinese' };
 const LEVEL_FILE = 'crewcut-mode';
 const CONFIG_FILE = 'crewcut.json';
 const NUDGE_FILE = 'crewcut-nudged';
@@ -43,6 +44,7 @@ function parseCommand(prompt) {
     return { command: 'subagents', enabled: second === 'on' };
   }
   if (first === 'uninstall' && !second) return { command: 'uninstall' };
+  if (first === 'lang' && Object.hasOwn(LANGUAGES, second)) return { command: 'lang', language: second };
   if (LEVELS.includes(first)) return { command: 'set', level: first };
   return { command: 'status' };
 }
@@ -139,6 +141,31 @@ function uninstall(dir) {
   return removed;
 }
 
+function configuredLanguage(dir) {
+  const code = readConfig(dir).language;
+  return Object.hasOwn(LANGUAGES, code) ? code : 'en';
+}
+
+function languageLine(code) {
+  return `Language: write every reply to the user in ${LANGUAGES[code]}; code and commits follow the project.`;
+}
+
+// English adds nothing, so the measured ruleset stays unchanged by default.
+function withLanguage(rules, dir) {
+  const code = configuredLanguage(dir);
+  return rules && code !== 'en' ? `${rules}\n${languageLine(code)}` : rules;
+}
+
+// One-time question at the first session; English is stored so it is never asked again.
+function languageOffer(dir) {
+  if (readConfig(dir).language !== undefined) return '';
+  writeConfig(dir, { language: 'en' });
+  const choices = Object.entries(LANGUAGES).map(([code, name]) => `${name} (${code})`).join(', ');
+  return `Language, once: ask the user, in one line, which language crewcut should reply in: ${choices}. `
+    + `On any but English, set "language" to its code in ${path.join(dir, CONFIG_FILE)} `
+    + 'and reply in it from then on. Never ask again.';
+}
+
 function readLevel(dir) {
   try {
     const text = fs.readFileSync(path.join(dir, LEVEL_FILE), 'utf8').trim().toLowerCase();
@@ -233,11 +260,11 @@ function onSession(input, env, dir) {
   const keep = KEEP_LEVEL_SOURCES.includes(input.source);
   const level = (keep && readLevel(dir)) || defaultLevel(env, dir);
   if (!keep) writeLevel(dir, level);
-  const rules = loadRuleset(level);
+  const rules = withLanguage(loadRuleset(level), dir);
   if (!rules) return '';
   if (!keep && fs.existsSync(statuslineCopy(dir))) refreshStatuslineCopy(dir);
-  const nudge = keep || isEvalRun(env) ? '' : statuslineNudge(dir);
-  return envelope('SessionStart', nudge ? `${rules}\n\n${nudge}` : rules);
+  const offers = keep || isEvalRun(env) ? [] : [languageOffer(dir), statuslineNudge(dir)];
+  return envelope('SessionStart', [rules, ...offers].filter(Boolean).join('\n\n'));
 }
 
 function onSubagent(input, env, dir) {
@@ -254,7 +281,8 @@ function onPrompt(input, env, dir) {
   if (!command) return '';
   if (command.command === 'status') {
     const level = readLevel(dir) || defaultLevel(env, dir);
-    const text = `crewcut: ${level} (default: ${defaultLevel(env, dir)}; levels: ${LEVELS.join(', ')})`;
+    const text = `crewcut: ${level} (default: ${defaultLevel(env, dir)}; levels: ${LEVELS.join(', ')}; `
+      + `language: ${configuredLanguage(dir)})`;
     return envelope('UserPromptSubmit', text);
   }
   if (command.command === 'default') {
@@ -265,6 +293,10 @@ function onPrompt(input, env, dir) {
     writeConfig(dir, { subagents: command.enabled });
     return envelope('UserPromptSubmit', `crewcut: subagents ${command.enabled ? 'on' : 'off'}`);
   }
+  if (command.command === 'lang') {
+    writeConfig(dir, { language: command.language });
+    return envelope('UserPromptSubmit', `crewcut: language ${command.language}\n\n${languageLine(command.language)}`);
+  }
   if (command.command === 'uninstall') {
     const removed = uninstall(dir);
     const what = removed.length ? `removed ${removed.join(', ')}` : 'nothing to remove';
@@ -272,7 +304,7 @@ function onPrompt(input, env, dir) {
   }
   const level = command.command === 'review' ? REVIEW : command.level;
   writeLevel(dir, level);
-  const rules = loadRuleset(level);
+  const rules = withLanguage(loadRuleset(level), dir);
   const text = rules ? `crewcut: ${level}\n\n${rules}` : `crewcut: ${level}`;
   return envelope('UserPromptSubmit', text);
 }
@@ -320,7 +352,7 @@ function main() {
 }
 
 module.exports = {
-  LEVELS, DEFAULT_LEVEL, parseCommand, renderRuleset, configDir,
+  LEVELS, LANGUAGES, DEFAULT_LEVEL, parseCommand, renderRuleset, configDir,
   readLevel, writeLevel, readConfig, writeConfig, defaultLevel, run, subagentMatcher, uninstall,
 };
 
