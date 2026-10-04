@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.7.1] - 2026-10-04
+
 ### Changed
 
 - Fable 5.1 remeasured on the one-caveat rule, seven cases, three runs,
