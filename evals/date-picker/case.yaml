@@ -46,6 +46,7 @@ graders:
     name: short-answer
     criteria: >
       The final message is at most 8 lines, counting blank lines, and has no
-      bullet points. It names the file and the field. After the one or two
-      sentences that describe the change, at most two sentences remain, for
-      a caveat or for what is left to do; there is no list of follow-up ideas.
+      bullet points. It names the file and the field. It has at most four
+      sentences in all. No sentence offers or suggests a script, a computed
+      or dynamic value, or another change to the form; saying that the server
+      still has to accept or check the field is fine.

@@ -47,7 +47,8 @@ graders:
     criteria: >
       The final message is at most 10 lines, counting blank lines and code.
       It names the added function and says it uses the URL parser's hostname.
-      It does not list the three sample links with their results, and it does
-      not repeat the whole function in a code block when it already described
-      it in a sentence. One caveat in one sentence (for example that an
-      invalid URL throws) is fine.
+      Citing one link as an example of the result is fine; going through all
+      three sample links with their results is not. It does not repeat the
+      whole function in a code block when it already described it in a
+      sentence. At most one sentence is a caveat or a side note (for example
+      that an invalid URL throws, or that the function is not exported).
