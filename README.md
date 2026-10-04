@@ -276,6 +276,7 @@ injected at session start.
 | `/crewcut ultra`            | Full, plus one-line answers and no new file or dependency without an explicit request |
 | `/crewcut default <level>`  | Set the level new sessions start at                   |
 | `/crewcut subagents on|off` | Inject the rules into subagents too (on by default)   |
+| `/crewcut lang en|es|fr`    | Reply in English, Spanish or French; asked once at the first session |
 | `/crewcut-review [scope]`   | Read-only review of a diff, see below                 |
 | `/crewcut-audit [path]`     | Same review over a whole tree, ranked by lines to cut |
 | `/crewcut-debt [path]`      | Ledger of the `crewcut:` corners cut on purpose, see below |

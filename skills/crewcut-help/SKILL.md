@@ -21,6 +21,7 @@ Commands
   /crewcut <level>           switch for this session
   /crewcut default <level>   set the default for new sessions
   /crewcut subagents on|off  inject the rules into subagents (on by default)
+  /crewcut lang en|es|fr     reply language, asked once at the first session
   /crewcut-review [scope]    read-only review of a diff: what to cut
   /crewcut-audit [path]      read-only audit of a whole tree: what to cut
   /crewcut-debt [path]       read-only ledger of the "crewcut:" corners cut

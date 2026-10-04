@@ -186,21 +186,21 @@ test('prompt /crewcut alone reports the stored level and writes nothing', () => 
   const dir = tempDir();
   fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'lite\n');
   const out = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir });
-  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: full; levels: off, lite, full, ultra)');
+  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: full; levels: off, lite, full, ultra; language: en)');
   assert.equal(levelIn(dir), 'lite');
 });
 
 test('prompt /crewcut reports the default when no level file exists', () => {
   const dir = tempDir();
   const out = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir, CREWCUT_DEFAULT_MODE: 'lite' });
-  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: lite; levels: off, lite, full, ultra)');
+  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: lite; levels: off, lite, full, ultra; language: en)');
   assert.ok(!fs.existsSync(path.join(dir, 'crewcut-mode')));
 });
 
 test('prompt /crewcut maximum reports status like a bare /crewcut', () => {
   const dir = tempDir();
   const out = run('prompt', promptInput('/crewcut maximum'), { CLAUDE_CONFIG_DIR: dir });
-  assert.equal(payload(out).additionalContext, 'crewcut: full (default: full; levels: off, lite, full, ultra)');
+  assert.equal(payload(out).additionalContext, 'crewcut: full (default: full; levels: off, lite, full, ultra; language: en)');
   assert.ok(!fs.existsSync(path.join(dir, 'crewcut-mode')));
 });
 
@@ -371,7 +371,7 @@ test('prompt /crewcut alone reports the level and the default', () => {
   writeConfig(dir, { defaultLevel: 'ultra' });
   fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'lite\n');
   const out = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir });
-  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: ultra; levels: off, lite, full, ultra)');
+  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: ultra; levels: off, lite, full, ultra; language: en)');
 });
 
 test('prompt /crewcut subagents off writes the config and acknowledges', () => {
@@ -455,7 +455,7 @@ test('review state is kept across compaction, reset on startup, left by a level 
   assert.match(payload(compact).additionalContext, /^CREWCUT ACTIVE - level: review\./);
   assert.equal(levelIn(dir), 'review');
   const status = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir });
-  assert.equal(payload(status).additionalContext, 'crewcut: review (default: full; levels: off, lite, full, ultra)');
+  assert.equal(payload(status).additionalContext, 'crewcut: review (default: full; levels: off, lite, full, ultra; language: en)');
   const sub = run('subagent', '{}', { CLAUDE_CONFIG_DIR: dir });
   assert.match(payload(sub).additionalContext, /level: review\./);
   const back = run('prompt', promptInput('/crewcut full'), { CLAUDE_CONFIG_DIR: dir });
@@ -663,4 +663,36 @@ test('the script answers within a second when stdin never closes', async () => {
   assert.ok(Date.now() - started < 4000, 'did not exit on its own');
   assert.match(payload(stdout).additionalContext, /^CREWCUT ACTIVE/);
   assert.equal(levelIn(dir), 'full');
+});
+
+test('parseCommand recognises the lang command for the three languages only', () => {
+  assert.deepEqual(parseCommand('/crewcut lang fr'), { command: 'lang', language: 'fr' });
+  assert.deepEqual(parseCommand('/crewcut lang ES'), { command: 'lang', language: 'es' });
+  assert.deepEqual(parseCommand('/crewcut lang de'), { command: 'status' });
+  assert.deepEqual(parseCommand('/crewcut lang constructor'), { command: 'status' });
+});
+
+test('session startup asks the language once, never in an eval run', () => {
+  const dir = tempDir();
+  const first = payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir })).additionalContext;
+  assert.match(first, /Language, once:/);
+  assert.equal(configIn(dir).language, 'en');
+  const second = payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir })).additionalContext;
+  assert.doesNotMatch(second, /Language/);
+  const evalDir = tempDir();
+  const text = payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: evalDir, CLAUDE_CODE_EVAL_CONFINED: '1' })).additionalContext;
+  assert.doesNotMatch(text, /Language/);
+});
+
+test('prompt /crewcut lang stores the language and later rules carry it', () => {
+  const dir = tempDir();
+  const ack = payload(run('prompt', promptInput('/crewcut lang fr'), { CLAUDE_CONFIG_DIR: dir })).additionalContext;
+  assert.match(ack, /^crewcut: language fr\n\nLanguage: write every reply to the user in French/);
+  assert.equal(configIn(dir).language, 'fr');
+  const session = payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir })).additionalContext;
+  assert.match(session, /^CREWCUT ACTIVE[\s\S]*in French; code and commits follow the project\.$/m);
+  assert.doesNotMatch(session, /Language, once:/);
+  assert.match(payload(run('prompt', promptInput('/crewcut ultra'), { CLAUDE_CONFIG_DIR: dir })).additionalContext, /in French/);
+  assert.doesNotMatch(payload(run('subagent', '{}', { CLAUDE_CONFIG_DIR: dir })).additionalContext, /in French/);
+  assert.equal(run('prompt', promptInput('/crewcut off'), { CLAUDE_CONFIG_DIR: dir }).includes('French'), false);
 });
