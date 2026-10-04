@@ -402,6 +402,18 @@ réponse complète, un test qui échoue est corrigé et relancé, et un fichier
 qui a changé depuis la dernière lecture est relu. Moins de tokens n'est le but
 que si la réponse reste juste.
 
+## Agent de code
+
+Le plugin fournit `crewcut-coder`, un agent de code fixé sur Opus, avec
+Read, Grep, Glob, Edit, Write et Bash. Claude lui délègue une tâche de code
+(implémenter, corriger, refactorer, écrire un test) quand la session tourne
+sur un modèle plus léger ou que le contexte principal doit rester petit ;
+on peut aussi le demander par son nom. Il reçoit les règles crewcut comme
+tout sous-agent et finit par un rapport court : fichiers modifiés, résultat
+des tests. La recherche reste à l'agent Explore intégré à Claude Code, la
+revue à `crewcut-reviewer` sur Sonnet. Une tâche qu'il traite est facturée
+au tarif Opus, même dans une session Sonnet.
+
 ## /crewcut-review
 
 `/crewcut-review` passe en revue les changements non commités ;

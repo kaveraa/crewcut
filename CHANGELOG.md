@@ -5,6 +5,14 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Added
+
+- `crewcut-coder` agent pinned to Opus (Read, Grep, Glob, Edit, Write,
+  Bash) for delegated code tasks; it ends with a changed / tests / note
+  report for the main session. Search stays with the built-in Explore
+  agent, review with `crewcut-reviewer` on Sonnet. Not measured on the eval
+  cases, which never start a subagent.
+
 ## [0.7.1] - 2026-10-04
 
 ### Changed
