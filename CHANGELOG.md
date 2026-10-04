@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-10-04
+
 ### Added
 
 - `crewcut-coder` agent pinned to Opus (Read, Grep, Glob, Edit, Write,
