@@ -379,6 +379,17 @@ Short never means wrong. A question you ask gets a full answer, a failing
 test is fixed and rerun, and a file that changed since the last read is read
 again. Fewer tokens is the goal only when the answer stays right.
 
+## Code agent
+
+The plugin ships `crewcut-coder`, a code agent pinned to Opus with Read,
+Grep, Glob, Edit, Write and Bash. Claude delegates a code task to it
+(implement, fix, refactor, write a test) when the session runs on a lighter
+model or the main context should stay small; you can also ask for it by
+name. It gets the crewcut rules like any subagent and ends with a short
+report: files changed, test result. Search stays with Claude Code's
+built-in Explore agent, review with `crewcut-reviewer` on Sonnet. A task it
+handles is billed at Opus rates, even in a Sonnet session.
+
 ## /crewcut-review
 
 `/crewcut-review` reviews the uncommitted changes; `/crewcut-review main..HEAD`

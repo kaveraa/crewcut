@@ -67,6 +67,16 @@ test('rendered ruleset carries no level tag', () => {
   }
 });
 
+test('the coder agent runs on Opus with editing tools', () => {
+  const text = fs.readFileSync(path.join(root, 'agents', 'crewcut-coder.md'), 'utf8');
+  const front = /^---\n([\s\S]*?)\n---\n/.exec(text.replace(/\r\n/g, '\n'));
+  assert.ok(front, 'frontmatter missing');
+  assert.match(front[1], /^name: crewcut-coder$/m);
+  assert.match(front[1], /^model: opus$/m);
+  const tools = /^tools: (.+)$/m.exec(front[1])[1].split(/,\s*/);
+  assert.deepEqual(tools, ['Read', 'Grep', 'Glob', 'Edit', 'Write', 'Bash']);
+});
+
 test('the crewcut skill stays under 1500 estimated tokens', () => {
   const text = fs.readFileSync(path.join(root, 'skills', 'crewcut', 'SKILL.md'), 'utf8');
   assert.ok(Math.ceil(text.length / 4) < 1500, `about ${Math.ceil(text.length / 4)} tokens`);
