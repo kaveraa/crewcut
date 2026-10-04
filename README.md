@@ -213,11 +213,14 @@ What it says:
   rewrote the output rule: three sentences at most, one caveat only if it changes what
   the user does next, no offer and no skipped line for what the ticket
   never asked. `date-picker` now passes 3 runs out of 3 with the plugin on
-  Sonnet and Opus, 0 without. The open target is `url-parse`: the plugin
-  arm answers in three sentences, but "I have not run it" plus "it throws
-  on an invalid URL" is two side notes where the judge allows one, and the
-  three judge votes split (Sonnet 0.90, Opus 0.95 with the plugin, 0.86
-  without on both).
+  Sonnet and Opus, 0 without. On `url-parse` the plugin arm answered in
+  three sentences, but "I have not run it" plus "it throws on an invalid
+  URL" counted as two side notes where the judge allows one. Saying the code
+  was not run is what Claude Code asks when there is no shell, so the
+  criterion no longer counts it as the side note. Remeasured on that case
+  alone: 3 runs out of 3 with the plugin on Sonnet and Opus; without it, 1
+  on Sonnet (two caveats, or all three links) and 0 on Opus (code block,
+  bullets).
 
 Every case grades correctness as well as size: a shorter answer that is
 wrong scores zero. `keep-validation` asks to simplify a handler at a trust

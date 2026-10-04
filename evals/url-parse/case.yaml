@@ -51,4 +51,6 @@ graders:
       three sample links with their results is not. It does not repeat the
       whole function in a code block when it already described it in a
       sentence. At most one sentence is a caveat or a side note (for example
-      that an invalid URL throws, or that the function is not exported).
+      that an invalid URL throws, or that the function is not exported). A
+      sentence saying the code was not run or tested does not count as that
+      side note.
