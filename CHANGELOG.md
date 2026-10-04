@@ -7,6 +7,11 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ### Changed
 
+- Fable 5.1 remeasured on the one-caveat rule, seven cases, three runs,
+  Sonnet as judge (Claude Code 2.1.289, no out-of-usage run): 0.98 against
+  0.81, 5.7 turns against 8.4, 0.296 against 0.414 USD per run (-29 %).
+  README measure paragraphs and the `/crewcut-gain` row updated.
+
 - `url-parse` short-answer: a sentence saying the code was not run no
   longer counts as the one side note; Claude Code asks for it when there is
   no shell. Remeasured on that case, three runs, Sonnet as judge: 3 runs out

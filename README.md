@@ -157,7 +157,11 @@ and the one-caveat output rule (2026-10-04, Claude Code 2.1.289): Sonnet
 0.98 against 0.86, 5.4 turns against 6.1, 0.064 against 0.066 USD (-3 %);
 Opus 0.98 against 0.83, 5.1 turns against 6.0, 0.104 against 0.102 USD
 (+2 %); `date-picker` passes 3 runs out of 3 with the plugin on both,
-against 0 without.
+against 0 without. Fable on the same rule (crewcut 0.7.0, 2026-10-04,
+Claude Code 2.1.289, 42 clean cells): 0.98 against 0.81, 5.7 turns against
+8.4 (-32 %), 0.296 against 0.414 USD (-29 %); `date-picker` and
+`url-parse` pass 3 runs out of 3 with the plugin, `shared-bug` 0.96
+against 0.62.
 
 What it says:
 

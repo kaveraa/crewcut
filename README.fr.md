@@ -162,7 +162,11 @@ mesure 0.4.0 dans les deux bras, seul le rapport se compare. Avec crewcut
 Code 2.1.289) : Sonnet 0,98 contre 0,86, 5,4 tours contre 6,1, 0,064 contre
 0,066 USD (-3 %) ; Opus 0,98 contre 0,83, 5,1 tours contre 6,0, 0,104 contre
 0,102 USD (+2 %) ; `date-picker` passe 3 runs sur 3 avec le plugin sur les
-deux, contre 0 sans.
+deux, contre 0 sans. Fable avec la même règle (crewcut 0.7.0, 2026-10-04,
+Claude Code 2.1.289, 42 cellules propres) : 0,98 contre 0,81, 5,7 tours
+contre 8,4 (-32 %), 0,296 contre 0,414 USD (-29 %) ; `date-picker` et
+`url-parse` passent 3 runs sur 3 avec le plugin, `shared-bug` 0,96 contre
+0,62.
 
 Ce que ça dit :
 
