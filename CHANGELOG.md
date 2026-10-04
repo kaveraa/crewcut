@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-04
+
 ### Added
 
 - `/crewcut lang en|es|fr|de|ko|zh`: reply language, stored in `crewcut.json`. The
