@@ -440,6 +440,9 @@ same cleanup is `node <plugin dir>/hooks/crewcut.js uninstall`.
 - The hooks need `node` on the PATH.
 - The level is stored per user, so concurrent sessions share it.
 - Claude Code only.
+- A cloud session (claude.ai/code) does not load a plugin installed with
+  `/plugin`, nor one a repository turns on in `.claude/settings.json`, and
+  has no `/plugin` command. Installing crewcut there is being tested.
 
 ## Credits
 

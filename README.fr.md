@@ -467,6 +467,10 @@ Depuis un shell, le même nettoyage est
 - Le niveau est stocké par utilisateur, donc les sessions simultanées le
   partagent.
 - Claude Code seulement.
+- Une session cloud (claude.ai/code) ne charge ni un plugin installé avec
+  `/plugin`, ni un plugin qu'un dépôt active dans `.claude/settings.json`,
+  et n'a pas de commande `/plugin`. L'installation de crewcut y est en
+  cours de test.
 
 ## Crédits
 
