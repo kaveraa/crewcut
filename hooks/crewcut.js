@@ -8,7 +8,7 @@ const path = require('path');
 const LEVELS = ['off', 'lite', 'full', 'ultra'];
 const REVIEW = 'review'; // session-only state entered by the review and audit skills
 const DEFAULT_LEVEL = 'full';
-const LANGUAGES = { en: 'English', es: 'Spanish', fr: 'French' };
+const LANGUAGES = { en: 'English', es: 'Spanish', fr: 'French', de: 'German', ko: 'Korean', zh: 'Chinese' };
 const LEVEL_FILE = 'crewcut-mode';
 const CONFIG_FILE = 'crewcut.json';
 const NUDGE_FILE = 'crewcut-nudged';
@@ -160,8 +160,9 @@ function withLanguage(rules, dir) {
 function languageOffer(dir) {
   if (readConfig(dir).language !== undefined) return '';
   writeConfig(dir, { language: 'en' });
-  return 'Language, once: ask the user, in one line, which language crewcut should reply in: English, '
-    + `Spanish or French. On Spanish or French, set "language" to "es" or "fr" in ${path.join(dir, CONFIG_FILE)} `
+  const choices = Object.entries(LANGUAGES).map(([code, name]) => `${name} (${code})`).join(', ');
+  return `Language, once: ask the user, in one line, which language crewcut should reply in: ${choices}. `
+    + `On any but English, set "language" to its code in ${path.join(dir, CONFIG_FILE)} `
     + 'and reply in it from then on. Never ask again.';
 }
 

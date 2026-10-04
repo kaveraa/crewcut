@@ -665,10 +665,12 @@ test('the script answers within a second when stdin never closes', async () => {
   assert.equal(levelIn(dir), 'full');
 });
 
-test('parseCommand recognises the lang command for the three languages only', () => {
+test('parseCommand recognises the lang command for the listed languages only', () => {
   assert.deepEqual(parseCommand('/crewcut lang fr'), { command: 'lang', language: 'fr' });
   assert.deepEqual(parseCommand('/crewcut lang ES'), { command: 'lang', language: 'es' });
-  assert.deepEqual(parseCommand('/crewcut lang de'), { command: 'status' });
+  assert.deepEqual(parseCommand('/crewcut lang ko'), { command: 'lang', language: 'ko' });
+  assert.deepEqual(parseCommand('/crewcut lang zh'), { command: 'lang', language: 'zh' });
+  assert.deepEqual(parseCommand('/crewcut lang it'), { command: 'status' });
   assert.deepEqual(parseCommand('/crewcut lang constructor'), { command: 'status' });
 });
 
