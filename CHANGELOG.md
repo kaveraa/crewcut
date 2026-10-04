@@ -5,6 +5,14 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- `url-parse` short-answer: a sentence saying the code was not run no
+  longer counts as the one side note; Claude Code asks for it when there is
+  no shell. Remeasured on that case, three runs, Sonnet as judge: 3 runs out
+  of 3 with the plugin on Sonnet and Opus (1 and 2 before); without it, 1
+  on Sonnet and 0 on Opus.
+
 ## [0.7.0] - 2026-10-04
 
 ### Added

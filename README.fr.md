@@ -221,11 +221,14 @@ Ce que ça dit :
   seulement si elle change ce que l'utilisateur fait ensuite, aucune
   proposition ni ligne skipped pour ce que le ticket n'a pas demandé.
   `date-picker` passe désormais 3 runs sur 3 avec le plugin sur Sonnet et
-  Opus, 0 sans. La cible ouverte est `url-parse` : le bras avec plugin répond
-  en trois phrases, mais "je ne l'ai pas exécuté" plus "une URL invalide lève
-  une exception" font deux remarques là où le juge n'en admet qu'une, et les
-  trois votes du juge se partagent (Sonnet 0,90, Opus 0,95 avec le plugin,
-  0,86 sans sur les deux).
+  Opus, 0 sans. Sur `url-parse`, le bras avec plugin répondait en trois
+  phrases, mais "je ne l'ai pas exécuté" plus "une URL invalide lève une
+  exception" comptaient pour deux remarques là où le juge n'en admet qu'une.
+  Dire que le code n'a pas été exécuté est ce que Claude Code demande sans
+  shell : le critère ne le compte plus comme la remarque. Remesure sur ce
+  seul cas : 3 runs sur 3 avec le plugin sur Sonnet et Opus ; sans, 1 sur
+  Sonnet (deux mises en garde, ou les trois liens) et 0 sur Opus (bloc de
+  code, puces).
 
 Chaque cas note la justesse autant que la taille : une réponse plus courte
 mais fausse vaut zéro. `keep-validation` demande de simplifier un handler à
