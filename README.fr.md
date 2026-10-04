@@ -157,7 +157,12 @@ crewcut 0.6.3 : 0,96 contre 0,88, 5,4 tours contre 6,0, 0,061 contre
 0,296 contre 0,378 USD (-22 %) ; `csv-export` lit 3,3 fichiers contre 9,0,
 `vat-country` 3,0 contre 11,0, et `date-picker` passe 3 runs sur 3 avec le
 plugin contre 0 sans. Les runs de Fable coûtent environ trois fois la
-mesure 0.4.0 dans les deux bras, seul le rapport se compare.
+mesure 0.4.0 dans les deux bras, seul le rapport se compare. Avec crewcut
+0.6.5 et la règle de sortie à une seule mise en garde (2026-10-04, Claude
+Code 2.1.289) : Sonnet 0,98 contre 0,86, 5,4 tours contre 6,1, 0,064 contre
+0,066 USD (-3 %) ; Opus 0,98 contre 0,83, 5,1 tours contre 6,0, 0,104 contre
+0,102 USD (+2 %) ; `date-picker` passe 3 runs sur 3 avec le plugin sur les
+deux, contre 0 sans.
 
 Ce que ça dit :
 
@@ -204,11 +209,23 @@ Ce que ça dit :
   le fichier (`max`, `min`, `pattern`, `placeholder` ; elle passe 3 runs sur
   3 dans les deux bras sur Sonnet et Opus), et le juge de réponse courte ne
   mesure plus que le message : 8 lignes au plus, pas de puces, deux phrases
-  de mise en garde au plus. Ce dernier critère échoue encore dans les deux
-  bras sur les deux modèles : les modèles disent ce qu'ils n'ont pas vérifié
-  et demandent si le champ doit être obligatoire, trois phrases là où la
-  règle en demande une. C'est la cible ouverte, et elle coûte autant avec
-  que sans le plugin.
+  de mise en garde au plus. Ce dernier critère échouait encore dans les deux
+  bras sur les deux modèles : les modèles disaient ce qu'ils n'avaient pas
+  vérifié et demandaient si le champ doit être obligatoire, trois phrases là
+  où la règle en demande une. La 0.6.5 a d'abord réécrit le critère en
+  éléments comptables (quatre phrases au plus, aucune proposition de script
+  ni d'autre changement du formulaire), et le bras avec plugin restait à 0,90
+  sur chaque modèle : les manques étaient une ligne `skipped: min/max` et une
+  phrase disant qu'aucun min ni max n'avait été ajouté, lues toutes deux
+  comme des propositions. Elle a ensuite réécrit la règle de sortie : trois phrases au plus, une seule mise en garde et
+  seulement si elle change ce que l'utilisateur fait ensuite, aucune
+  proposition ni ligne skipped pour ce que le ticket n'a pas demandé.
+  `date-picker` passe désormais 3 runs sur 3 avec le plugin sur Sonnet et
+  Opus, 0 sans. La cible ouverte est `url-parse` : le bras avec plugin répond
+  en trois phrases, mais "je ne l'ai pas exécuté" plus "une URL invalide lève
+  une exception" font deux remarques là où le juge n'en admet qu'une, et les
+  trois votes du juge se partagent (Sonnet 0,90, Opus 0,95 avec le plugin,
+  0,86 sans sur les deux).
 
 Chaque cas note la justesse autant que la taille : une réponse plus courte
 mais fausse vaut zéro. `keep-validation` demande de simplifier un handler à
@@ -320,9 +337,11 @@ les nomme les réintègre.
 
 ## Discipline de tokens
 
-- Sortie : pas de préambule, pas de reformulation de la demande, pas de
-  récapitulatif, pas d'explication non demandée. Ne jamais recoller le code
-  qui vient d'être écrit ; une mise en garde au plus, sans liste à puces.
+- Sortie : pas de préambule, pas de récapitulatif, pas d'explication non
+  demandée. Ne jamais recoller le code qui vient d'être écrit. Trois phrases
+  au plus : ce qui a changé, où, et une mise en garde seulement si elle change
+  ce que vous ferez ensuite ; aucune proposition ni ligne "skipped" pour ce
+  que le ticket n'a pas demandé ; pas de liste à puces.
 - Lecture : grep sur les symboles que le changement touche, puis lire
   seulement ces fichiers, par plage de lignes ; un grep vaut mieux que trois
   lectures ; ne jamais relire un fichier ; ne jamais ouvrir un fichier pour

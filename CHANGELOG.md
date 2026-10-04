@@ -5,6 +5,27 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.6.5] - 2026-10-04
+
+### Changed
+
+- Output rule, ruleset and skill: three sentences at most (what changed,
+  where, one caveat only if it changes what the user does next), no offer and
+  no `skipped:` line for what the ticket never asked. The `skipped: <what>,
+  add when: <condition>` line is kept for a corner the ticket needed and the
+  plugin cut. Found on `date-picker`: the judge read that line, and a
+  sentence saying no min or max was added, as offers to change the form.
+  The ruleset drops "ship the simple version and question the complex
+  request", which the skill still carries, to stay under 600 tokens.
+- Measure with the new rule, seven cases, three runs, Sonnet as judge
+  (Claude Code 2.1.289): Sonnet 0.98 against 0.86 without, 5.4 turns
+  against 6.1, 0.064 against 0.066 USD; Opus 0.98 against 0.83, 5.1 turns
+  against 6.0, 0.104 against 0.102 USD. `date-picker` passes 3 runs out of
+  3 with the plugin on both models against 0 without. `url-parse`
+  short-answer stays split with the plugin (Sonnet 1 run out of 3, Opus 2):
+  "not run" plus "throws on an invalid URL" is two side notes for the judge.
+  README measure paragraphs and `/crewcut-gain` rows updated.
+
 ### Added
 
 - `examples/`: five cells of the agentic benchmark on Opus 5.5 (date picker,

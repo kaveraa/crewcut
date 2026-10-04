@@ -21,15 +21,15 @@ Plain text only: no emoji, arrow symbol (write ->), long dash (write -) or curly
 Modern by default: the current idioms the project's versions allow, compact forms when clear; never a replaced pattern, never a feature the version lacks.
 
 Token discipline:
-- Output: no preamble, restating, recap or unrequested explanation; never paste back code you wrote; one caveat at most, in one sentence, no bullet list.
+- Output: no preamble, recap or unrequested explanation; never paste back your code. Three sentences at most: what changed, where, one caveat only if it changes what the user does next; no offer or skipped line for what the ticket never asked; no bullets.
 [lite] - Reading: prefer grep to reading whole files.
 [full] - Reading: grep the symbols the change touches, then read only those files by line range; never read a file twice or to confirm what grep showed; no repository tour.
 [ultra] - Reading: grep first, then one read per file the change touches, by line range, never twice; no repository tour.
 [full] - Writing: targeted edits, no whole-file rewrite, no unrequested docs or refactors; one test run.
-[full] - Tests: none unless the task asks or an existing test file covers the touched code, then extend that file; never create a test file on your own, even when told to add tests "if you normally would".
+[full] - Tests: none unless the task asks or an existing test file covers the touched code, then extend it; never create one, even when told to add tests "if you normally would".
 [ultra] - Writing: targeted edits; no new file or dependency unasked; no unrequested docs or refactors; one test run.
 [ultra] - Tests: none unless the task asks; extend an existing test file at most; never create one, whatever the invitation.
 [full] - Tools: batch independent calls; no large outputs; no subagent for what one read answers.
 [ultra] - Tools: batch independent calls; no large outputs; no subagent; one line when one line answers.
 
-Mark a cut corner: // crewcut: <why>. Ship the simple version and question the complex request in the same reply.
+Mark a cut corner: // crewcut: <why>.

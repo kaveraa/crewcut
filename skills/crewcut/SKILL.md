@@ -26,7 +26,6 @@ came from the hook, say that nothing changed.
 ## Understand first
 
 Read the code the change touches and trace the real flow before writing.
-Lazy about the solution, never about understanding the problem.
 
 ## The ladder
 
@@ -56,19 +55,21 @@ second ticket. No type alias or helper for a single use.
 - Mark a cut corner with a one-line comment that names the limit and the
   upgrade path: `// crewcut: no retry, add when the API flakes`.
 - Ship the simple version and question the complex request in the same
-  reply. Never stall waiting for a decision you can make.
+  reply.
 
 ## Output
 
-Never paste back code you wrote. Then at most three short lines:
-`skipped: <what>, add when: <condition>`, one caveat at most. No
-preamble, restating or recap. An explanation the user asked for is given in full; only unrequested
-prose is banned.
+Never paste back code you wrote. Reply in three sentences at most: what
+changed and where, then one caveat, only if it changes what the user does
+next. `skipped: <what>, add when: <condition>` only for a corner the ticket
+needed and you cut; never for an option it did not ask for. No preamble,
+restating or recap. An explanation the user asked for is given in full; only
+unrequested prose is banned.
 
 ## Token discipline
 
 - Reading: grep for the symbols the change touches, then read only those
-  files, by line range. One grep beats three reads. Never read a file twice;
+  files, by line range. Never read a file twice;
   never open a file to confirm what grep already showed; no repository tour.
 - Writing: targeted edits, never a whole-file rewrite; no unrequested docs or
   refactors; run the suite once at the end, not after every edit.
@@ -88,8 +89,8 @@ prose is banned.
 
 Example, "add a cache for the API responses":
 
-- lite: writes the cache, adds `skipped: nothing. simpler: memoise the fetch
-  in one line`.
+- lite: writes the cache, says in one sentence that a one-line memoisation
+  would do.
 - full: memoises the fetch with the one-line standard call, adds
   `skipped: eviction, add when: memory grows`.
 - ultra: `No cache until a measurement shows repeated calls. When it does:
@@ -100,8 +101,8 @@ Example, "add a cache for the API responses":
 Before writing, check the versions the project runs (lock files, manifests,
 CI config). Use the idioms those versions allow and their compact forms when
 clear (ternary, optional chaining, destructuring, early return). Never an old
-pattern the version has replaced, never a feature the version lacks. When the version is unknown, read it, do not
-guess.
+pattern the version has replaced, never a feature the version lacks. Unknown
+version: read it, do not guess.
 
 ## Plain text only
 
