@@ -152,7 +152,12 @@ crewcut 0.6.3: 0.96 against 0.88, 5.4 turns against 6.0, 0.061 against
 against 0.378 USD (-22 %); `csv-export` reads 3.3 files against 9.0,
 `vat-country` 3.0 against 11.0, and `date-picker` passes 3 runs out of 3
 with the plugin against 0 without. Fable's runs cost about three times the
-0.4.0 measure in both arms, so only the ratio compares.
+0.4.0 measure in both arms, so only the ratio compares. With crewcut 0.6.5
+and the one-caveat output rule (2026-10-04, Claude Code 2.1.289): Sonnet
+0.98 against 0.86, 5.4 turns against 6.1, 0.064 against 0.066 USD (-3 %);
+Opus 0.98 against 0.83, 5.1 turns against 6.0, 0.104 against 0.102 USD
+(+2 %); `date-picker` passes 3 runs out of 3 with the plugin on both,
+against 0 without.
 
 What it says:
 
@@ -198,10 +203,21 @@ What it says:
   `max`, `min`, `pattern` or `placeholder` (it passes 3 runs out of 3 in
   both arms on Sonnet and Opus), and the short-answer judge only measures
   the message: 8 lines at most, no bullets, two sentences of caveat at
-  most. That last criterion still fails in both arms on both models: the
-  models report what they did not verify and whether the field should be
-  required, three sentences where the rule asks one. It is the open target,
-  and it costs the same with or without the plugin.
+  most. That last criterion still failed in both arms on both models: the
+  models reported what they did not verify and whether the field should be
+  required, three sentences where the rule asks one. 0.6.5 first rewrote
+  the criterion as countable elements (four sentences at most, no offer of
+  a script or of another change to the form), and the plugin arm still
+  scored 0.90 on each model: the misses were a `skipped: min/max` line and
+  a sentence saying no min or max was added, both read as offers. It then
+  rewrote the output rule: three sentences at most, one caveat only if it changes what
+  the user does next, no offer and no skipped line for what the ticket
+  never asked. `date-picker` now passes 3 runs out of 3 with the plugin on
+  Sonnet and Opus, 0 without. The open target is `url-parse`: the plugin
+  arm answers in three sentences, but "I have not run it" plus "it throws
+  on an invalid URL" is two side notes where the judge allows one, and the
+  three judge votes split (Sonnet 0.90, Opus 0.95 with the plugin, 0.86
+  without on both).
 
 Every case grades correctness as well as size: a shorter answer that is
 wrong scores zero. `keep-validation` asks to simplify a handler at a trust
@@ -308,9 +324,10 @@ names them brings them back.
 
 ## Token discipline
 
-- Output: no preamble, no restating the request, no recap, no unrequested
-  explanation. Never paste back code just written; one caveat at most, no
-  bullet list.
+- Output: no preamble, no recap, no unrequested explanation. Never paste
+  back code just written. Three sentences at most: what changed, where, and
+  one caveat only if it changes what you do next; no offer and no "skipped"
+  line for what the ticket never asked; no bullet list.
 - Reading: grep for the symbols the change touches, then read only those
   files, by line range; one grep beats three reads; never read a file twice;
   never open a file to confirm what grep already showed.
