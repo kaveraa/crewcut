@@ -40,7 +40,7 @@ graders:
   - type: regex
     name: only-asked-attributes
     target: { source: file, path: index.html }
-    pattern: '(max|min|pattern|placeholder)='
+    pattern: ' (max|min|pattern|placeholder)='
     match: not_contains
   - type: llm
     name: short-answer

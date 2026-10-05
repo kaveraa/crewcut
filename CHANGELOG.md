@@ -5,6 +5,38 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-10-05
+
+### Changed
+
+- The `crewcut:` comment on a cut corner is now opt-in: `/crewcut markers
+  on` (or `"markers": true` in `crewcut.json`) adds the rule to the ruleset,
+  and the rule only covers a corner with a known ceiling, never a prefix on
+  a comment that explains code. Found on a real project: the model wrote
+  `// crewcut: ...` in front of an ordinary comment describing the code.
+  Off by default, the ruleset loses the line (lite 458, full 573, ultra 554
+  estimated tokens; with markers on 483, 599, 580). `/crewcut-debt` says
+  so when it finds nothing. The skill drops its "Boundaries" section, which
+  repeated the persona line, to stay under 1500 tokens.
+- Ruleset trimmed to make room for the opt-in line within the 600-token
+  budget: shorter commit, modern-by-default and reading lines, same rules.
+- Measure with the marker line out and the grader live, seven cases, three
+  runs, Sonnet as judge (Claude Code 2.1.289, no out-of-usage run): Sonnet
+  0.97 against 0.85 without, 4.4 turns against 5.8, 0.057 against 0.059
+  USD; Opus 0.99 against 0.81, 5.0 turns against 6.0, 0.104 USD in both
+  arms. `date-picker` 0.90 against 0.71 on Sonnet, where the baseline adds
+  `max` in every run and the plugin in one run out of three; 1.00 against
+  0.81 on Opus. README measure paragraphs and `/crewcut-gain` rows updated.
+
+### Fixed
+
+- `date-picker` grader `only-asked-attributes` never matched: the case file
+  carried a backspace byte where the regex meant a word boundary, so a
+  `max` or `min` attribute in the file passed from 0.6.3 to 0.8.0. The
+  pattern now starts with a space, no backslash, and a test refuses any
+  control character in tracked text files. The measures above are the
+  first with the grader live.
+
 ## [0.8.0] - 2026-10-04
 
 ### Added

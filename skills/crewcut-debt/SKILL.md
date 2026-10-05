@@ -8,9 +8,10 @@ argument-hint: "[path]"
 
 # Crewcut debt
 
-Every corner cut on purpose carries a `crewcut:` comment naming the limit and
-the condition to revisit it. This command gathers them so a shortcut stays a
-choice instead of becoming the design by neglect.
+With `/crewcut markers on` (off by default), every corner cut on purpose
+carries a `crewcut:` comment naming the limit and the condition to revisit
+it. This command gathers them so a shortcut stays a choice instead of
+becoming the design by neglect.
 
 1. Scope: `$ARGUMENTS` if given (a directory inside the project), else the
    project root.
@@ -24,6 +25,7 @@ choice instead of becoming the design by neglect.
    Take both parts from the comment. A marker that names no condition gets
    `-> no trigger` instead; those are the ones that silently rot.
 4. End with exactly one line: `<N> markers, <M> without a trigger`, or
-   `no crewcut debt` when nothing was found.
+   `no crewcut debt (markers are written only after /crewcut markers on)`
+   when nothing was found.
 
 Change nothing. Write the ledger to a file only when the user asks for it.

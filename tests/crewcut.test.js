@@ -318,6 +318,48 @@ test('parseCommand recognises default and subagents commands', () => {
   assert.deepEqual(parseCommand('/crewcut subagents off'), { command: 'subagents', enabled: false });
   assert.deepEqual(parseCommand('/crewcut subagents ON'), { command: 'subagents', enabled: true });
   assert.deepEqual(parseCommand('/crewcut subagents maybe'), { command: 'status' });
+  assert.deepEqual(parseCommand('/crewcut markers on'), { command: 'markers', enabled: true });
+  assert.deepEqual(parseCommand('/crewcut markers OFF'), { command: 'markers', enabled: false });
+  assert.deepEqual(parseCommand('/crewcut markers'), { command: 'status' });
+});
+
+test('renderRuleset keeps the markers line only when asked', () => {
+  const withMarker = 'always\n[markers] mark it\n[full] full only';
+  assert.equal(renderRuleset('full', withMarker), 'always\nfull only');
+  assert.equal(renderRuleset('full', withMarker, { markers: true }), 'always\nmark it\nfull only');
+  assert.equal(renderRuleset('lite', withMarker, { markers: false }), 'always');
+});
+
+test('the real ruleset asks for a crewcut: comment only with markers on', () => {
+  const markdown = fs.readFileSync(path.join(__dirname, '..', 'hooks', 'ruleset.md'), 'utf8');
+  for (const level of ['lite', 'full', 'ultra']) {
+    assert.doesNotMatch(renderRuleset(level, markdown), /crewcut: </, level);
+    assert.match(renderRuleset(level, markdown, { markers: true }), /\/\/ crewcut: <limit>/, level);
+  }
+});
+
+test('session emits the markers line only when the config enables it', () => {
+  const dir = tempDir();
+  const startup = '{"hook_event_name":"SessionStart","source":"startup"}';
+  assert.doesNotMatch(payload(run('session', startup, { CLAUDE_CONFIG_DIR: dir })).additionalContext, /crewcut: </);
+  writeConfig(dir, { markers: true });
+  assert.match(payload(run('session', startup, { CLAUDE_CONFIG_DIR: dir })).additionalContext, /\/\/ crewcut: <limit>/);
+  writeConfig(dir, { markers: 'yes' });
+  assert.doesNotMatch(payload(run('session', startup, { CLAUDE_CONFIG_DIR: dir })).additionalContext, /crewcut: </);
+});
+
+test('prompt /crewcut markers on writes the config and re-emits the rules with the line', () => {
+  const dir = tempDir();
+  fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'lite\n');
+  const on = payload(run('prompt', promptInput('/crewcut markers on'), { CLAUDE_CONFIG_DIR: dir })).additionalContext;
+  assert.match(on, /^crewcut: markers on\n\nCREWCUT ACTIVE - level: lite\./);
+  assert.match(on, /\/\/ crewcut: <limit>/);
+  assert.equal(configIn(dir).markers, true);
+  const off = payload(run('prompt', promptInput('/crewcut markers off'), { CLAUDE_CONFIG_DIR: dir })).additionalContext;
+  assert.match(off, /^crewcut: markers off\n\nCREWCUT ACTIVE - level: lite\./);
+  assert.doesNotMatch(off, /crewcut: </);
+  assert.equal(configIn(dir).markers, false);
+  assert.equal(levelIn(dir), 'lite');
 });
 
 test('readConfig gives an empty object for a missing, invalid or non-object file', () => {
