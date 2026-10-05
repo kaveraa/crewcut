@@ -166,7 +166,13 @@ deux, contre 0 sans. Fable avec la même règle (crewcut 0.7.0, 2026-10-04,
 Claude Code 2.1.289, 42 cellules propres) : 0,98 contre 0,81, 5,7 tours
 contre 8,4 (-32 %), 0,296 contre 0,414 USD (-29 %) ; `date-picker` et
 `url-parse` passent 3 runs sur 3 avec le plugin, `shared-bug` 0,96 contre
-0,62.
+0,62. Avec crewcut 0.9.0 (2026-10-05, Claude Code 2.1.289), la ligne de
+marqueur sortie du ruleset et le grader d'attributs de `date-picker` actif
+pour la première fois (plus bas) : Sonnet 0,97 contre 0,85, 4,4 tours
+contre 5,8 (-24 %), 0,057 contre 0,059 USD (-3 %) ; Opus 0,99 contre 0,81,
+5,0 tours contre 6,0, 0,104 USD dans les deux bras. `date-picker` 0,90
+contre 0,71 sur Sonnet (la baseline ajoute un attribut `max` à chaque run,
+le plugin dans un run sur trois), 1,00 contre 0,81 sur Opus.
 
 Ce que ça dit :
 
@@ -210,8 +216,11 @@ Ce que ça dit :
   demandé, puis deux mises en garde à son sujet. La 0.6.3 ajoute "no
   unasked max or min" à la règle du ticket et "in one sentence, no bullet
   list" à celle de la mise en garde, et sépare le grader : une regex vérifie
-  le fichier (`max`, `min`, `pattern`, `placeholder` ; elle passe 3 runs sur
-  3 dans les deux bras sur Sonnet et Opus), et le juge de réponse courte ne
+  le fichier (`max`, `min`, `pattern`, `placeholder` ; elle semblait passer
+  3 runs sur 3 dans les deux bras sur Sonnet et Opus ; la 0.9.0 a trouvé un
+  octet backspace dans le fichier de cas là où la regex voulait une limite
+  de mot, donc le contrôle n'a jamais matché jusque-là, et la baseline de
+  Sonnet ajoute en fait `max` à chaque run), et le juge de réponse courte ne
   mesure plus que le message : 8 lignes au plus, pas de puces, deux phrases
   de mise en garde au plus. Ce dernier critère échouait encore dans les deux
   bras sur les deux modèles : les modèles disaient ce qu'ils n'avaient pas
@@ -295,9 +304,10 @@ rien n'est injecté au démarrage de la session.
 | `/crewcut default <niveau>` | Fixe le niveau de départ des nouvelles sessions       |
 | `/crewcut subagents on|off` | Injecte aussi les règles dans les sous-agents (actif par défaut) |
 | `/crewcut lang <code>`      | Répond en anglais, espagnol, français, allemand, coréen ou chinois simplifié (`en`, `es`, `fr`, `de`, `ko`, `zh`) ; demandé une fois à la première session |
+| `/crewcut markers on|off`   | Commentaire `crewcut:` sur chaque coin coupé (inactif par défaut) |
 | `/crewcut-review [portée]`  | Revue en lecture seule d'un diff, voir plus bas       |
 | `/crewcut-audit [chemin]`   | Même revue sur tout un arbre, classée par lignes à couper |
-| `/crewcut-debt [chemin]`    | Registre des coins coupés volontairement `crewcut:`, voir plus bas |
+| `/crewcut-debt [chemin]`    | Registre des marqueurs `crewcut:`, voir plus bas      |
 | `/crewcut-gain`             | Ce que le plugin économise, mesuré sur ses cas d'eval |
 | `/crewcut-help`             | Carte de référence                                    |
 | `/crewcut uninstall`        | Retire les fichiers du plugin à côté de vos réglages, voir plus bas |
@@ -330,8 +340,8 @@ ou ajoutez-la vous-même :
 
 Les réglages vivent dans `crewcut.json` à côté de vos réglages Claude
 (`~/.claude`, ou `CLAUDE_CONFIG_DIR`) :
-`{ "defaultLevel": "ultra", "subagents": true }`. La variable
-d'environnement `CREWCUT_DEFAULT_MODE` l'emporte sur le fichier. Avec
+`{ "defaultLevel": "ultra", "subagents": true, "markers": false }`. La
+variable d'environnement `CREWCUT_DEFAULT_MODE` l'emporte sur le fichier. Avec
 `subagents` actif, chaque sous-agent que Claude démarre reçoit le ruleset du
 niveau courant, environ 500 tokens chacun ; coupez-le pour les économiser,
 ou limitez-le à certains types d'agents avec une expression régulière,
@@ -431,9 +441,14 @@ et la doc non demandés. La revue ne change rien.
 
 ## /crewcut-debt
 
-Chaque coin que crewcut coupe volontairement porte un commentaire comme
-`// crewcut: no retry, add when the API flakes`. `/crewcut-debt` les
-rassemble en une liste, une ligne par marqueur, et signale ceux qui ne
+Avec `/crewcut markers on`, chaque coin que crewcut coupe volontairement
+porte un commentaire comme `// crewcut: no retry, add when the API flakes`,
+et seulement un coin avec un plafond connu : jamais en préfixe d'un
+commentaire qui explique le code. Les marqueurs sont inactifs par défaut,
+parce que sur un vrai projet les modèles mettent aussi le préfixe sur des
+commentaires ordinaires, et le nom d'un plugin n'a rien à faire dans votre
+code si vous n'avez pas demandé le registre. `/crewcut-debt` rassemble les
+marqueurs en une liste, une ligne par marqueur, et signale ceux qui ne
 nomment aucune condition pour y revenir :
 
 ```

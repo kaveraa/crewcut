@@ -25,8 +25,8 @@ crewcut gain                   measured on public repos and eval cases, not on t
 
                  score with / without   turns with / without   cost per run with / without
   Fable 5.1      0.98 / 0.81            5.7 / 8.4     -32 %    0.296 / 0.414 USD    -29 %
-  Sonnet 5.5     0.98 / 0.86            5.4 / 6.1     -11 %    0.064 / 0.066 USD     -3 %
-  Opus 5.5       0.98 / 0.83            5.1 / 6.0     -15 %    0.104 / 0.102 USD     +2 %
+  Sonnet 5.5     0.97 / 0.85            4.4 / 5.8     -24 %    0.057 / 0.059 USD     -3 %
+  Opus 5.5       0.99 / 0.81            5.0 / 6.0     -17 %    0.104 / 0.104 USD      0 %
 
   This repo has no baseline: the version you did not build was never written,
   so no per-repo saving can be honestly computed.

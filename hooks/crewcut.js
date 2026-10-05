@@ -20,7 +20,7 @@ const STDIN_GRACE_MS = 1000; // never hang a session on a stdin that never close
 const OFF_PHRASES = ['stop crewcut', 'normal mode'];
 const COMMAND = /^\/crewcut(?::crewcut)?(?:\s+(\S+)(?:\s+(\S+))?(?:\s.*)?)?$/;
 const READ_ONLY_SKILL = /^\/crewcut(?::crewcut)?-(review|audit)(?:\s.*)?$/;
-const TAG = /^\[(lite|full|ultra)\]\s?/;
+const TAG = /^\[(lite|full|ultra|markers)\]\s?/;
 const KEEP_LEVEL_SOURCES = ['resume', 'compact'];
 const BOM = 0xfeff;
 
@@ -43,20 +43,27 @@ function parseCommand(prompt) {
   if (first === 'subagents' && (second === 'on' || second === 'off')) {
     return { command: 'subagents', enabled: second === 'on' };
   }
+  if (first === 'markers' && (second === 'on' || second === 'off')) {
+    return { command: 'markers', enabled: second === 'on' };
+  }
   if (first === 'uninstall' && !second) return { command: 'uninstall' };
   if (first === 'lang' && Object.hasOwn(LANGUAGES, second)) return { command: 'lang', language: second };
   if (LEVELS.includes(first)) return { command: 'set', level: first };
   return { command: 'status' };
 }
 
-function renderRuleset(level, markdown) {
+// options.markers keeps the [markers] line: the crewcut: comment on a cut
+// corner, off by default because models put it on plain comments too.
+function renderRuleset(level, markdown, options = {}) {
   if (level === 'off') return '';
   if (level === REVIEW) return REVIEW_RULES;
   const kept = [];
   for (const line of String(markdown).split(/\r?\n/)) {
     const tag = TAG.exec(line);
     if (!tag) kept.push(line);
-    else if (tag[1] === level) kept.push(line.slice(tag[0].length));
+    else if (tag[1] === level || (tag[1] === 'markers' && options.markers === true)) {
+      kept.push(line.slice(tag[0].length));
+    }
   }
   return kept.join('\n').replace(/\{level\}/g, level).trim();
 }
@@ -184,9 +191,13 @@ function writeLevel(dir, level) {
   }
 }
 
-function loadRuleset(level) {
+function rulesetOptions(dir) {
+  return { markers: readConfig(dir).markers === true };
+}
+
+function loadRuleset(level, options) {
   try {
-    return renderRuleset(level, level === REVIEW ? '' : fs.readFileSync(RULESET_FILE, 'utf8'));
+    return renderRuleset(level, level === REVIEW ? '' : fs.readFileSync(RULESET_FILE, 'utf8'), options);
   } catch {
     return '';
   }
@@ -260,7 +271,7 @@ function onSession(input, env, dir) {
   const keep = KEEP_LEVEL_SOURCES.includes(input.source);
   const level = (keep && readLevel(dir)) || defaultLevel(env, dir);
   if (!keep) writeLevel(dir, level);
-  const rules = withLanguage(loadRuleset(level), dir);
+  const rules = withLanguage(loadRuleset(level, rulesetOptions(dir)), dir);
   if (!rules) return '';
   if (!keep && fs.existsSync(statuslineCopy(dir))) refreshStatuslineCopy(dir);
   const offers = keep || isEvalRun(env) ? [] : [languageOffer(dir), statuslineNudge(dir)];
@@ -273,7 +284,7 @@ function onSubagent(input, env, dir) {
   const agentType = typeof input.agent_type === 'string' ? input.agent_type.trim() : '';
   if (matcher ? agentType && !matcher.test(agentType) : NO_CODE_AGENTS.test(agentType)) return '';
   const level = readLevel(dir) || defaultLevel(env, dir);
-  return envelope('SubagentStart', loadRuleset(level));
+  return envelope('SubagentStart', loadRuleset(level, rulesetOptions(dir)));
 }
 
 function onPrompt(input, env, dir) {
@@ -297,6 +308,12 @@ function onPrompt(input, env, dir) {
     writeConfig(dir, { language: command.language });
     return envelope('UserPromptSubmit', `crewcut: language ${command.language}\n\n${languageLine(command.language)}`);
   }
+  if (command.command === 'markers') {
+    writeConfig(dir, { markers: command.enabled });
+    const state = `crewcut: markers ${command.enabled ? 'on' : 'off'}`;
+    const rules = loadRuleset(readLevel(dir) || defaultLevel(env, dir), rulesetOptions(dir));
+    return envelope('UserPromptSubmit', rules ? `${state}\n\n${rules}` : state);
+  }
   if (command.command === 'uninstall') {
     const removed = uninstall(dir);
     const what = removed.length ? `removed ${removed.join(', ')}` : 'nothing to remove';
@@ -304,7 +321,7 @@ function onPrompt(input, env, dir) {
   }
   const level = command.command === 'review' ? REVIEW : command.level;
   writeLevel(dir, level);
-  const rules = withLanguage(loadRuleset(level), dir);
+  const rules = withLanguage(loadRuleset(level, rulesetOptions(dir)), dir);
   const text = rules ? `crewcut: ${level}\n\n${rules}` : `crewcut: ${level}`;
   return envelope('UserPromptSubmit', text);
 }

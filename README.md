@@ -161,7 +161,13 @@ against 0 without. Fable on the same rule (crewcut 0.7.0, 2026-10-04,
 Claude Code 2.1.289, 42 clean cells): 0.98 against 0.81, 5.7 turns against
 8.4 (-32 %), 0.296 against 0.414 USD (-29 %); `date-picker` and
 `url-parse` pass 3 runs out of 3 with the plugin, `shared-bug` 0.96
-against 0.62.
+against 0.62. With crewcut 0.9.0 (2026-10-05, Claude Code 2.1.289), the
+marker line out of the ruleset and the `date-picker` attribute grader live
+for the first time (below): Sonnet 0.97 against 0.85, 4.4 turns against
+5.8 (-24 %), 0.057 against 0.059 USD (-3 %); Opus 0.99 against 0.81, 5.0
+turns against 6.0, 0.104 USD in both arms. `date-picker` 0.90 against 0.71
+on Sonnet (the baseline adds a `max` attribute in every run, the plugin in
+one run out of three), 1.00 against 0.81 on Opus.
 
 What it says:
 
@@ -204,8 +210,11 @@ What it says:
   that nobody asked for, then two caveats about it. 0.6.3 adds "no unasked
   max or min" to the ticket rule and "in one sentence, no bullet list" to
   the caveat rule, and splits the grader: a regex now checks the file for
-  `max`, `min`, `pattern` or `placeholder` (it passes 3 runs out of 3 in
-  both arms on Sonnet and Opus), and the short-answer judge only measures
+  `max`, `min`, `pattern` or `placeholder` (it seemed to pass 3 runs out of
+  3 in both arms on Sonnet and Opus; 0.9.0 found that the case file carried
+  a backspace byte where the regex meant a word boundary, so the check never
+  matched until then, and Sonnet's baseline in fact adds `max` in every
+  run), and the short-answer judge only measures
   the message: 8 lines at most, no bullets, two sentences of caveat at
   most. That last criterion still failed in both arms on both models: the
   models reported what they did not verify and whether the field should be
@@ -284,9 +293,10 @@ injected at session start.
 | `/crewcut default <level>`  | Set the level new sessions start at                   |
 | `/crewcut subagents on|off` | Inject the rules into subagents too (on by default)   |
 | `/crewcut lang <code>`      | Reply in English, Spanish, French, German, Korean or simplified Chinese (`en`, `es`, `fr`, `de`, `ko`, `zh`); asked once at the first session |
+| `/crewcut markers on|off`   | `crewcut:` comment on each corner cut (off by default) |
 | `/crewcut-review [scope]`   | Read-only review of a diff, see below                 |
 | `/crewcut-audit [path]`     | Same review over a whole tree, ranked by lines to cut |
-| `/crewcut-debt [path]`      | Ledger of the `crewcut:` corners cut on purpose, see below |
+| `/crewcut-debt [path]`      | Ledger of the `crewcut:` markers, see below           |
 | `/crewcut-gain`             | What the plugin saves, as measured on its eval cases  |
 | `/crewcut-help`             | Reference card                                        |
 | `/crewcut uninstall`        | Remove the plugin's files next to your settings, see below |
@@ -318,8 +328,8 @@ it yourself:
 ```
 
 Settings live in `crewcut.json` next to your Claude settings (`~/.claude`, or
-`CLAUDE_CONFIG_DIR`): `{ "defaultLevel": "ultra", "subagents": true }`. The
-`CREWCUT_DEFAULT_MODE` environment variable wins over the file. With
+`CLAUDE_CONFIG_DIR`): `{ "defaultLevel": "ultra", "subagents": true, "markers": false }`.
+The `CREWCUT_DEFAULT_MODE` environment variable wins over the file. With
 `subagents` on, every subagent Claude starts receives the ruleset of the
 current level, about 500 tokens each; switch it off to save them, or limit
 it to some agent types with a regular expression, case-insensitive, on the
@@ -407,9 +417,13 @@ docs. The review changes nothing.
 
 ## /crewcut-debt
 
-Every corner crewcut cuts on purpose carries a comment such as
-`// crewcut: no retry, add when the API flakes`. `/crewcut-debt` gathers
-them into one list, one line per marker, and flags those that name no
+With `/crewcut markers on`, every corner crewcut cuts on purpose carries a
+comment such as `// crewcut: no retry, add when the API flakes`, and only a
+corner with a known ceiling: never as a prefix on a comment that explains
+code. Markers are off by default, because on a real project the models put
+the prefix on ordinary comments too, and a plugin's name has no place in
+your code unless you asked for the ledger. `/crewcut-debt` gathers the
+markers into one list, one line per marker, and flags those that name no
 condition to revisit:
 
 ```

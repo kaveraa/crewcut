@@ -40,6 +40,20 @@ test('tracked files use plain punctuation', () => {
   assert.deepEqual(offenders, []);
 });
 
+// A backspace byte once replaced the \b of a grader regex, which then never
+// matched: the harness decodes backslash sequences in tool inputs.
+test('tracked text files carry no control character', () => {
+  const control = /[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/;
+  const text = /\.(md|ya?ml|js|json|sh|txt|html|css)$/;
+  const files = git(['ls-files']).split('\n').filter((file) => text.test(file));
+  const offenders = [];
+  for (const file of files) {
+    const match = control.exec(fs.readFileSync(path.join(root, file), 'utf8'));
+    if (match) offenders.push(`${file}: U+${match[0].charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}`);
+  }
+  assert.deepEqual(offenders, []);
+});
+
 test('commit messages use plain punctuation and carry no trailer', () => {
   let log;
   try {
@@ -55,15 +69,17 @@ test('commit messages use plain punctuation and carry no trailer', () => {
 test('compact ruleset stays under 600 estimated tokens at every level', () => {
   const markdown = fs.readFileSync(path.join(root, 'hooks', 'ruleset.md'), 'utf8');
   for (const level of LEVELS) {
-    const tokens = Math.ceil(renderRuleset(level, markdown).length / 4);
-    assert.ok(tokens < 600, `${level}: about ${tokens} tokens`);
+    for (const markers of [false, true]) {
+      const tokens = Math.ceil(renderRuleset(level, markdown, { markers }).length / 4);
+      assert.ok(tokens < 600, `${level}, markers ${markers}: about ${tokens} tokens`);
+    }
   }
 });
 
 test('rendered ruleset carries no level tag', () => {
   const markdown = fs.readFileSync(path.join(root, 'hooks', 'ruleset.md'), 'utf8');
   for (const level of LEVELS) {
-    assert.doesNotMatch(renderRuleset(level, markdown), /^\[(lite|full|ultra)\]/m);
+    assert.doesNotMatch(renderRuleset(level, markdown, { markers: true }), /^\[(lite|full|ultra|markers)\]/m);
   }
 });
 

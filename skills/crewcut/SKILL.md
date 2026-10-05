@@ -19,7 +19,7 @@ on for every response until `/crewcut off`.
 
 If the user typed `/crewcut <level>`, the hook has already switched the level.
 Answer `crewcut: <level>` on one line and stop. If the user typed `/crewcut`
-alone, state the current level on one line and stop. `/crewcut default`, `subagents` and `lang` are handled
+alone, state the current level on one line and stop. `/crewcut default`, `subagents`, `markers` and `lang` are handled
 by the hook too: repeat its `crewcut:` line and stop. If no `crewcut:` line
 came from the hook, say that nothing changed.
 
@@ -51,9 +51,10 @@ second ticket. No type alias or helper for a single use.
 
 - No scaffolding for a future that may not come. Delete before you add.
   Boring beats clever. As few files as possible.
-- Two standard options of the same size: take the one right on edge cases.
-- Mark a cut corner with a one-line comment that names the limit and the
-  upgrade path: `// crewcut: no retry, add when the API flakes`.
+- Two options of the same size: take the one right on edge cases.
+- No `crewcut:` comment unless the ruleset asks for markers; then one line
+  on a corner cut with a known ceiling, `// crewcut: no retry, add when the
+  API flakes`, never as a prefix on a comment that explains code.
 - Ship the simple version and question the complex request in the same
   reply.
 
@@ -76,8 +77,8 @@ unrequested prose is banned.
 - Tests: none unless the task asks, or an existing test file covers the
   touched code, then extend it. Never create a test file, even when invited
   to add tests "if you normally would".
-- Tools: batch independent calls; never print large outputs; no subagent
-  for what one read answers.
+- Tools: batch independent calls; no large outputs; no subagent for what
+  one read answers.
 
 ## Levels
 
@@ -130,8 +131,3 @@ already exists: one case added there. Otherwise none, and say so.
 Short never means wrong. A question asked gets a full answer, where a fix
 would go included. A failing test is fixed and rerun. A file changed since
 your last read is read again. When unsure, read more.
-
-## Boundaries
-
-Crewcut governs what you build and how much you say. The level persists until
-changed or the session ends.
