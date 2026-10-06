@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="440" viewBox="0 0 1280 440">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#35495E"/>
+      <stop offset="1" stop-color="#243240"/>
+    </linearGradient>
+    <linearGradient id="pole" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.35"/>
+    </linearGradient>
+    <clipPath id="card">
+      <rect width="1280" height="440" rx="24"/>
+    </clipPath>
+    <clipPath id="poleClip">
+      <rect x="92" y="96" width="64" height="248" rx="8"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#card)">
+    <rect width="1280" height="440" fill="url(#bg)"/>
+    <!-- Decorative shapes -->
+    <circle cx="1240" cy="-20" r="140" fill="#EB6834" opacity="0.10"/>
+    <path d="M-40 440 L120 180 L280 440 Z" fill="#EB6834" opacity="0.08"/>
+    <!-- Floor: hair clippings, the lines that were cut -->
+    <g fill="#B8C4CE" opacity="0.7">
+      <rect x="600" y="392" width="34" height="4" rx="2" transform="rotate(-18 617 394)"/>
+      <rect x="660" y="404" width="26" height="4" rx="2" transform="rotate(12 673 406)"/>
+      <rect x="720" y="396" width="40" height="4" rx="2" transform="rotate(-8 740 398)"/>
+      <rect x="788" y="408" width="22" height="4" rx="2" transform="rotate(25 799 410)"/>
+      <rect x="840" y="398" width="36" height="4" rx="2" transform="rotate(-30 858 400)"/>
+      <rect x="910" y="406" width="30" height="4" rx="2" transform="rotate(6 925 408)"/>
+      <rect x="970" y="394" width="42" height="4" rx="2" transform="rotate(-14 991 396)"/>
+      <rect x="1040" y="408" width="24" height="4" rx="2" transform="rotate(20 1052 410)"/>
+      <rect x="1090" y="412" width="30" height="4" rx="2" transform="rotate(-24 1105 414)"/>
+      <rect x="1226" y="406" width="28" height="4" rx="2" transform="rotate(16 1240 408)"/>
+    </g>
+  </g>
+
+  <!-- Barber pole -->
+  <g>
+    <rect x="84" y="80" width="80" height="20" rx="6" fill="#F4C27A"/>
+    <rect x="84" y="340" width="80" height="20" rx="6" fill="#F4C27A"/>
+    <rect x="92" y="96" width="64" height="248" rx="8" fill="#F4EFE6"/>
+    <g clip-path="url(#poleClip)">
+      <g transform="rotate(-32 124 220)">
+        <rect x="-60" y="-10" width="380" height="22" fill="#E34948"/>
+        <rect x="-60" y="34" width="380" height="22" fill="#35495E"/>
+        <rect x="-60" y="78" width="380" height="22" fill="#E34948"/>
+        <rect x="-60" y="122" width="380" height="22" fill="#35495E"/>
+        <rect x="-60" y="166" width="380" height="22" fill="#E34948"/>
+        <rect x="-60" y="210" width="380" height="22" fill="#35495E"/>
+        <rect x="-60" y="254" width="380" height="22" fill="#E34948"/>
+        <rect x="-60" y="298" width="380" height="22" fill="#35495E"/>
+        <rect x="-60" y="342" width="380" height="22" fill="#E34948"/>
+        <rect x="-60" y="386" width="380" height="22" fill="#35495E"/>
+        <rect x="-60" y="430" width="380" height="22" fill="#E34948"/>
+      </g>
+      <rect x="92" y="96" width="64" height="248" fill="url(#pole)"/>
+    </g>
+    <circle cx="124" cy="68" r="14" fill="#F4C27A"/>
+    <circle cx="124" cy="372" r="14" fill="#F4C27A"/>
+  </g>
+
+  <!-- Title -->
+  <g font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif">
+    <rect x="212" y="92" width="240" height="36" rx="18" fill="#EB6834"/>
+    <text x="332" y="117" font-size="18" font-weight="700" fill="#1B2A36" text-anchor="middle" letter-spacing="1">CLAUDE CODE PLUGIN</text>
+    <text x="210" y="214" font-size="88" font-weight="800" fill="#FFFFFF" letter-spacing="-2">crewcut</text>
+    <text x="212" y="268" font-size="30" font-weight="700" fill="#EB6834">Short hair, short code.</text>
+    <text x="212" y="310" font-size="23" fill="#B8C4CE">The simplest code that works,</text>
+    <text x="212" y="340" font-size="23" fill="#B8C4CE">with fewer tokens on the floor.</text>
+  </g>
+
+  <!-- Code window: the lines being trimmed -->
+  <g>
+    <rect x="600" y="60" width="470" height="296" rx="16" fill="#1B2A36" stroke="#EB6834" stroke-opacity="0.35" stroke-width="2"/>
+    <circle cx="630" cy="90" r="7" fill="#FF5F57"/>
+    <circle cx="654" cy="90" r="7" fill="#FEBC2E"/>
+    <circle cx="678" cy="90" r="7" fill="#28C840"/>
+    <text x="1040" y="96" font-family="'Segoe UI', Arial, sans-serif" font-size="16" fill="#6B7F90" text-anchor="end">feature.ts</text>
+
+    <g font-family="Consolas, 'Courier New', monospace" font-size="22" xml:space="preserve">
+      <text x="636" y="146"><tspan fill="#C792EA">export function</tspan><tspan fill="#E6EDF3"> </tspan><tspan fill="#EB6834">save</tspan><tspan fill="#E6EDF3">(user) {</tspan></text>
+      <text x="662" y="186"><tspan fill="#C792EA">return</tspan><tspan fill="#E6EDF3"> db.</tspan><tspan fill="#EB6834">put</tspan><tspan fill="#E6EDF3">(user)</tspan></text>
+      <text x="636" y="226"><tspan fill="#E6EDF3">}</tspan></text>
+      <!-- Lines below the cut, on their way to the floor -->
+      <g fill="#6B7F90" opacity="0.55">
+        <text x="636" y="282">  // TODO: maybe a cache one day</text>
+        <text x="636" y="318">  const cfg = { ...defaults, ...o }</text>
+      </g>
+    </g>
+
+    <!-- Cut line -->
+    <line x1="620" y1="250" x2="1050" y2="250" stroke="#EB6834" stroke-width="3" stroke-dasharray="12 10" stroke-linecap="round"/>
+  </g>
+
+  <!-- The barber -->
+  <g>
+    <!-- Legs and shoes -->
+    <rect x="1146" y="316" width="22" height="76" rx="6" fill="#243240"/>
+    <rect x="1178" y="316" width="22" height="76" rx="6" fill="#243240"/>
+    <rect x="1138" y="386" width="36" height="14" rx="7" fill="#1B2A36"/>
+    <rect x="1176" y="386" width="36" height="14" rx="7" fill="#1B2A36"/>
+    <!-- Body: shirt and apron -->
+    <rect x="1130" y="196" width="86" height="130" rx="22" fill="#F4EFE6"/>
+    <path d="M1138 236 L1208 236 L1212 322 Q1173 334 1134 322 Z" fill="#35495E"/>
+    <rect x="1162" y="196" width="22" height="42" fill="#F4EFE6"/>
+    <!-- Apron straps and pocket with a comb -->
+    <path d="M1150 236 L1160 206 M1196 236 L1186 206" stroke="#35495E" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <rect x="1182" y="262" width="22" height="26" rx="4" fill="#243240"/>
+    <rect x="1188" y="250" width="12" height="18" rx="2" fill="#F4C27A"/>
+    <!-- Bow tie -->
+    <path d="M1160 206 L1173 212 L1186 206 L1186 220 L1173 214 L1160 220 Z" fill="#E34948"/>
+    <!-- Left arm, reaching the scissors -->
+    <path d="M1136 222 Q1112 232 1104 248" stroke="#F4EFE6" stroke-width="18" stroke-linecap="round" fill="none"/>
+    <!-- Right arm, holding a comb up -->
+    <path d="M1212 222 Q1236 212 1240 186" stroke="#F4EFE6" stroke-width="18" stroke-linecap="round" fill="none"/>
+    <circle cx="1241" cy="182" r="10" fill="#F1C9A5"/>
+    <g transform="translate(1226 150) rotate(-20)">
+      <rect x="0" y="0" width="34" height="9" rx="4" fill="#F4C27A"/>
+      <g fill="#F4C27A">
+        <rect x="4" y="8" width="3" height="11" rx="1.5"/><rect x="10" y="8" width="3" height="11" rx="1.5"/><rect x="16" y="8" width="3" height="11" rx="1.5"/>
+        <rect x="22" y="8" width="3" height="11" rx="1.5"/><rect x="28" y="8" width="3" height="11" rx="1.5"/>
+      </g>
+    </g>
+    <!-- Head -->
+    <circle cx="1173" cy="152" r="36" fill="#F1C9A5"/>
+    <circle cx="1137" cy="154" r="7" fill="#F1C9A5"/>
+    <circle cx="1209" cy="154" r="7" fill="#F1C9A5"/>
+    <!-- Hair: a crewcut, of course -->
+    <path d="M1137 146 Q1140 112 1173 112 Q1206 112 1209 146 L1203 146 Q1200 124 1173 122 Q1146 124 1143 146 Z" fill="#4A3728"/>
+    <path d="M1138 146 L1208 146 L1206 134 L1140 134 Z" fill="#4A3728"/>
+    <!-- Eyes, brows, smile -->
+    <circle cx="1160" cy="152" r="4" fill="#243240"/>
+    <circle cx="1186" cy="152" r="4" fill="#243240"/>
+    <path d="M1153 142 L1166 140 M1180 140 L1193 142" stroke="#243240" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M1162 170 Q1173 178 1184 170" stroke="#243240" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <!-- Mustache -->
+    <path d="M1173 165 Q1163 158 1154 165 Q1160 170 1173 166 Q1186 170 1192 165 Q1183 158 1173 165 Z" fill="#243240"/>
+  </g>
+
+  <!-- Scissors, in the barber's hand -->
+  <g transform="translate(1086 250) rotate(-10)">
+    <g stroke="#F4EFE6" stroke-width="6" stroke-linecap="round" fill="none">
+      <path d="M-12 -4 L-116 -36"/>
+      <path d="M-12 4 L-116 36"/>
+    </g>
+    <circle cx="0" cy="0" r="5" fill="#F4C27A"/>
+    <ellipse cx="34" cy="-24" rx="24" ry="15" fill="none" stroke="#EB6834" stroke-width="7" transform="rotate(-30 34 -24)"/>
+    <ellipse cx="34" cy="24" rx="24" ry="15" fill="none" stroke="#EB6834" stroke-width="7" transform="rotate(30 34 24)"/>
+  </g>
+  <!-- Hand over the handles -->
+  <circle cx="1108" cy="250" r="11" fill="#F1C9A5"/>
+</svg>

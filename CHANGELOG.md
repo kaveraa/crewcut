@@ -5,6 +5,10 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Added
+
+- A barber shop banner at the top of the README files (`assets/banner.svg`).
+
 ## [0.9.0] - 2026-10-05
 
 ### Changed
