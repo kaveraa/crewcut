@@ -1,6 +1,6 @@
 # crewcut
 
-<p align="center"><img src="https://raw.githubusercontent.com/kaveraa/crewcut/0609554/assets/banner.svg" alt="crewcut" width="100%"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/kaveraa/crewcut/a34f3f3/assets/banner.svg" alt="crewcut" width="100%"></p>
 
 [![tests](https://github.com/kaveraa/crewcut/actions/workflows/tests.yml/badge.svg)](https://github.com/kaveraa/crewcut/actions/workflows/tests.yml)
 
