@@ -1,5 +1,7 @@
 # crewcut
 
+<p align="center"><img src="https://raw.githubusercontent.com/kaveraa/crewcut/acdf351/assets/banner.svg" alt="crewcut" width="100%"></p>
+
 [![tests](https://github.com/kaveraa/crewcut/actions/workflows/tests.yml/badge.svg)](https://github.com/kaveraa/crewcut/actions/workflows/tests.yml)
 
 [English](https://github.com/kaveraa/crewcut/blob/main/README.md) - **Français**
