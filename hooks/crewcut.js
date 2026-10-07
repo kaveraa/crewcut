@@ -20,7 +20,7 @@ const STDIN_GRACE_MS = 1000; // never hang a session on a stdin that never close
 const OFF_PHRASES = ['stop crewcut', 'normal mode'];
 const COMMAND = /^\/crewcut(?::crewcut)?(?:\s+(\S+)(?:\s+(\S+))?(?:\s.*)?)?$/;
 const READ_ONLY_SKILL = /^\/crewcut(?::crewcut)?-(review|audit)(?:\s.*)?$/;
-const TAG = /^\[(lite|full|ultra|markers)\]\s?/;
+const TAG = /^\[(lite|full|ultra|markers|tests|notests)\]\s?/;
 const KEEP_LEVEL_SOURCES = ['resume', 'compact'];
 const BOM = 0xfeff;
 
@@ -43,8 +43,8 @@ function parseCommand(prompt) {
   if (first === 'subagents' && (second === 'on' || second === 'off')) {
     return { command: 'subagents', enabled: second === 'on' };
   }
-  if (first === 'markers' && (second === 'on' || second === 'off')) {
-    return { command: 'markers', enabled: second === 'on' };
+  if ((first === 'markers' || first === 'tests') && (second === 'on' || second === 'off')) {
+    return { command: first, enabled: second === 'on' };
   }
   if (first === 'uninstall' && !second) return { command: 'uninstall' };
   if (first === 'lang' && Object.hasOwn(LANGUAGES, second)) return { command: 'lang', language: second };
@@ -57,13 +57,19 @@ function parseCommand(prompt) {
 function renderRuleset(level, markdown, options = {}) {
   if (level === 'off') return '';
   if (level === REVIEW) return REVIEW_RULES;
+  const holds = {
+    markers: options.markers === true,
+    tests: options.tests !== false,
+    notests: options.tests === false,
+  };
   const kept = [];
-  for (const line of String(markdown).split(/\r?\n/)) {
-    const tag = TAG.exec(line);
-    if (!tag) kept.push(line);
-    else if (tag[1] === level || (tag[1] === 'markers' && options.markers === true)) {
-      kept.push(line.slice(tag[0].length));
+  for (let line of String(markdown).split(/\r?\n/)) {
+    let keep = true;
+    for (let tag = TAG.exec(line); tag; tag = TAG.exec(line)) {
+      keep &&= tag[1] === level || holds[tag[1]] === true;
+      line = line.slice(tag[0].length);
     }
+    if (keep) kept.push(line);
   }
   return kept.join('\n').replace(/\{level\}/g, level).trim();
 }
@@ -192,7 +198,8 @@ function writeLevel(dir, level) {
 }
 
 function rulesetOptions(dir) {
-  return { markers: readConfig(dir).markers === true };
+  const config = readConfig(dir);
+  return { markers: config.markers === true, tests: config.tests !== false };
 }
 
 function loadRuleset(level, options) {
@@ -308,9 +315,9 @@ function onPrompt(input, env, dir) {
     writeConfig(dir, { language: command.language });
     return envelope('UserPromptSubmit', `crewcut: language ${command.language}\n\n${languageLine(command.language)}`);
   }
-  if (command.command === 'markers') {
-    writeConfig(dir, { markers: command.enabled });
-    const state = `crewcut: markers ${command.enabled ? 'on' : 'off'}`;
+  if (command.command === 'markers' || command.command === 'tests') {
+    writeConfig(dir, { [command.command]: command.enabled });
+    const state = `crewcut: ${command.command} ${command.enabled ? 'on' : 'off'}`;
     const rules = loadRuleset(readLevel(dir) || defaultLevel(env, dir), rulesetOptions(dir));
     return envelope('UserPromptSubmit', rules ? `${state}\n\n${rules}` : state);
   }

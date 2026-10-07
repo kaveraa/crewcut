@@ -26,9 +26,10 @@ Token discipline:
 [full] - Reading: grep what the change touches, then read only those files by line range; never read a file twice or to confirm what grep showed; no repo tour.
 [ultra] - Reading: grep first, then one read per file the change touches, by line range, never twice; no repo tour.
 [full] - Writing: targeted edits, no whole-file rewrite, no unrequested docs or refactors; one test run.
-[full] - Tests: none unless the task asks or an existing test file covers the touched code, then extend it; never create one, even if told to add tests "if you normally would".
+[full][tests] - Tests: none unless the task asks or an existing test file covers the touched code, then extend it; never create one, even if told to add tests "if you normally would".
 [ultra] - Writing: targeted edits; no new file or dependency unasked; no unrequested docs or refactors; one test run.
-[ultra] - Tests: none unless the task asks; extend an existing test file at most; never create one, whatever the invitation.
+[ultra][tests] - Tests: none unless the task asks; extend an existing test file at most; never create one, whatever the invitation.
+[notests] - Tests: none unless the task asks; never create or extend one.
 [full] - Tools: batch independent calls; no large outputs; no subagent where one read answers.
 [ultra] - Tools: batch independent calls; no large outputs; no subagent; one line when one line answers.
 

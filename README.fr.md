@@ -153,7 +153,9 @@ prompt coupe à l'aveugle.
   et un registre de dette.
 
 Caveman, le contrôle prose concise, ne coupe aucun code (+4 % de lignes sur
-le template) : prose courte ne veut pas dire code court.
+le template) : prose courte ne veut pas dire code court. Si vous préférez
+l'économie du prompt, `/crewcut tests off` fait écrire un test à crewcut
+seulement quand le ticket le demande, et garde tout le reste.
 
 La coupe est la plus forte quand un élément natif remplace un composant :
 sur le sélecteur de date, Opus écrit 369 lignes avec deux nouvelles
@@ -228,6 +230,7 @@ aussi le plugin.
 | `/crewcut subagents on\|off` | Injecte aussi les règles dans les sous-agents (actif par défaut) |
 | `/crewcut lang <code>`      | Répond en `en`, `es`, `fr`, `de`, `ko` ou `zh` ; demandé une fois à la première session |
 | `/crewcut markers on\|off`   | Commentaire `crewcut:` sur chaque coin coupé (inactif par défaut) |
+| `/crewcut tests on\|off`     | Off : n'écrit un test que si le ticket le demande, n'en prolonge jamais (actif par défaut) |
 | `/crewcut-review [portée]`  | Revue en lecture seule d'un diff                      |
 | `/crewcut-audit [chemin]`   | Même revue sur tout un arbre, classée par lignes à couper |
 | `/crewcut-debt [chemin]`    | Registre des marqueurs `crewcut:`                     |
@@ -319,6 +322,7 @@ Les réglages vivent dans `crewcut.json` à côté de vos réglages Claude
 | `subagents`       |                            | Injecte le ruleset dans les sous-agents (environ 500 tokens chacun) |
 | `subagentMatcher` | `CREWCUT_SUBAGENT_MATCHER` | Expression régulière, insensible à la casse, sur le type d'agent, par exemple `explore\|general` |
 | `markers`         |                            | Commentaire `crewcut:` sur chaque coin coupé        |
+| `tests`           |                            | `false` : n'écrit un test que si le ticket le demande |
 
 La variable d'environnement l'emporte sur le fichier. Un sous-agent dont le
 type est inconnu, ou un motif qui ne compile pas, reçoit quand même les
