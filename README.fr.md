@@ -120,6 +120,7 @@ pourcentage du même modèle sans plugin.
 |---|--:|--:|--:|--:|--:|
 | **Opus 5.5, Next-js-Boilerplate** | **-82 %** | **-55 %** | **-60 %** | **-67 %** | **100 %** |
 | **Opus 5.5, full-stack-fastapi-template** | **-70 %** | **-40 %** | **-43 %** | **-49 %** | **100 %** |
+| **Sonnet 5.5, Next-js-Boilerplate** | **-70 %** | **-11 %** | **-31 %** | **-34 %** | **100 %** |
 | **Haiku 4.5, Next-js-Boilerplate** | **-40 %** | **-10 %** | **-13 %** | **-20 %** | **100 %** |
 | **Haiku 4.5, full-stack-fastapi-template** | **-14 %** | **-3 %** | **-4 %** | **-7 %** | **100 %** |
 | **Sonnet 5.5, full-stack-fastapi-template** | **-8 %** | **+9 %** | **+2 %** | **-2 %** | **100 %** |
@@ -131,6 +132,7 @@ solutions." dans les mêmes runs :
 |---|--:|--:|--:|--:|--:|
 | Opus 5.5, Next-js-Boilerplate | -88 % | -62 % | -66 % | -72 % | 100 % |
 | Opus 5.5, full-stack-fastapi-template | -72 % | -44 % | -49 % | -56 % | 100 % |
+| Sonnet 5.5, Next-js-Boilerplate | -74 % | -17 % | -38 % | -37 % | 100 % |
 | Haiku 4.5, Next-js-Boilerplate | -29 % | -23 % | -7 % | -23 % | 96 % |
 | Haiku 4.5, full-stack-fastapi-template | +12 % | -15 % | +11 % | -5 % | 96 % |
 | Sonnet 5.5, full-stack-fastapi-template | -31 % | -1 % | -12 % | -14 % | 100 % |
@@ -167,11 +169,14 @@ La coupe est la plus forte quand un élément natif remplace un composant :
 sur le sélecteur de date, Opus écrit 369 lignes avec deux nouvelles
 dépendances, crewcut un input natif de 10 lignes. Elle est proche de zéro
 sur les endpoints irréductibles, et elle suit ce que la baseline
-sur-construit : Opus le plus, Sonnet le moins. Sur Sonnet, le ruleset relu
-à chaque tour est tout le coût ; crewcut 0.6.3, avec un ruleset allégé et
-six runs par ticket, y coupe 13 % des lignes et 11 % du coût à tokens
-égaux. Les tokens ne baissent que là où le plugin retire des tours : sur
-Opus, de 12,1 à 7,5 par ticket.
+sur-construit, qui dépend du dépôt autant que du modèle : Sonnet écrit 51
+lignes par ticket sur le petit template FastAPI et 103 sur
+Next-js-Boilerplate, donc crewcut coupe 8 % là et 70 % ici. Sur le
+template, le ruleset relu à chaque tour est tout le coût ; crewcut 0.6.3,
+avec un ruleset allégé et six runs par ticket, y coupe 13 % des lignes et
+11 % du coût à tokens égaux. Les tokens ne baissent que là où le plugin
+retire des tours : sur Opus, de 12,1 à 7,5 par ticket ; sur Sonnet avec
+Next.js, de 10,4 à 6,8.
 
 Méthode, tableaux par tâche, remesure de chaque version, limites et
 reproduction :

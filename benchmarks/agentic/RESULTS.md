@@ -368,6 +368,54 @@ What it says:
 - Tests: baseline in 39 % of the cells, crewcut in 19 %, the seven-word
   prompt in none. All 108 cells are correct.
 
+## Model tier: Sonnet 5.5 on Next-js-Boilerplate
+
+The twelve `next-*` tickets, three arms, three runs, crewcut 0.11.0 (tests
+on), 2026-10-07, Claude Sonnet 5.5. 108 cells, 8.14 USD, no timeout, no
+empty cell. Safety is repository-free and is the Sonnet run above (21/21).
+
+| vs no-plugin baseline | LOC | tokens | cost | time | safe |
+|---|--:|--:|--:|--:|--:|
+| **crewcut** | **-70 %** | **-11 %** | **-31 %** | **-34 %** | **100 %** |
+| "YAGNI + one-liners" prompt | -74 % | -17 % | -38 % | -37 % | 100 % |
+
+Sum over the twelve tickets: baseline 3715 / crewcut 1121 / yagni-oneliner 957. Crewcut is under the
+baseline on twelve tickets out of twelve.
+
+| task | baseline | **crewcut** | yagni-oneliner |
+|---|--:|--:|--:|
+| next-fe-datepicker | 260 | **16** | 9 |
+| next-fe-colorpicker | 142 | **23** | 24 |
+| next-fe-command | 189 | **94** | 95 |
+| next-fe-dropzone | 177 | **37** | 32 |
+| next-fe-wizard | 170 | **67** | 52 |
+| next-fe-rating | 108 | **33** | 20 |
+| next-be-get | 18 | **13** | 9 |
+| next-be-reset | 20 | **15** | 11 |
+| next-be-csv | 25 | **18** | 16 |
+| next-be-search | 15 | **10** | 9 |
+| next-be-pagination | 79 | **23** | 21 |
+| next-be-log | 36 | **25** | 21 |
+
+- The Sonnet baseline over-builds here as much as Opus's does on the
+  template: 103 lines per ticket against 51 on the FastAPI template, 2.2
+  source files against crewcut's 1.2, a 260-line date picker. So the lean
+  baseline of the template tier was the small repository, not the model:
+  given room to over-build, Sonnet takes it, and crewcut's cut is the same
+  -70 % it reaches on Opus.
+- Turns: 6.8 against 10.4 for the baseline. Tokens fall 11 % and cost
+  31 %: the turns removed are the cheap late ones, so the bill drops more
+  than the tokens. This is the token gain the template tier could not
+  show, for the reason given there: it needs turns to remove.
+- The seven-word prompt cuts 4 points more lines, the same turns, 6 points
+  more tokens. Tests: baseline in 8 % of the cells, crewcut in 3 % (one
+  cell), the prompt in none; on this repository there is no existing test
+  file for the rule to extend, so the two arms differ only in how bare the
+  component is (rating 33 against 20, wizard 67 against 52, date picker 16
+  against 9). All 108 cells are correct.
+- Raw: `results/ponytail-harness-2026-10-02/sonnet-next-results.json` and
+  `sonnet-next-summary.json`.
+
 ## Reproduce
 
 ```

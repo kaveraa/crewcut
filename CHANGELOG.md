@@ -5,6 +5,14 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Added
+
+- Sonnet 5.5 measured on Next-js-Boilerplate, three arms, three runs, 108
+  cells: crewcut LOC -70 %, tokens -11 %, cost -31 %, time -34 %, under
+  the baseline on twelve tickets out of twelve, 6.8 turns against 10.4;
+  the seven-word prompt -74 %, -17 %, -38 %, -37 %. The lean Sonnet
+  baseline of the template tier was the small repository, not the model.
+
 ## [0.11.0] - 2026-10-07
 
 ### Added
