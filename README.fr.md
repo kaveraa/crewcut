@@ -114,18 +114,28 @@ de sécurité dont la sortie est exécutée sur des entrées hostiles. Deux
 dépôts, full-stack-fastapi-template (celui de ponytail, FastAPI + React) et
 Next-js-Boilerplate, trois paliers de modèle, trois ou quatre runs par
 cellule. Chaque case est la moyenne du bras sur toutes les cellules, en
-pourcentage du même modèle sans plugin. La ligne `tests off` est le même
-bras avec `/crewcut tests off`, mesuré sur ce seul palier.
+pourcentage du même modèle sans plugin.
 
 | crewcut vs baseline sans plugin | lignes | tokens | coût | temps | sûr |
 |---|--:|--:|--:|--:|--:|
 | **Opus 5.5, Next-js-Boilerplate** | **-82 %** | **-55 %** | **-60 %** | **-67 %** | **100 %** |
 | **Opus 5.5, full-stack-fastapi-template** | **-70 %** | **-40 %** | **-43 %** | **-49 %** | **100 %** |
-| **Opus 5.5, full-stack-fastapi-template, `tests off`** | **-71 %** | **-50 %** | **-53 %** | **-61 %** | **100 %** |
 | **Sonnet 5.5, Next-js-Boilerplate** | **-70 %** | **-11 %** | **-31 %** | **-34 %** | **100 %** |
 | **Haiku 4.5, Next-js-Boilerplate** | **-40 %** | **-10 %** | **-13 %** | **-20 %** | **100 %** |
 | **Haiku 4.5, full-stack-fastapi-template** | **-14 %** | **-3 %** | **-4 %** | **-7 %** | **100 %** |
 | **Sonnet 5.5, full-stack-fastapi-template** | **-8 %** | **+9 %** | **+2 %** | **-2 %** | **100 %** |
+
+Le même bras avec `/crewcut tests off`, un test seulement si le ticket le
+demande :
+
+| crewcut, tests off, vs baseline sans plugin | lignes | tokens | coût | temps | sûr |
+|---|--:|--:|--:|--:|--:|
+| Opus 5.5, Next-js-Boilerplate | -83 % | -57 % | -63 % | -69 % | 100 % |
+| Opus 5.5, full-stack-fastapi-template | -71 % | -50 % | -53 % | -61 % | 100 % |
+| Sonnet 5.5, Next-js-Boilerplate | -69 % | -7 % | -27 % | -33 % | 100 % |
+| Haiku 4.5, Next-js-Boilerplate | -60 % | -55 % | -52 % | -48 % | 100 % |
+| Haiku 4.5, full-stack-fastapi-template | -20 % | -38 % | -35 % | -26 % | 100 % |
+| Sonnet 5.5, full-stack-fastapi-template | -17 % | -15 % | -26 % | -24 % | 100 % |
 
 <p align="center"><img src="assets/benchmark-opus-next.svg" width="860" alt="Chaque bras en pourcentage de la baseline sans plugin sur les lignes, les tokens, le coût et le temps (Opus 5.5, Next-js-Boilerplate). Crewcut : lignes 18, tokens 45, coût 40, temps 33. Crewcut tests off : 17, 43, 37, 31. Le prompt yagni : 12, 38, 34, 28. Sécurité : chaque bras 100 pour cent."></p>
 
@@ -163,11 +173,14 @@ le template) : prose courte ne veut pas dire code court.
 
 Si vous préférez l'économie du prompt, `/crewcut tests off` fait écrire un
 test à crewcut seulement quand le ticket le demande, et garde tout le
-reste. Mesuré sur le template Opus, même baseline, 36 cellules : lignes
--71 %, tokens -50 %, coût -53 %, temps -61 %, 5,9 tours, sûr 21/21. Les
-mêmes lignes que le prompt, moins de tokens, et l'échelle, la règle de la
-cause racine et la liste de ce qui n'est jamais coupé restent. La première
-session vous demande une fois lequel vous voulez.
+reste. Mesuré sur chaque palier (second tableau plus haut) : sur le
+template Opus, les tokens passent de -40 % à -50 % et le coût de -43 % à
+-53 % ; sur le template Sonnet, de +9 % à -15 % et de +2 % à -26 %, sous le
+prompt sur les deux ; sur Haiku, le coût passe de -4 % à -35 % sur le
+template et de -13 % à -52 % sur Next.js. Les lignes bougent à peine,
+chaque cellule reste correcte, chaque garde-fou reste. Là où il n'y a pas de
+fichier de test à prolonger, Opus et Sonnet sur Next.js, l'interrupteur ne
+change rien. La première session vous demande une fois lequel vous voulez.
 
 <p align="center"><img src="assets/benchmark-opus-tests.svg" width="860" alt="Tests on contre tests off, chaque bras en pourcentage de la baseline sans plugin (Opus 5.5, full-stack-fastapi-template). Crewcut tests on : lignes 30, tokens 60, coût 57, temps 51. Crewcut tests off : 29, 50, 47, 39. Le prompt yagni : 28, 56, 51, 44. Sécurité : chaque bras 100 pour cent."></p>
 

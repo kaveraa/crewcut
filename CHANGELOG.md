@@ -7,6 +7,15 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ### Added
 
+- `/crewcut tests off` measured on every tier, 23.37 USD: Opus Next.js
+  -83 / -57 / -63 / -69 (LOC, tokens, cost, time), Opus template
+  -71 / -50 / -53 / -61, Sonnet Next.js -69 / -7 / -27 / -33, Haiku Next.js
+  -60 / -55 / -52 / -48, Haiku template -20 / -38 / -35 / -26, Sonnet
+  template -17 / -15 / -26 / -24; safety 21/21, 21/21 and 28/28. A third
+  table in both README files, a section in RESULTS.md.
+
+### Added
+
 - Two charts in the README: every arm as a percent of the baseline on
   Opus 5.5 with Next-js-Boilerplate under the first table
   (`assets/benchmark-opus-next.svg`), and tests on against tests off on
