@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-10-07
+
 ### Added
 
 - `/crewcut tests on|off`: off, crewcut writes a test only when the ticket
@@ -22,6 +24,9 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 - Plugin and marketplace descriptions and keywords aligned with the README
   headline.
+- README: the seven-word prompt gets its extra line cut from barer
+  components; the tests it skips explain crewcut's extra turns and cost,
+  since the harness counts test files apart from LOC.
 
 ## [0.10.0] - 2026-10-07
 
