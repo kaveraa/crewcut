@@ -36,14 +36,12 @@ const add = (l) => { s += l + '\n'; };
 add(`<svg viewBox="0 0 ${W} 490" width="${W}" height="490" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${arms.map((a) => `${a}: LOC ${pct.LOC[a]}%, tokens ${pct.tokens[a]}%, cost ${pct.cost[a]}%, time ${pct.time[a]}%, safe ${safePct[a]}%`).join('; ')}">`);
 add(`<title>${title}</title>`);
 add(`<style>
-  text { font: 12px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: #52514e; }
-  .ink { fill: #0b0b0b; } .grid { stroke: #6b7f90; } .base { fill: #6b7f90; }
-  .crewcut { fill: #eb6834; } .notests { fill: #9b59d0; } .caveman { fill: #febc2e; } .yagni { fill: #1baf7a; } .bad { fill: #e34948; }
-  @media (prefers-color-scheme: dark) {
-    text { fill: #c3c2b7; } .ink { fill: #ffffff; } .grid { stroke: #6b7f90; } .base { fill: #6b7f90; }
-    .crewcut { fill: #eb6834; } .notests { fill: #c792ea; } .caveman { fill: #febc2e; } .yagni { fill: #1baf7a; } .bad { fill: #e34948; }
-  }
+  text { font: 12px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: #c3c9d1; }
+  .ink { fill: #ffffff; } .grid { stroke: #8a9bab; } .base { fill: #8a9bab; }
+  .crewcut { fill: #eb6834; } .notests { fill: #c792ea; } .caveman { fill: #febc2e; } .yagni { fill: #1baf7a; } .bad { fill: #ff6b6b; }
 </style>`);
+add(`<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#26343F"/><stop offset="1" stop-color="#121A21"/></linearGradient></defs>`);
+add(`<rect width="${W}" height="490" rx="12" fill="url(#bg)"/>`);
 add(`<text x="${W / 2}" y="24" font-size="15" font-weight="600" text-anchor="middle" class="ink">${title}</text>`);
 let lx = 212;
 for (const a of arms) { add(`<rect x="${lx}" y="38" width="12" height="12" rx="2" class="${cls[a]}"/><text x="${lx + 17}" y="48">${a}</text>`); lx += a.length * 7 + 40; }

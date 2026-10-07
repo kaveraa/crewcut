@@ -1,14 +1,12 @@
 <svg viewBox="0 0 860 490" width="860" height="490" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="baseline: LOC 100%, tokens 100%, cost 100%, time 100%, safe 100%; crewcut: LOC 30%, tokens 60%, cost 57%, time 51%, safe 100%; crewcut-notests: LOC 29%, tokens 50%, cost 47%, time 39%, safe 100%; yagni-oneliner: LOC 28%, tokens 56%, cost 51%, time 44%, safe 100%">
 <title>Tests on against tests off (Claude Code, Opus 5.5, full-stack-fastapi-template, 12 tasks)</title>
 <style>
-  text { font: 12px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: #52514e; }
-  .ink { fill: #0b0b0b; } .grid { stroke: #6b7f90; } .base { fill: #6b7f90; }
-  .crewcut { fill: #eb6834; } .notests { fill: #9b59d0; } .caveman { fill: #febc2e; } .yagni { fill: #1baf7a; } .bad { fill: #e34948; }
-  @media (prefers-color-scheme: dark) {
-    text { fill: #c3c2b7; } .ink { fill: #ffffff; } .grid { stroke: #6b7f90; } .base { fill: #6b7f90; }
-    .crewcut { fill: #eb6834; } .notests { fill: #c792ea; } .caveman { fill: #febc2e; } .yagni { fill: #1baf7a; } .bad { fill: #e34948; }
-  }
+  text { font: 12px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: #c3c9d1; }
+  .ink { fill: #ffffff; } .grid { stroke: #8a9bab; } .base { fill: #8a9bab; }
+  .crewcut { fill: #eb6834; } .notests { fill: #c792ea; } .caveman { fill: #febc2e; } .yagni { fill: #1baf7a; } .bad { fill: #ff6b6b; }
 </style>
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#26343F"/><stop offset="1" stop-color="#121A21"/></linearGradient></defs>
+<rect width="860" height="490" rx="12" fill="url(#bg)"/>
 <text x="430" y="24" font-size="15" font-weight="600" text-anchor="middle" class="ink">Tests on against tests off (Claude Code, Opus 5.5, full-stack-fastapi-template, 12 tasks)</text>
 <rect x="212" y="38" width="12" height="12" rx="2" class="base"/><text x="229" y="48">baseline</text>
 <rect x="308" y="38" width="12" height="12" rx="2" class="crewcut"/><text x="325" y="48">crewcut</text>

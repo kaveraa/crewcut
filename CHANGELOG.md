@@ -12,7 +12,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
   (`assets/benchmark-opus-next.svg`), and tests on against tests off on
   the Opus template under the tests paragraph
   (`assets/benchmark-opus-tests.svg`). `chart-bars.mjs` draws the arms it
-  finds, `crewcut-notests` included, in the banner's colours.
+  finds, `crewcut-notests` included, on the banner's dark card so the text
+  reads on either GitHub theme.
 
 ## [0.11.2] - 2026-10-07
 
