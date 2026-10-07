@@ -37,11 +37,11 @@ add(`<svg viewBox="0 0 ${W} 490" width="${W}" height="490" xmlns="http://www.w3.
 add(`<title>${title}</title>`);
 add(`<style>
   text { font: 12px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: #52514e; }
-  .ink { fill: #0b0b0b; } .grid { stroke: #8a8985; } .base { fill: #8a8985; }
-  .crewcut { fill: #2a78d6; } .notests { fill: #8fbcf0; } .caveman { fill: #eb6834; } .yagni { fill: #1baf7a; } .bad { fill: #e34948; }
+  .ink { fill: #0b0b0b; } .grid { stroke: #6b7f90; } .base { fill: #6b7f90; }
+  .crewcut { fill: #eb6834; } .notests { fill: #f4c27a; } .caveman { fill: #1baf7a; } .yagni { fill: #35495e; } .bad { fill: #e34948; }
   @media (prefers-color-scheme: dark) {
-    text { fill: #c3c2b7; } .ink { fill: #ffffff; } .grid { stroke: #8a8985; } .base { fill: #8a8985; }
-    .crewcut { fill: #3987e5; } .notests { fill: #7fb0ea; } .caveman { fill: #d95926; } .yagni { fill: #199e70; } .bad { fill: #e66767; }
+    text { fill: #c3c2b7; } .ink { fill: #ffffff; } .grid { stroke: #6b7f90; } .base { fill: #6b7f90; }
+    .crewcut { fill: #eb6834; } .notests { fill: #f4c27a; } .caveman { fill: #199e70; } .yagni { fill: #b8c4ce; } .bad { fill: #e34948; }
   }
 </style>`);
 add(`<text x="${W / 2}" y="24" font-size="15" font-weight="600" text-anchor="middle" class="ink">${title}</text>`);
