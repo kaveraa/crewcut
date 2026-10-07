@@ -43,6 +43,7 @@ Settings
                                "markers": true|false, "tests": true|false,
                                "subagentMatcher": "<regex on the agent type>" }
   CREWCUT_SUBAGENT_MATCHER   env var, wins over subagentMatcher in the file
+  CREWCUT_TESTS=on|off       env var, wins over tests in the file
   ~/.claude/crewcut-mode     the level of the current session (per user)
   statusline                 "statusLine": { "type": "command",
                              "command": "node \"~/.claude/crewcut-statusline.js\"" }

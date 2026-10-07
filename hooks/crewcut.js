@@ -197,9 +197,10 @@ function writeLevel(dir, level) {
   }
 }
 
-function rulesetOptions(dir) {
+function rulesetOptions(dir, env) {
   const config = readConfig(dir);
-  return { markers: config.markers === true, tests: config.tests !== false };
+  const tests = env.CREWCUT_TESTS === 'off' ? false : env.CREWCUT_TESTS === 'on' ? true : config.tests !== false;
+  return { markers: config.markers === true, tests };
 }
 
 function loadRuleset(level, options) {
@@ -278,7 +279,7 @@ function onSession(input, env, dir) {
   const keep = KEEP_LEVEL_SOURCES.includes(input.source);
   const level = (keep && readLevel(dir)) || defaultLevel(env, dir);
   if (!keep) writeLevel(dir, level);
-  const rules = withLanguage(loadRuleset(level, rulesetOptions(dir)), dir);
+  const rules = withLanguage(loadRuleset(level, rulesetOptions(dir, env)), dir);
   if (!rules) return '';
   if (!keep && fs.existsSync(statuslineCopy(dir))) refreshStatuslineCopy(dir);
   const offers = keep || isEvalRun(env) ? [] : [languageOffer(dir), statuslineNudge(dir)];
@@ -291,7 +292,7 @@ function onSubagent(input, env, dir) {
   const agentType = typeof input.agent_type === 'string' ? input.agent_type.trim() : '';
   if (matcher ? agentType && !matcher.test(agentType) : NO_CODE_AGENTS.test(agentType)) return '';
   const level = readLevel(dir) || defaultLevel(env, dir);
-  return envelope('SubagentStart', loadRuleset(level, rulesetOptions(dir)));
+  return envelope('SubagentStart', loadRuleset(level, rulesetOptions(dir, env)));
 }
 
 function onPrompt(input, env, dir) {
@@ -318,7 +319,7 @@ function onPrompt(input, env, dir) {
   if (command.command === 'markers' || command.command === 'tests') {
     writeConfig(dir, { [command.command]: command.enabled });
     const state = `crewcut: ${command.command} ${command.enabled ? 'on' : 'off'}`;
-    const rules = loadRuleset(readLevel(dir) || defaultLevel(env, dir), rulesetOptions(dir));
+    const rules = loadRuleset(readLevel(dir) || defaultLevel(env, dir), rulesetOptions(dir, env));
     return envelope('UserPromptSubmit', rules ? `${state}\n\n${rules}` : state);
   }
   if (command.command === 'uninstall') {
@@ -328,7 +329,7 @@ function onPrompt(input, env, dir) {
   }
   const level = command.command === 'review' ? REVIEW : command.level;
   writeLevel(dir, level);
-  const rules = withLanguage(loadRuleset(level, rulesetOptions(dir)), dir);
+  const rules = withLanguage(loadRuleset(level, rulesetOptions(dir, env)), dir);
   const text = rules ? `crewcut: ${level}\n\n${rules}` : `crewcut: ${level}`;
   return envelope('UserPromptSubmit', text);
 }

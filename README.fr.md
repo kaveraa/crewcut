@@ -322,7 +322,7 @@ Les réglages vivent dans `crewcut.json` à côté de vos réglages Claude
 | `subagents`       |                            | Injecte le ruleset dans les sous-agents (environ 500 tokens chacun) |
 | `subagentMatcher` | `CREWCUT_SUBAGENT_MATCHER` | Expression régulière, insensible à la casse, sur le type d'agent, par exemple `explore\|general` |
 | `markers`         |                            | Commentaire `crewcut:` sur chaque coin coupé        |
-| `tests`           |                            | `false` : n'écrit un test que si le ticket le demande |
+| `tests`           | `CREWCUT_TESTS`            | `false` ou `off` : n'écrit un test que si le ticket le demande |
 
 La variable d'environnement l'emporte sur le fichier. Un sous-agent dont le
 type est inconnu, ou un motif qui ne compile pas, reçoit quand même les

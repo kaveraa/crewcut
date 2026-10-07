@@ -306,7 +306,7 @@ or `CLAUDE_CONFIG_DIR`):
 | `subagents`       |                           | Inject the ruleset into subagents (about 500 tokens each) |
 | `subagentMatcher` | `CREWCUT_SUBAGENT_MATCHER` | Case-insensitive regular expression on the agent type, for example `explore\|general` |
 | `markers`         |                           | `crewcut:` comment on each corner cut               |
-| `tests`           |                           | `false`: write a test only when the ticket asks     |
+| `tests`           | `CREWCUT_TESTS`           | `false` or `off`: write a test only when the ticket asks |
 
 The environment variable wins over the file. A subagent whose type is
 unknown, or a pattern that does not compile, still receives the rules.

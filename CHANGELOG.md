@@ -9,8 +9,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 - `/crewcut tests on|off`: off, crewcut writes a test only when the ticket
   asks and never extends one, like the seven-word prompt; `"tests": false`
-  in `crewcut.json`. On by default. Ruleset lines can carry several tags.
-
+  in `crewcut.json`, or `CREWCUT_TESTS=off`, which wins. On by default.
+  Ruleset lines can carry several tags.
 - README and README.fr: a "Before and after" section with the date picker
   ticket on Opus, 318 lines and two packages against 10 lines, from
   `examples/date-picker.md`.

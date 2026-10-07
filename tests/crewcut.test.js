@@ -370,6 +370,16 @@ test('session drops the extend-tests rule when the config turns tests off', () =
   assert.doesNotMatch(payload(run('session', startup, { CLAUDE_CONFIG_DIR: dir })).additionalContext, /then extend it/);
 });
 
+test('CREWCUT_TESTS wins over the config file', () => {
+  const dir = tempDir();
+  const startup = '{"hook_event_name":"SessionStart","source":"startup"}';
+  const off = payload(run('session', startup, { CLAUDE_CONFIG_DIR: dir, CREWCUT_TESTS: 'off' })).additionalContext;
+  assert.match(off, /never create or extend one/);
+  writeConfig(dir, { tests: false });
+  const on = payload(run('session', startup, { CLAUDE_CONFIG_DIR: dir, CREWCUT_TESTS: 'on' })).additionalContext;
+  assert.match(on, /then extend it/);
+});
+
 test('prompt /crewcut tests off writes the config and re-emits the rules', () => {
   const dir = tempDir();
   run('session', '{"hook_event_name":"SessionStart","source":"startup"}', { CLAUDE_CONFIG_DIR: dir });
