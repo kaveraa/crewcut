@@ -20,7 +20,7 @@ const STDIN_GRACE_MS = 1000; // never hang a session on a stdin that never close
 const OFF_PHRASES = ['stop crewcut', 'normal mode'];
 const COMMAND = /^\/crewcut(?::crewcut)?(?:\s+(\S+)(?:\s+(\S+))?(?:\s.*)?)?$/;
 const READ_ONLY_SKILL = /^\/crewcut(?::crewcut)?-(review|audit)(?:\s.*)?$/;
-const TAG = /^\[(lite|full|ultra|markers)\]\s?/;
+const TAG = /^\[(lite|full|ultra|markers|tests|notests)\]\s?/;
 const KEEP_LEVEL_SOURCES = ['resume', 'compact'];
 const BOM = 0xfeff;
 
@@ -43,8 +43,8 @@ function parseCommand(prompt) {
   if (first === 'subagents' && (second === 'on' || second === 'off')) {
     return { command: 'subagents', enabled: second === 'on' };
   }
-  if (first === 'markers' && (second === 'on' || second === 'off')) {
-    return { command: 'markers', enabled: second === 'on' };
+  if ((first === 'markers' || first === 'tests') && (second === 'on' || second === 'off')) {
+    return { command: first, enabled: second === 'on' };
   }
   if (first === 'uninstall' && !second) return { command: 'uninstall' };
   if (first === 'lang' && Object.hasOwn(LANGUAGES, second)) return { command: 'lang', language: second };
@@ -57,13 +57,19 @@ function parseCommand(prompt) {
 function renderRuleset(level, markdown, options = {}) {
   if (level === 'off') return '';
   if (level === REVIEW) return REVIEW_RULES;
+  const holds = {
+    markers: options.markers === true,
+    tests: options.tests !== false,
+    notests: options.tests === false,
+  };
   const kept = [];
-  for (const line of String(markdown).split(/\r?\n/)) {
-    const tag = TAG.exec(line);
-    if (!tag) kept.push(line);
-    else if (tag[1] === level || (tag[1] === 'markers' && options.markers === true)) {
-      kept.push(line.slice(tag[0].length));
+  for (let line of String(markdown).split(/\r?\n/)) {
+    let keep = true;
+    for (let tag = TAG.exec(line); tag; tag = TAG.exec(line)) {
+      keep &&= tag[1] === level || holds[tag[1]] === true;
+      line = line.slice(tag[0].length);
     }
+    if (keep) kept.push(line);
   }
   return kept.join('\n').replace(/\{level\}/g, level).trim();
 }
@@ -173,6 +179,16 @@ function languageOffer(dir) {
     + 'and reply in it from then on. Never ask again.';
 }
 
+// One-time question at the first session; on is stored so it is never asked again.
+function testsOffer(dir) {
+  if (readConfig(dir).tests !== undefined) return '';
+  writeConfig(dir, { tests: true });
+  return 'Tests, once: ask the user, in one line, whether crewcut should keep extending the test file that '
+    + 'covers the code it touches (on, the default) or write a test only when the ticket asks (off: on Opus, '
+    + '-50 % tokens and -53 % cost against -40 % and -43 % with tests on, same lines). '
+    + `On off, set "tests" to false in ${path.join(dir, CONFIG_FILE)}. Never ask again.`;
+}
+
 function readLevel(dir) {
   try {
     const text = fs.readFileSync(path.join(dir, LEVEL_FILE), 'utf8').trim().toLowerCase();
@@ -191,8 +207,10 @@ function writeLevel(dir, level) {
   }
 }
 
-function rulesetOptions(dir) {
-  return { markers: readConfig(dir).markers === true };
+function rulesetOptions(dir, env) {
+  const config = readConfig(dir);
+  const tests = env.CREWCUT_TESTS === 'off' ? false : env.CREWCUT_TESTS === 'on' ? true : config.tests !== false;
+  return { markers: config.markers === true, tests };
 }
 
 function loadRuleset(level, options) {
@@ -271,10 +289,10 @@ function onSession(input, env, dir) {
   const keep = KEEP_LEVEL_SOURCES.includes(input.source);
   const level = (keep && readLevel(dir)) || defaultLevel(env, dir);
   if (!keep) writeLevel(dir, level);
-  const rules = withLanguage(loadRuleset(level, rulesetOptions(dir)), dir);
+  const rules = withLanguage(loadRuleset(level, rulesetOptions(dir, env)), dir);
   if (!rules) return '';
   if (!keep && fs.existsSync(statuslineCopy(dir))) refreshStatuslineCopy(dir);
-  const offers = keep || isEvalRun(env) ? [] : [languageOffer(dir), statuslineNudge(dir)];
+  const offers = keep || isEvalRun(env) ? [] : [languageOffer(dir), testsOffer(dir), statuslineNudge(dir)];
   return envelope('SessionStart', [rules, ...offers].filter(Boolean).join('\n\n'));
 }
 
@@ -284,7 +302,7 @@ function onSubagent(input, env, dir) {
   const agentType = typeof input.agent_type === 'string' ? input.agent_type.trim() : '';
   if (matcher ? agentType && !matcher.test(agentType) : NO_CODE_AGENTS.test(agentType)) return '';
   const level = readLevel(dir) || defaultLevel(env, dir);
-  return envelope('SubagentStart', loadRuleset(level, rulesetOptions(dir)));
+  return envelope('SubagentStart', loadRuleset(level, rulesetOptions(dir, env)));
 }
 
 function onPrompt(input, env, dir) {
@@ -308,10 +326,10 @@ function onPrompt(input, env, dir) {
     writeConfig(dir, { language: command.language });
     return envelope('UserPromptSubmit', `crewcut: language ${command.language}\n\n${languageLine(command.language)}`);
   }
-  if (command.command === 'markers') {
-    writeConfig(dir, { markers: command.enabled });
-    const state = `crewcut: markers ${command.enabled ? 'on' : 'off'}`;
-    const rules = loadRuleset(readLevel(dir) || defaultLevel(env, dir), rulesetOptions(dir));
+  if (command.command === 'markers' || command.command === 'tests') {
+    writeConfig(dir, { [command.command]: command.enabled });
+    const state = `crewcut: ${command.command} ${command.enabled ? 'on' : 'off'}`;
+    const rules = loadRuleset(readLevel(dir) || defaultLevel(env, dir), rulesetOptions(dir, env));
     return envelope('UserPromptSubmit', rules ? `${state}\n\n${rules}` : state);
   }
   if (command.command === 'uninstall') {
@@ -321,7 +339,7 @@ function onPrompt(input, env, dir) {
   }
   const level = command.command === 'review' ? REVIEW : command.level;
   writeLevel(dir, level);
-  const rules = withLanguage(loadRuleset(level, rulesetOptions(dir)), dir);
+  const rules = withLanguage(loadRuleset(level, rulesetOptions(dir, env)), dir);
   const text = rules ? `crewcut: ${level}\n\n${rules}` : `crewcut: ${level}`;
   return envelope('UserPromptSubmit', text);
 }

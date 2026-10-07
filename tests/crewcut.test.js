@@ -339,6 +339,74 @@ test('renderRuleset keeps the markers line only when asked', () => {
   assert.equal(renderRuleset('lite', withMarker, { markers: false }), 'always');
 });
 
+test('parseCommand reads /crewcut tests on|off', () => {
+  assert.deepEqual(parseCommand('/crewcut tests off'), { command: 'tests', enabled: false });
+  assert.deepEqual(parseCommand('/crewcut tests ON'), { command: 'tests', enabled: true });
+  assert.deepEqual(parseCommand('/crewcut tests'), { command: 'status' });
+});
+
+test('renderRuleset keeps a line only when every tag on it holds', () => {
+  const md = 'always\n[full][tests] extend\n[notests] none\n[full] full only';
+  assert.equal(renderRuleset('full', md), 'always\nextend\nfull only');
+  assert.equal(renderRuleset('full', md, { tests: false }), 'always\nnone\nfull only');
+  assert.equal(renderRuleset('lite', md, { tests: false }), 'always\nnone');
+});
+
+test('the real ruleset writes tests only when asked once tests are off', () => {
+  const markdown = fs.readFileSync(path.join(__dirname, '..', 'hooks', 'ruleset.md'), 'utf8');
+  assert.match(renderRuleset('full', markdown), /then extend it/);
+  for (const level of ['lite', 'full', 'ultra']) {
+    const off = renderRuleset(level, markdown, { tests: false });
+    assert.match(off, /Tests: none unless the task asks; never create or extend one/, level);
+    assert.doesNotMatch(off, /then extend it|extend an existing test file/, level);
+  }
+});
+
+test('session drops the extend-tests rule when the config turns tests off', () => {
+  const dir = tempDir();
+  const startup = '{"hook_event_name":"SessionStart","source":"startup"}';
+  assert.match(payload(run('session', startup, { CLAUDE_CONFIG_DIR: dir })).additionalContext, /then extend it/);
+  writeConfig(dir, { tests: false });
+  assert.doesNotMatch(payload(run('session', startup, { CLAUDE_CONFIG_DIR: dir })).additionalContext, /then extend it/);
+});
+
+test('the first session asks once whether to keep writing tests', () => {
+  const dir = tempDir();
+  const first = payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir })).additionalContext;
+  assert.match(first, /Tests, once:/);
+  assert.equal(configIn(dir).tests, true);
+  const second = payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir })).additionalContext;
+  assert.doesNotMatch(second, /Tests, once:/);
+  const chosen = tempDir();
+  writeConfig(chosen, { tests: false });
+  assert.doesNotMatch(payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: chosen })).additionalContext, /Tests, once:/);
+  const evalDir = tempDir();
+  const text = payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: evalDir, CLAUDE_CODE_EVAL_CONFINED: '1' })).additionalContext;
+  assert.doesNotMatch(text, /Tests, once:/);
+});
+
+test('CREWCUT_TESTS wins over the config file', () => {
+  const dir = tempDir();
+  const startup = '{"hook_event_name":"SessionStart","source":"startup"}';
+  const off = payload(run('session', startup, { CLAUDE_CONFIG_DIR: dir, CREWCUT_TESTS: 'off' })).additionalContext;
+  assert.match(off, /never create or extend one/);
+  writeConfig(dir, { tests: false });
+  const on = payload(run('session', startup, { CLAUDE_CONFIG_DIR: dir, CREWCUT_TESTS: 'on' })).additionalContext;
+  assert.match(on, /then extend it/);
+});
+
+test('prompt /crewcut tests off writes the config and re-emits the rules', () => {
+  const dir = tempDir();
+  run('session', '{"hook_event_name":"SessionStart","source":"startup"}', { CLAUDE_CONFIG_DIR: dir });
+  const off = payload(run('prompt', promptInput('/crewcut tests off'), { CLAUDE_CONFIG_DIR: dir })).additionalContext;
+  assert.match(off, /^crewcut: tests off\n\nCREWCUT ACTIVE - level: full\./);
+  assert.match(off, /never create or extend one/);
+  assert.equal(configIn(dir).tests, false);
+  const on = payload(run('prompt', promptInput('/crewcut tests on'), { CLAUDE_CONFIG_DIR: dir })).additionalContext;
+  assert.match(on, /^crewcut: tests on\n\nCREWCUT ACTIVE - level: full\./);
+  assert.equal(configIn(dir).tests, true);
+});
+
 test('the real ruleset asks for a crewcut: comment only with markers on', () => {
   const markdown = fs.readFileSync(path.join(__dirname, '..', 'hooks', 'ruleset.md'), 'utf8');
   for (const level of ['lite', 'full', 'ultra']) {

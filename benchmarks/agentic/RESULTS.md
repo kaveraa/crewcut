@@ -314,6 +314,20 @@ What it says:
   -45 %, 7.6 turns, correct 36/36; safety 21/21, lines -37 %, cost -13 %.
   The same as 0.5.3 within noise: on Opus the saving comes from the turns
   removed, and the shorter ruleset neither adds nor takes away.
+- Crewcut 0.10.0 with `/crewcut tests off` (`CREWCUT_TESTS=off` on the
+  harness: a test only when the ticket asks, never extend one), crewcut arm
+  only, 36 cells, 2026-10-07, 4.76 USD, against the same baseline: lines
+  -71 %, tokens -50 %, cost -53 %, time -61 %, 5.9 turns, tests in 3 % of
+  the cells (one), correct 36/36. The seven-word prompt in the same table:
+  -72 %, -44 %, -49 %, -56 %, 6.8 turns, tests in 31 %. Lines are the same
+  within noise (sum 1487 against 1447 over the 36 cells; the prompt is
+  under on csv, 25 against 32, crewcut on wizard, 76 against 87); the
+  turns the tests cost go away, and with them the gap in tokens, cost and
+  time. The switch gives the prompt's savings and keeps the ladder, the
+  root-cause rule and the never-cut list. Safety with tests off: 21/21,
+  lines -43 %, cost -15 %, no test file written, 1.68 USD. Raw:
+  `results/ponytail-harness-2026-10-02/opus-crewcut-notests-results.json`
+  and `opus-safety-crewcut-notests-results.json`.
 
 ## Model tier: Opus 5.5 on Next-js-Boilerplate
 

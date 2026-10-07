@@ -149,6 +149,13 @@ blind.
 Caveman, the terse-prose control, cuts no code (+4 % LOC on the template):
 short prose is not short code.
 
+If you would rather have the prompt's savings, `/crewcut tests off` makes
+crewcut write a test only when the ticket asks and keeps everything else.
+Measured on the Opus template, same baseline, 36 cells: LOC -71 %, tokens
+-50 %, cost -53 %, time -61 %, 5.9 turns, safe 21/21. Same lines as the
+prompt, fewer tokens, and the ladder, the root-cause rule and the never-cut
+list stay. The first session asks you once which you want.
+
 The cut is biggest where a native element replaces a component: on the date
 picker, Opus writes 369 lines with two new dependencies, crewcut a 10-line
 native input. It is near zero on irreducible endpoints, and it follows how
@@ -218,6 +225,7 @@ off.
 | `/crewcut subagents on\|off` | Inject the rules into subagents too (on by default)   |
 | `/crewcut lang <code>`      | Reply in `en`, `es`, `fr`, `de`, `ko` or `zh`; asked once at the first session |
 | `/crewcut markers on\|off`   | `crewcut:` comment on each corner cut (off by default) |
+| `/crewcut tests on\|off`     | Off: write a test only when the ticket asks, never extend one (on by default; asked once at the first session) |
 | `/crewcut-review [scope]`   | Read-only review of a diff                            |
 | `/crewcut-audit [path]`     | Same review over a whole tree, ranked by lines to cut |
 | `/crewcut-debt [path]`      | Ledger of the `crewcut:` markers                      |
@@ -303,6 +311,7 @@ or `CLAUDE_CONFIG_DIR`):
 | `subagents`       |                           | Inject the ruleset into subagents (about 500 tokens each) |
 | `subagentMatcher` | `CREWCUT_SUBAGENT_MATCHER` | Case-insensitive regular expression on the agent type, for example `explore\|general` |
 | `markers`         |                           | `crewcut:` comment on each corner cut               |
+| `tests`           | `CREWCUT_TESTS`           | `false` or `off`: write a test only when the ticket asks |
 
 The environment variable wins over the file. A subagent whose type is
 unknown, or a pattern that does not compile, still receives the rules.
