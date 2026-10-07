@@ -186,21 +186,21 @@ test('prompt /crewcut alone reports the stored level and writes nothing', () => 
   const dir = tempDir();
   fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'lite\n');
   const out = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir });
-  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: full; levels: off, lite, full, ultra; language: en)');
+  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: full; levels: off, lite, full, ultra; language: en; tests: on)');
   assert.equal(levelIn(dir), 'lite');
 });
 
 test('prompt /crewcut reports the default when no level file exists', () => {
   const dir = tempDir();
   const out = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir, CREWCUT_DEFAULT_MODE: 'lite' });
-  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: lite; levels: off, lite, full, ultra; language: en)');
+  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: lite; levels: off, lite, full, ultra; language: en; tests: on)');
   assert.ok(!fs.existsSync(path.join(dir, 'crewcut-mode')));
 });
 
 test('prompt /crewcut maximum reports status like a bare /crewcut', () => {
   const dir = tempDir();
   const out = run('prompt', promptInput('/crewcut maximum'), { CLAUDE_CONFIG_DIR: dir });
-  assert.equal(payload(out).additionalContext, 'crewcut: full (default: full; levels: off, lite, full, ultra; language: en)');
+  assert.equal(payload(out).additionalContext, 'crewcut: full (default: full; levels: off, lite, full, ultra; language: en; tests: on)');
   assert.ok(!fs.existsSync(path.join(dir, 'crewcut-mode')));
 });
 
@@ -343,6 +343,14 @@ test('parseCommand reads /crewcut tests on|off', () => {
   assert.deepEqual(parseCommand('/crewcut tests off'), { command: 'tests', enabled: false });
   assert.deepEqual(parseCommand('/crewcut tests ON'), { command: 'tests', enabled: true });
   assert.deepEqual(parseCommand('/crewcut tests'), { command: 'status' });
+  assert.deepEqual(parseCommand('/crewcut test off'), { command: 'tests', enabled: false });
+});
+
+test('status shows tests off once the config turns them off', () => {
+  const dir = tempDir();
+  writeConfig(dir, { tests: false });
+  const out = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir });
+  assert.match(payload(out).additionalContext, /; tests: off\)$/);
 });
 
 test('renderRuleset keeps a line only when every tag on it holds', () => {
@@ -490,7 +498,7 @@ test('prompt /crewcut alone reports the level and the default', () => {
   writeConfig(dir, { defaultLevel: 'ultra' });
   fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'lite\n');
   const out = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir });
-  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: ultra; levels: off, lite, full, ultra; language: en)');
+  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: ultra; levels: off, lite, full, ultra; language: en; tests: on)');
 });
 
 test('prompt /crewcut subagents off writes the config and acknowledges', () => {
@@ -574,7 +582,7 @@ test('review state is kept across compaction, reset on startup, left by a level 
   assert.match(payload(compact).additionalContext, /^CREWCUT ACTIVE - level: review\./);
   assert.equal(levelIn(dir), 'review');
   const status = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir });
-  assert.equal(payload(status).additionalContext, 'crewcut: review (default: full; levels: off, lite, full, ultra; language: en)');
+  assert.equal(payload(status).additionalContext, 'crewcut: review (default: full; levels: off, lite, full, ultra; language: en; tests: on)');
   const sub = run('subagent', '{}', { CLAUDE_CONFIG_DIR: dir });
   assert.match(payload(sub).additionalContext, /level: review\./);
   const back = run('prompt', promptInput('/crewcut full'), { CLAUDE_CONFIG_DIR: dir });

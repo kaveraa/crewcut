@@ -43,8 +43,8 @@ function parseCommand(prompt) {
   if (first === 'subagents' && (second === 'on' || second === 'off')) {
     return { command: 'subagents', enabled: second === 'on' };
   }
-  if ((first === 'markers' || first === 'tests') && (second === 'on' || second === 'off')) {
-    return { command: first, enabled: second === 'on' };
+  if ((first === 'markers' || first === 'tests' || first === 'test') && (second === 'on' || second === 'off')) {
+    return { command: first === 'test' ? 'tests' : first, enabled: second === 'on' };
   }
   if (first === 'uninstall' && !second) return { command: 'uninstall' };
   if (first === 'lang' && Object.hasOwn(LANGUAGES, second)) return { command: 'lang', language: second };
@@ -311,7 +311,7 @@ function onPrompt(input, env, dir) {
   if (command.command === 'status') {
     const level = readLevel(dir) || defaultLevel(env, dir);
     const text = `crewcut: ${level} (default: ${defaultLevel(env, dir)}; levels: ${LEVELS.join(', ')}; `
-      + `language: ${configuredLanguage(dir)})`;
+      + `language: ${configuredLanguage(dir)}; tests: ${rulesetOptions(dir, env).tests ? 'on' : 'off'})`;
     return envelope('UserPromptSubmit', text);
   }
   if (command.command === 'default') {

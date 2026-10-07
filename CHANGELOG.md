@@ -5,6 +5,11 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- `/crewcut` shows the tests state; `/crewcut test on|off` is accepted as
+  a typo of `tests`; the skill names `tests` among the hook commands.
+
 ## [0.11.1] - 2026-10-07
 
 ### Added
