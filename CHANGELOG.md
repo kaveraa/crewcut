@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.11.2] - 2026-10-07
+
 ### Changed
 
 - README tables: a `tests off` row for the Opus template tier.
