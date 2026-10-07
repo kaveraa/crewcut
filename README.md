@@ -109,15 +109,16 @@ tasks whose output is executed against adversarial input. Two repositories,
 full-stack-fastapi-template (ponytail's own, FastAPI + React) and
 Next-js-Boilerplate, three model tiers, three or four runs per cell. Each
 cell is the arm's mean over all cells as a percent of the same model with
-no plugin.
+no plugin; the Haiku rows are the crewcut 0.11.3 re-measure against that
+run's baseline, the version of every other cell is in RESULTS.md.
 
 | crewcut vs no-plugin baseline | LOC | tokens | cost | time | safe |
 |---|--:|--:|--:|--:|--:|
 | **Opus 5.5, Next-js-Boilerplate** | **-82 %** | **-55 %** | **-60 %** | **-67 %** | **100 %** |
 | **Opus 5.5, full-stack-fastapi-template** | **-70 %** | **-40 %** | **-43 %** | **-49 %** | **100 %** |
 | **Sonnet 5.5, Next-js-Boilerplate** | **-70 %** | **-11 %** | **-31 %** | **-34 %** | **100 %** |
-| **Haiku 4.5, Next-js-Boilerplate** | **-40 %** | **-10 %** | **-13 %** | **-20 %** | **100 %** |
-| **Haiku 4.5, full-stack-fastapi-template** | **-14 %** | **-3 %** | **-4 %** | **-7 %** | **100 %** |
+| **Haiku 4.5, Next-js-Boilerplate** | **-63 %** | **-48 %** | **-46 %** | **-40 %** | **100 %** |
+| **Haiku 4.5, full-stack-fastapi-template** | **-9 %** | **-30 %** | **-30 %** | **-20 %** | **100 %** |
 | **Sonnet 5.5, full-stack-fastapi-template** | **-8 %** | **+9 %** | **+2 %** | **-2 %** | **100 %** |
 
 The same arm with `/crewcut tests off`, a test only when the ticket asks:
@@ -169,8 +170,8 @@ crewcut write a test only when the ticket asks and keeps everything else.
 Measured on every tier (second table above): on the Opus template, tokens
 go from -40 % to -50 % and cost from -43 % to -53 %; on Sonnet's template,
 from +9 % to -15 % and +2 % to -26 %, under the prompt on both; on Haiku,
-cost from -4 % to -35 % on the template and -13 % to -52 % on Next.js. Lines
-barely move, every cell stays correct, every guard stays. Where there is no
+cost from -30 % to -35 % on the template and -46 % to -52 % on Next.js.
+Lines barely move, every cell stays correct, every guard stays. Where there is no
 test file to extend, Opus and Sonnet on Next.js, the switch changes nothing.
 The first session asks you once which you want.
 

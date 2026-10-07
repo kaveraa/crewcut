@@ -5,6 +5,14 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- Haiku re-measured with crewcut 0.11.3, tests on, 96 cells: Next.js LOC
+  -63 %, tokens -48 %, cost -46 %, time -40 %; template -9 %, -30 %, -30 %,
+  -20 %. The README's Haiku rows carry these figures instead of the 0.4.1
+  run's; the tests switch itself adds 7 points of tokens on Next.js and 8
+  on the template.
+
 ## [0.11.3] - 2026-10-07
 
 ### Added
