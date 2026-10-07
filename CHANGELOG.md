@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-10-07
+
 ### Added
 
 - A barber shop banner at the top of the README files (`assets/banner.svg`).
@@ -21,6 +23,7 @@ follows Keep a Changelog and the project follows Semantic Versioning.
   plugin when seven words cut more on Opus" under it, one eval line per
   model, and the levels, commands, settings and rules each in their own
   section. The Haiku chart moved to `benchmarks/agentic/RESULTS.md`.
+- Repository and package description aligned with the README headline.
 
 ## [0.9.0] - 2026-10-05
 
