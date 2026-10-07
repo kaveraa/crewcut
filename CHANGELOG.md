@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.11.4] - 2026-10-07
+
 ### Changed
 
 - Haiku re-measured with crewcut 0.11.3, tests on, 96 cells: Next.js LOC
