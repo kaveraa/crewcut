@@ -122,6 +122,8 @@ measured on that tier only.
 | **Haiku 4.5, full-stack-fastapi-template** | **-14 %** | **-3 %** | **-4 %** | **-7 %** | **100 %** |
 | **Sonnet 5.5, full-stack-fastapi-template** | **-8 %** | **+9 %** | **+2 %** | **-2 %** | **100 %** |
 
+<p align="center"><img src="assets/benchmark-opus-next.svg" width="860" alt="Each arm as a percent of the no-plugin baseline across LOC, tokens, cost and time (Opus 5.5, Next-js-Boilerplate). Crewcut: LOC 18, tokens 45, cost 40, time 33. Crewcut with tests off: 17, 43, 37, 31. The yagni prompt: 12, 38, 34, 28. Safety: every arm 100 percent."></p>
+
 The seven-word prompt "Follow YAGNI principles, and prefer one-liner
 solutions." in the same runs:
 

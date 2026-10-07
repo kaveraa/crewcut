@@ -127,6 +127,8 @@ bras avec `/crewcut tests off`, mesuré sur ce seul palier.
 | **Haiku 4.5, full-stack-fastapi-template** | **-14 %** | **-3 %** | **-4 %** | **-7 %** | **100 %** |
 | **Sonnet 5.5, full-stack-fastapi-template** | **-8 %** | **+9 %** | **+2 %** | **-2 %** | **100 %** |
 
+<p align="center"><img src="assets/benchmark-opus-next.svg" width="860" alt="Chaque bras en pourcentage de la baseline sans plugin sur les lignes, les tokens, le coût et le temps (Opus 5.5, Next-js-Boilerplate). Crewcut : lignes 18, tokens 45, coût 40, temps 33. Crewcut tests off : 17, 43, 37, 31. Le prompt yagni : 12, 38, 34, 28. Sécurité : chaque bras 100 pour cent."></p>
+
 Le prompt de sept mots "Follow YAGNI principles, and prefer one-liner
 solutions." dans les mêmes runs :
 
