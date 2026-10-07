@@ -9,7 +9,7 @@ const [, , featPath, safePath, output, title = 'Every metric vs the no-plugin ba
 if (!featPath || !safePath || !output) { console.error('usage: node chart-bars.mjs <features.json> <safety.json> <out.svg> [title]'); process.exit(2); }
 const load = (p) => { const raw = JSON.parse(readFileSync(p, 'utf8')); return Array.isArray(raw) ? raw : raw.results; };
 const feat = load(featPath), safe = load(safePath);
-const arms = ['baseline', 'caveman', 'crewcut', 'yagni-oneliner'];
+const arms = ['baseline', 'caveman', 'crewcut', 'crewcut-notests', 'yagni-oneliner'].filter((a) => feat.some((r) => r.arm === a));
 const metrics = [
   { key: 'LOC', get: (r) => r.src_loc || 0, fmt: (v) => `${Math.round(v)}` },
   { key: 'tokens', get: (r) => (r.in_tokens || 0) + (r.out_tokens || 0) + (r.cache_tokens || 0), fmt: (v) => `${Math.round(v / 1000)}k` },
@@ -30,18 +30,18 @@ const W = 860, plotTop = 60, plotBottom = 360, x0 = 85, x1 = 815, groupW = 180, 
 const maxPct = Math.max(125, ...metrics.flatMap((m) => arms.map((a) => pct[m.key][a])));
 const top = Math.ceil(maxPct / 25) * 25;
 const sy = (p) => plotBottom - (p / top) * (plotBottom - plotTop);
-const cls = { baseline: 'base', caveman: 'caveman', crewcut: 'crewcut', 'yagni-oneliner': 'yagni' };
+const cls = { baseline: 'base', caveman: 'caveman', crewcut: 'crewcut', 'crewcut-notests': 'notests', 'yagni-oneliner': 'yagni' };
 let s = '';
 const add = (l) => { s += l + '\n'; };
 add(`<svg viewBox="0 0 ${W} 490" width="${W}" height="490" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${arms.map((a) => `${a}: LOC ${pct.LOC[a]}%, tokens ${pct.tokens[a]}%, cost ${pct.cost[a]}%, time ${pct.time[a]}%, safe ${safePct[a]}%`).join('; ')}">`);
 add(`<title>${title}</title>`);
 add(`<style>
   text { font: 12px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: #52514e; }
-  .ink { fill: #0b0b0b; } .grid { stroke: #8a8985; } .base { fill: #8a8985; }
-  .crewcut { fill: #2a78d6; } .caveman { fill: #eb6834; } .yagni { fill: #1baf7a; } .bad { fill: #e34948; }
+  .ink { fill: #0b0b0b; } .grid { stroke: #6b7f90; } .base { fill: #6b7f90; }
+  .crewcut { fill: #eb6834; } .notests { fill: #9b59d0; } .caveman { fill: #febc2e; } .yagni { fill: #1baf7a; } .bad { fill: #e34948; }
   @media (prefers-color-scheme: dark) {
-    text { fill: #c3c2b7; } .ink { fill: #ffffff; } .grid { stroke: #8a8985; } .base { fill: #8a8985; }
-    .crewcut { fill: #3987e5; } .caveman { fill: #d95926; } .yagni { fill: #199e70; } .bad { fill: #e66767; }
+    text { fill: #c3c2b7; } .ink { fill: #ffffff; } .grid { stroke: #6b7f90; } .base { fill: #6b7f90; }
+    .crewcut { fill: #eb6834; } .notests { fill: #c792ea; } .caveman { fill: #febc2e; } .yagni { fill: #1baf7a; } .bad { fill: #e34948; }
   }
 </style>`);
 add(`<text x="${W / 2}" y="24" font-size="15" font-weight="600" text-anchor="middle" class="ink">${title}</text>`);

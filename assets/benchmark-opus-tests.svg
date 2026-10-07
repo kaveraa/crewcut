@@ -1,0 +1,77 @@
+<svg viewBox="0 0 860 490" width="860" height="490" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="baseline: LOC 100%, tokens 100%, cost 100%, time 100%, safe 100%; crewcut: LOC 30%, tokens 60%, cost 57%, time 51%, safe 100%; crewcut-notests: LOC 29%, tokens 50%, cost 47%, time 39%, safe 100%; yagni-oneliner: LOC 28%, tokens 56%, cost 51%, time 44%, safe 100%">
+<title>Tests on against tests off (Claude Code, Opus 5.5, full-stack-fastapi-template, 12 tasks)</title>
+<style>
+  text { font: 12px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: #52514e; }
+  .ink { fill: #0b0b0b; } .grid { stroke: #6b7f90; } .base { fill: #6b7f90; }
+  .crewcut { fill: #eb6834; } .notests { fill: #9b59d0; } .caveman { fill: #febc2e; } .yagni { fill: #1baf7a; } .bad { fill: #e34948; }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #c3c2b7; } .ink { fill: #ffffff; } .grid { stroke: #6b7f90; } .base { fill: #6b7f90; }
+    .crewcut { fill: #eb6834; } .notests { fill: #c792ea; } .caveman { fill: #febc2e; } .yagni { fill: #1baf7a; } .bad { fill: #e34948; }
+  }
+</style>
+<text x="430" y="24" font-size="15" font-weight="600" text-anchor="middle" class="ink">Tests on against tests off (Claude Code, Opus 5.5, full-stack-fastapi-template, 12 tasks)</text>
+<rect x="212" y="38" width="12" height="12" rx="2" class="base"/><text x="229" y="48">baseline</text>
+<rect x="308" y="38" width="12" height="12" rx="2" class="crewcut"/><text x="325" y="48">crewcut</text>
+<rect x="397" y="38" width="12" height="12" rx="2" class="notests"/><text x="414" y="48">crewcut-notests</text>
+<rect x="542" y="38" width="12" height="12" rx="2" class="yagni"/><text x="559" y="48">yagni-oneliner</text>
+<text x="32" y="210" text-anchor="middle" transform="rotate(-90 32 210)">% of baseline (lower is leaner)</text>
+<line x1="85" y1="360.0" x2="815" y2="360.0" class="grid" stroke-opacity="0.6"/>
+<text x="78" y="364.0" font-size="11" text-anchor="end">0%</text>
+<line x1="85" y1="300.0" x2="815" y2="300.0" class="grid" stroke-opacity="0.18"/>
+<text x="78" y="304.0" font-size="11" text-anchor="end">25%</text>
+<line x1="85" y1="240.0" x2="815" y2="240.0" class="grid" stroke-opacity="0.18"/>
+<text x="78" y="244.0" font-size="11" text-anchor="end">50%</text>
+<line x1="85" y1="180.0" x2="815" y2="180.0" class="grid" stroke-opacity="0.18"/>
+<text x="78" y="184.0" font-size="11" text-anchor="end">75%</text>
+<line x1="85" y1="120.0" x2="815" y2="120.0" class="grid" stroke-dasharray="4 4" stroke-opacity="0.6"/>
+<text x="78" y="124.0" font-size="11" text-anchor="end">100%</text>
+<line x1="85" y1="60.0" x2="815" y2="60.0" class="grid" stroke-opacity="0.18"/>
+<text x="78" y="64.0" font-size="11" text-anchor="end">125%</text>
+<rect x="108" y="120.0" width="30" height="240.0" rx="2" class="base"/>
+<text x="123" y="115.0" font-size="10" text-anchor="middle" class="ink">100%</text>
+<rect x="146" y="288.0" width="30" height="72.0" rx="2" class="crewcut"/>
+<text x="161" y="283.0" font-size="10" text-anchor="middle" class="ink" font-weight="600">30%</text>
+<rect x="184" y="290.4" width="30" height="69.6" rx="2" class="notests"/>
+<text x="199" y="285.4" font-size="10" text-anchor="middle" class="ink">29%</text>
+<rect x="222" y="292.8" width="30" height="67.2" rx="2" class="yagni"/>
+<text x="237" y="287.8" font-size="10" text-anchor="middle" class="ink">28%</text>
+<text x="180" y="380" font-size="13" text-anchor="middle">LOC</text>
+<text x="180" y="395" font-size="10" text-anchor="middle" opacity="0.8">base 142</text>
+<rect x="288" y="120.0" width="30" height="240.0" rx="2" class="base"/>
+<text x="303" y="115.0" font-size="10" text-anchor="middle" class="ink">100%</text>
+<rect x="326" y="216.0" width="30" height="144.0" rx="2" class="crewcut"/>
+<text x="341" y="211.0" font-size="10" text-anchor="middle" class="ink" font-weight="600">60%</text>
+<rect x="364" y="240.0" width="30" height="120.0" rx="2" class="notests"/>
+<text x="379" y="235.0" font-size="10" text-anchor="middle" class="ink">50%</text>
+<rect x="402" y="225.6" width="30" height="134.4" rx="2" class="yagni"/>
+<text x="417" y="220.6" font-size="10" text-anchor="middle" class="ink">56%</text>
+<text x="360" y="380" font-size="13" text-anchor="middle">tokens</text>
+<text x="360" y="395" font-size="10" text-anchor="middle" opacity="0.8">base 183k</text>
+<rect x="468" y="120.0" width="30" height="240.0" rx="2" class="base"/>
+<text x="483" y="115.0" font-size="10" text-anchor="middle" class="ink">100%</text>
+<rect x="506" y="223.2" width="30" height="136.8" rx="2" class="crewcut"/>
+<text x="521" y="218.2" font-size="10" text-anchor="middle" class="ink" font-weight="600">57%</text>
+<rect x="544" y="247.2" width="30" height="112.8" rx="2" class="notests"/>
+<text x="559" y="242.2" font-size="10" text-anchor="middle" class="ink">47%</text>
+<rect x="582" y="237.6" width="30" height="122.4" rx="2" class="yagni"/>
+<text x="597" y="232.6" font-size="10" text-anchor="middle" class="ink">51%</text>
+<text x="540" y="380" font-size="13" text-anchor="middle">cost</text>
+<text x="540" y="395" font-size="10" text-anchor="middle" opacity="0.8">base $0.28</text>
+<rect x="648" y="120.0" width="30" height="240.0" rx="2" class="base"/>
+<text x="663" y="115.0" font-size="10" text-anchor="middle" class="ink">100%</text>
+<rect x="686" y="237.6" width="30" height="122.4" rx="2" class="crewcut"/>
+<text x="701" y="232.6" font-size="10" text-anchor="middle" class="ink" font-weight="600">51%</text>
+<rect x="724" y="266.4" width="30" height="93.6" rx="2" class="notests"/>
+<text x="739" y="261.4" font-size="10" text-anchor="middle" class="ink">39%</text>
+<rect x="762" y="254.4" width="30" height="105.6" rx="2" class="yagni"/>
+<text x="777" y="249.4" font-size="10" text-anchor="middle" class="ink">44%</text>
+<text x="720" y="380" font-size="13" text-anchor="middle">time</text>
+<text x="720" y="395" font-size="10" text-anchor="middle" opacity="0.8">base 48s</text>
+<text x="20" y="418" font-size="11" opacity="0.85">Each bar is that arm's mean over all cells as a percent of the no-plugin baseline (the gray 100% bars). Lower is leaner, cheaper, faster.</text>
+<line x1="20" y1="438" x2="815" y2="438" class="grid" stroke-opacity="0.25"/>
+<text x="20" y="460" font-size="11" opacity="0.9">Safety, separate 7-task adversarial tier (path traversal, SQL injection, token forgery, malformed input, rate limit). Higher is safer:</text>
+<rect x="90" y="468" width="10" height="10" rx="2" class="base"/><text x="105" y="478" class="ink">baseline 100%</text>
+<rect x="230" y="468" width="10" height="10" rx="2" class="crewcut"/><text x="245" y="478" class="ink" font-weight="600">crewcut 100%</text>
+<rect x="370" y="468" width="10" height="10" rx="2" class="notests"/><text x="385" y="478" class="ink">crewcut-notests 100%</text>
+<rect x="530" y="468" width="10" height="10" rx="2" class="yagni"/><text x="545" y="478" class="ink">yagni-oneliner 100%</text>
+</svg>

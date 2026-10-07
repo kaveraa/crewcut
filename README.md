@@ -122,6 +122,8 @@ measured on that tier only.
 | **Haiku 4.5, full-stack-fastapi-template** | **-14 %** | **-3 %** | **-4 %** | **-7 %** | **100 %** |
 | **Sonnet 5.5, full-stack-fastapi-template** | **-8 %** | **+9 %** | **+2 %** | **-2 %** | **100 %** |
 
+<p align="center"><img src="assets/benchmark-opus-next.svg" width="860" alt="Each arm as a percent of the no-plugin baseline across LOC, tokens, cost and time (Opus 5.5, Next-js-Boilerplate). Crewcut: LOC 18, tokens 45, cost 40, time 33. Crewcut with tests off: 17, 43, 37, 31. The yagni prompt: 12, 38, 34, 28. Safety: every arm 100 percent."></p>
+
 The seven-word prompt "Follow YAGNI principles, and prefer one-liner
 solutions." in the same runs:
 
@@ -159,6 +161,8 @@ Measured on the Opus template, same baseline, 36 cells: LOC -71 %, tokens
 -50 %, cost -53 %, time -61 %, 5.9 turns, safe 21/21. Same lines as the
 prompt, fewer tokens, and the ladder, the root-cause rule and the never-cut
 list stay. The first session asks you once which you want.
+
+<p align="center"><img src="assets/benchmark-opus-tests.svg" width="860" alt="Tests on against tests off, each arm as a percent of the no-plugin baseline (Opus 5.5, full-stack-fastapi-template). Crewcut with tests on: LOC 30, tokens 60, cost 57, time 51. Crewcut with tests off: 29, 50, 47, 39. The yagni prompt: 28, 56, 51, 44. Safety: every arm 100 percent."></p>
 
 The cut is biggest where a native element replaces a component: on the date
 picker, Opus writes 369 lines with two new dependencies, crewcut a 10-line
