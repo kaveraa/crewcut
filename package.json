@@ -1,6 +1,6 @@
 {
   "name": "crewcut",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "private": true,
   "description": "Short hair, short code. A Claude Code plugin for the simplest code that works: up to 82 % less code on Opus, every safety check kept.",
   "license": "MIT",

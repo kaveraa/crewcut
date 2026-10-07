@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.11.1] - 2026-10-07
+
 ### Added
 
 - Sonnet 5.5 measured on Next-js-Boilerplate, three arms, three runs, 108
