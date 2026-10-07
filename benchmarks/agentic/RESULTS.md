@@ -416,6 +416,43 @@ baseline on twelve tickets out of twelve.
 - Raw: `results/ponytail-harness-2026-10-02/sonnet-next-results.json` and
   `sonnet-next-summary.json`.
 
+## Tests off on every tier
+
+Crewcut 0.11.2 with `/crewcut tests off` (`CREWCUT_TESTS=off` on the
+harness: a test only when the ticket asks, never extend one), crewcut arm
+only, 2026-10-07, three runs per cell (four on Haiku), against the baseline
+of each tier above. Safety re-run with tests off on each model: Opus 21/21,
+Sonnet 21/21, Haiku 28/28. 23.37 USD in all, no 429 in a kept cell (a
+first pass of the Haiku and safety runs hit the account's usage limit and
+was discarded whole).
+
+| crewcut, tests off, vs no-plugin baseline | LOC | tokens | cost | time | turns | correct | with tests on |
+|---|--:|--:|--:|--:|--:|--:|---|
+| Opus 5.5, Next-js-Boilerplate | -83 % | -57 % | -63 % | -69 % | 7.3 | 36/36 | -82 / -55 / -60 / -67 |
+| Opus 5.5, full-stack-fastapi-template | -71 % | -50 % | -53 % | -61 % | 5.9 | 36/36 | -70 / -40 / -43 / -49 |
+| Sonnet 5.5, Next-js-Boilerplate | -69 % | -7 % | -27 % | -33 % | 7.5 | 36/36 | -70 / -11 / -31 / -34 |
+| Haiku 4.5, Next-js-Boilerplate | -60 % | -55 % | -52 % | -48 % | 8.5 | 48/48 | -40 / -10 / -13 / -20 |
+| Haiku 4.5, full-stack-fastapi-template | -20 % | -38 % | -35 % | -26 % | 9.9 | 48/48 | -14 / -3 / -4 / -7 |
+| Sonnet 5.5, full-stack-fastapi-template | -17 % | -15 % | -26 % | -24 % | 5.9 | 36/36 | -8 / +9 / +2 / -2 |
+
+- The switch pays where the tests cost turns: on the FastAPI template,
+  whose `test_items.py` crewcut extends, Sonnet goes from +9 % to -15 % in
+  tokens and from +2 % to -26 % in cost, and passes under the seven-word
+  prompt on both; Opus from -40 % to -50 % and -43 % to -53 %. On
+  Next-js-Boilerplate there is no test file to extend, so Opus and Sonnet
+  move within noise (Sonnet 7.5 turns against 6.8 with tests on).
+- Haiku is the exception on Next.js: -60 % lines and -55 % tokens against
+  -40 % and -10 %, 8.5 turns against 13.6. Its tests-on reference is
+  crewcut 0.4.1 (2026-10-02), seven ruleset versions back, so that gap
+  mixes the switch with "build the ticket only" and the shorter ruleset
+  that came after; a tests-on re-measure of 0.11.2 on Haiku would separate
+  the two. With tests off Haiku still writes a test in 15 % of the
+  template cells, where the other models write none.
+- Lines move little anywhere (the harness counts test files apart); the
+  saving is turns, tokens, cost and time, with every cell correct and every
+  guard kept.
+- Raw: `results/ponytail-harness-2026-10-02/*-crewcut-notests-results.json`.
+
 ## Reproduce
 
 ```

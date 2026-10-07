@@ -109,18 +109,27 @@ tasks whose output is executed against adversarial input. Two repositories,
 full-stack-fastapi-template (ponytail's own, FastAPI + React) and
 Next-js-Boilerplate, three model tiers, three or four runs per cell. Each
 cell is the arm's mean over all cells as a percent of the same model with
-no plugin. The `tests off` row is the same arm with `/crewcut tests off`,
-measured on that tier only.
+no plugin.
 
 | crewcut vs no-plugin baseline | LOC | tokens | cost | time | safe |
 |---|--:|--:|--:|--:|--:|
 | **Opus 5.5, Next-js-Boilerplate** | **-82 %** | **-55 %** | **-60 %** | **-67 %** | **100 %** |
 | **Opus 5.5, full-stack-fastapi-template** | **-70 %** | **-40 %** | **-43 %** | **-49 %** | **100 %** |
-| **Opus 5.5, full-stack-fastapi-template, `tests off`** | **-71 %** | **-50 %** | **-53 %** | **-61 %** | **100 %** |
 | **Sonnet 5.5, Next-js-Boilerplate** | **-70 %** | **-11 %** | **-31 %** | **-34 %** | **100 %** |
 | **Haiku 4.5, Next-js-Boilerplate** | **-40 %** | **-10 %** | **-13 %** | **-20 %** | **100 %** |
 | **Haiku 4.5, full-stack-fastapi-template** | **-14 %** | **-3 %** | **-4 %** | **-7 %** | **100 %** |
 | **Sonnet 5.5, full-stack-fastapi-template** | **-8 %** | **+9 %** | **+2 %** | **-2 %** | **100 %** |
+
+The same arm with `/crewcut tests off`, a test only when the ticket asks:
+
+| crewcut, tests off, vs no-plugin baseline | LOC | tokens | cost | time | safe |
+|---|--:|--:|--:|--:|--:|
+| Opus 5.5, Next-js-Boilerplate | -83 % | -57 % | -63 % | -69 % | 100 % |
+| Opus 5.5, full-stack-fastapi-template | -71 % | -50 % | -53 % | -61 % | 100 % |
+| Sonnet 5.5, Next-js-Boilerplate | -69 % | -7 % | -27 % | -33 % | 100 % |
+| Haiku 4.5, Next-js-Boilerplate | -60 % | -55 % | -52 % | -48 % | 100 % |
+| Haiku 4.5, full-stack-fastapi-template | -20 % | -38 % | -35 % | -26 % | 100 % |
+| Sonnet 5.5, full-stack-fastapi-template | -17 % | -15 % | -26 % | -24 % | 100 % |
 
 <p align="center"><img src="assets/benchmark-opus-next.svg" width="860" alt="Each arm as a percent of the no-plugin baseline across LOC, tokens, cost and time (Opus 5.5, Next-js-Boilerplate). Crewcut: LOC 18, tokens 45, cost 40, time 33. Crewcut with tests off: 17, 43, 37, 31. The yagni prompt: 12, 38, 34, 28. Safety: every arm 100 percent."></p>
 
@@ -157,10 +166,13 @@ short prose is not short code.
 
 If you would rather have the prompt's savings, `/crewcut tests off` makes
 crewcut write a test only when the ticket asks and keeps everything else.
-Measured on the Opus template, same baseline, 36 cells: LOC -71 %, tokens
--50 %, cost -53 %, time -61 %, 5.9 turns, safe 21/21. Same lines as the
-prompt, fewer tokens, and the ladder, the root-cause rule and the never-cut
-list stay. The first session asks you once which you want.
+Measured on every tier (second table above): on the Opus template, tokens
+go from -40 % to -50 % and cost from -43 % to -53 %; on Sonnet's template,
+from +9 % to -15 % and +2 % to -26 %, under the prompt on both; on Haiku,
+cost from -4 % to -35 % on the template and -13 % to -52 % on Next.js. Lines
+barely move, every cell stays correct, every guard stays. Where there is no
+test file to extend, Opus and Sonnet on Next.js, the switch changes nothing.
+The first session asks you once which you want.
 
 <p align="center"><img src="assets/benchmark-opus-tests.svg" width="860" alt="Tests on against tests off, each arm as a percent of the no-plugin baseline (Opus 5.5, full-stack-fastapi-template). Crewcut with tests on: LOC 30, tokens 60, cost 57, time 51. Crewcut with tests off: 29, 50, 47, 39. The yagni prompt: 28, 56, 51, 44. Safety: every arm 100 percent."></p>
 
