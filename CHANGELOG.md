@@ -5,6 +5,17 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Added
+
+- README and README.fr: a "Before and after" section with the date picker
+  ticket on Opus, 318 lines and two packages against 10 lines, from
+  `examples/date-picker.md`.
+
+### Changed
+
+- Plugin and marketplace descriptions and keywords aligned with the README
+  headline.
+
 ## [0.10.0] - 2026-10-07
 
 ### Added

@@ -34,6 +34,40 @@ CLI, OpenCode and the rest): copy [AGENTS.md](AGENTS.md) into your project.
 It is the `full` ruleset; the levels, the review, the audit and the ledger
 stay with the Claude Code plugin.
 
+## Before and after
+
+Ticket: "Add a date picker component to the frontend." Same repository,
+same model (Opus 5.5), one headless Claude Code session each.
+
+| | Without crewcut | With crewcut |
+|---|---|---|
+| Lines added | 318 | 10 |
+| New packages | 2 (`react-day-picker`, `@radix-ui/react-popover`) | 0 |
+| Turns | 14 | 5 |
+| Cost | 0.37 USD | 0.11 USD |
+
+Without the plugin, Opus installs a calendar and a popover, writes a wrapper
+component, a stylesheet and a usage page, and tells you to run `bun install`.
+With it:
+
+```tsx
+import type * as React from "react"
+
+import { Input } from "@/components/ui/input"
+
+// crewcut: native <input type="date"> gives the calendar popup, keyboard and screen reader support for free
+function DatePicker(props: Omit<React.ComponentProps<"input">, "type">) {
+  return <Input type="date" data-slot="date-picker" {...props} />
+}
+
+export { DatePicker }
+```
+
+The reply says what it wraps, that it works with `react-hook-form` like the
+other inputs, that nothing was run, and that the styled calendar would cost
+two packages if you want it. Both diffs and both replies, verbatim, with
+four other tickets: [examples/](examples/).
+
 ## How it works
 
 At session start, and in every subagent, Claude receives one ruleset: a

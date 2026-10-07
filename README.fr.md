@@ -35,6 +35,41 @@ Gemini CLI, OpenCode et les autres) : copiez [AGENTS.md](AGENTS.md) dans
 votre projet. C'est le ruleset `full` ; les niveaux, la revue, l'audit et le
 registre restent au plugin Claude Code.
 
+## Avant et après
+
+Ticket : "Add a date picker component to the frontend." Même dépôt, même
+modèle (Opus 5.5), une session Claude Code headless chacun.
+
+| | Sans crewcut | Avec crewcut |
+|---|---|---|
+| Lignes ajoutées | 318 | 10 |
+| Nouveaux paquets | 2 (`react-day-picker`, `@radix-ui/react-popover`) | 0 |
+| Tours | 14 | 5 |
+| Coût | 0,37 USD | 0,11 USD |
+
+Sans le plugin, Opus installe un calendrier et un popover, écrit un
+composant d'enrobage, une feuille de style et une page d'exemple, et vous
+demande de lancer `bun install`. Avec :
+
+```tsx
+import type * as React from "react"
+
+import { Input } from "@/components/ui/input"
+
+// crewcut: native <input type="date"> gives the calendar popup, keyboard and screen reader support for free
+function DatePicker(props: Omit<React.ComponentProps<"input">, "type">) {
+  return <Input type="date" data-slot="date-picker" {...props} />
+}
+
+export { DatePicker }
+```
+
+La réponse dit ce qu'il enrobe, qu'il marche avec `react-hook-form` comme
+les autres inputs, que rien n'a été lancé, et que le calendrier stylé
+coûterait deux paquets si vous le voulez. Les deux diffs et les deux
+réponses, tels quels, avec quatre autres tickets : [examples/](examples/)
+(en anglais).
+
 ## Comment ça marche
 
 Au démarrage de la session, et dans chaque sous-agent, Claude reçoit un seul
