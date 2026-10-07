@@ -8,6 +8,19 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 ### Added
 
 - A barber shop banner at the top of the README files (`assets/banner.svg`).
+- `evals/RESULTS.md`: the per-case eval tables and the re-measure of each
+  version, moved out of the README.
+- `AGENTS.md`: the `full` ruleset as a rules file for agents other than
+  Claude Code; a test keeps it in step with `hooks/ruleset.md`.
+
+### Changed
+
+- README and README.fr redesigned: badges, the Opus figures and the two
+  install commands first, then how the plugin works, one benchmark table
+  per arm across every model and repository with the answer to "why a
+  plugin when seven words cut more on Opus" under it, one eval line per
+  model, and the levels, commands, settings and rules each in their own
+  section. The Haiku chart moved to `benchmarks/agentic/RESULTS.md`.
 
 ## [0.9.0] - 2026-10-05
 

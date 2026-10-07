@@ -22,6 +22,8 @@ through `--plugin-dir` like the other plugin arms.
   function against adversarial input.
 - Spend: 19.16 USD for the 192 feature cells, 3.31 USD for the 112 safety cells.
 
+<p align="center"><img src="../../assets/benchmark-agentic.svg" width="860" alt="Each arm as a percent of the no-plugin baseline across LOC, tokens, cost and time (Haiku 4.5). Crewcut is the only arm under 100 percent on every metric: LOC 86, tokens 97, cost 96, time 93. Caveman and the yagni prompt rise above 100 on LOC and cost. Safety: baseline, caveman and crewcut 100 percent, yagni-oneliner 96."></p>
+
 ## Twelve features, lines added (mean of 4 runs)
 
 <p align="center"><img src="../../assets/benchmark-cut.svg" width="860" alt="Lines added per task: the baseline bar hatched, the crewcut bar solid on top, caveman and the yagni prompt as thin lines."></p>

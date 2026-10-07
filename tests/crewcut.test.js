@@ -296,6 +296,15 @@ test('the script exits 0 when stdout is closed before it writes', async () => {
   assert.equal(stderr, '');
 });
 
+test('AGENTS.md is the rendered full ruleset without the Claude Code header', () => {
+  const root = path.join(__dirname, '..');
+  const markdown = fs.readFileSync(path.join(root, 'hooks', 'ruleset.md'), 'utf8');
+  const body = renderRuleset('full', markdown, { markers: false }).split('\n').slice(2).join('\n').trimEnd();
+  const agents = fs.readFileSync(path.join(root, 'AGENTS.md'), 'utf8');
+  assert.ok(agents.startsWith('# crewcut\n\n'));
+  assert.ok(agents.endsWith('\n\n' + body + '\n'), 'AGENTS.md is stale: regenerate it from hooks/ruleset.md');
+});
+
 test('the real ruleset carries the quality guard at every active level', () => {
   const markdown = fs.readFileSync(path.join(__dirname, '..', 'hooks', 'ruleset.md'), 'utf8');
   for (const level of ['lite', 'full', 'ultra']) {
