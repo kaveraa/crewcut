@@ -138,11 +138,13 @@ solutions." dans les mêmes runs :
 **Pourquoi un plugin quand sept mots coupent plus sur Opus ?** Parce que le
 prompt coupe à l'aveugle.
 
-- Ses lignes en moins, il les gagne en sautant les tests : sur Opus il écrit
-  des tests dans 31 % des cellules contre 50 % pour crewcut sur le template,
-  et dans aucune contre 19 % sur le boilerplate ; sur Sonnet, 22 % contre
-  50 %. Chaque test de crewcut prolonge un fichier de test que le dépôt avait
-  déjà.
+- Il livre des composants plus nus, et il saute les tests : sur Opus il
+  écrit des tests dans 31 % des cellules contre 50 % pour crewcut sur le
+  template, et dans aucune contre 19 % sur le boilerplate ; sur Sonnet, 22 %
+  contre 50 %. Le harnais compte les fichiers de test à part des lignes,
+  donc ces tests sont là où vont les tours et le coût en plus de crewcut,
+  pas ses lignes. Chaque test de crewcut prolonge un fichier de test que le
+  dépôt avait déjà.
 - Sur Haiku, il écrit plus de code que pas de prompt du tout, et retire un
   garde-fou une fois, le contrôle par client d'un limiteur de débit. Crewcut
   a gardé chaque garde-fou sur chaque cellule de sécurité de chaque palier.
