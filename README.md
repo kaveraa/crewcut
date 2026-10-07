@@ -133,10 +133,12 @@ solutions." in the same runs:
 **Why a plugin when seven words cut more on Opus?** Because the prompt cuts
 blind.
 
-- It gets its extra lines by skipping the tests: on Opus it writes tests in
-  31 % of the cells against 50 % for crewcut on the template, and in none
-  against 19 % on the boilerplate; on Sonnet, 22 % against 50 %. Every
-  crewcut test extends a test file the repository already had.
+- It ships barer components, and it skips the tests: on Opus it writes
+  tests in 31 % of the cells against 50 % for crewcut on the template, and
+  in none against 19 % on the boilerplate; on Sonnet, 22 % against 50 %.
+  The harness counts test files apart from LOC, so those tests are where
+  crewcut's extra turns and cost go, not its lines. Every crewcut test
+  extends a test file the repository already had.
 - On Haiku it writes more code than no prompt at all, and once drops a
   guard, the per-client check of a rate limiter. Crewcut kept every guard on
   every safety cell of every tier.
