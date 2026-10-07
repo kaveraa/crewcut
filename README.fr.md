@@ -114,15 +114,17 @@ de sécurité dont la sortie est exécutée sur des entrées hostiles. Deux
 dépôts, full-stack-fastapi-template (celui de ponytail, FastAPI + React) et
 Next-js-Boilerplate, trois paliers de modèle, trois ou quatre runs par
 cellule. Chaque case est la moyenne du bras sur toutes les cellules, en
-pourcentage du même modèle sans plugin.
+pourcentage du même modèle sans plugin ; les lignes Haiku sont la remesure
+de crewcut 0.11.3 contre la baseline de ce run, la version de chaque autre
+case est dans RESULTS.md.
 
 | crewcut vs baseline sans plugin | lignes | tokens | coût | temps | sûr |
 |---|--:|--:|--:|--:|--:|
 | **Opus 5.5, Next-js-Boilerplate** | **-82 %** | **-55 %** | **-60 %** | **-67 %** | **100 %** |
 | **Opus 5.5, full-stack-fastapi-template** | **-70 %** | **-40 %** | **-43 %** | **-49 %** | **100 %** |
 | **Sonnet 5.5, Next-js-Boilerplate** | **-70 %** | **-11 %** | **-31 %** | **-34 %** | **100 %** |
-| **Haiku 4.5, Next-js-Boilerplate** | **-40 %** | **-10 %** | **-13 %** | **-20 %** | **100 %** |
-| **Haiku 4.5, full-stack-fastapi-template** | **-14 %** | **-3 %** | **-4 %** | **-7 %** | **100 %** |
+| **Haiku 4.5, Next-js-Boilerplate** | **-63 %** | **-48 %** | **-46 %** | **-40 %** | **100 %** |
+| **Haiku 4.5, full-stack-fastapi-template** | **-9 %** | **-30 %** | **-30 %** | **-20 %** | **100 %** |
 | **Sonnet 5.5, full-stack-fastapi-template** | **-8 %** | **+9 %** | **+2 %** | **-2 %** | **100 %** |
 
 Le même bras avec `/crewcut tests off`, un test seulement si le ticket le
@@ -176,8 +178,8 @@ test à crewcut seulement quand le ticket le demande, et garde tout le
 reste. Mesuré sur chaque palier (second tableau plus haut) : sur le
 template Opus, les tokens passent de -40 % à -50 % et le coût de -43 % à
 -53 % ; sur le template Sonnet, de +9 % à -15 % et de +2 % à -26 %, sous le
-prompt sur les deux ; sur Haiku, le coût passe de -4 % à -35 % sur le
-template et de -13 % à -52 % sur Next.js. Les lignes bougent à peine,
+prompt sur les deux ; sur Haiku, le coût passe de -30 % à -35 % sur le
+template et de -46 % à -52 % sur Next.js. Les lignes bougent à peine,
 chaque cellule reste correcte, chaque garde-fou reste. Là où il n'y a pas de
 fichier de test à prolonger, Opus et Sonnet sur Next.js, l'interrupteur ne
 change rien. La première session vous demande une fois lequel vous voulez.

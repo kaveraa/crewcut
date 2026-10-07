@@ -441,13 +441,20 @@ was discarded whole).
   prompt on both; Opus from -40 % to -50 % and -43 % to -53 %. On
   Next-js-Boilerplate there is no test file to extend, so Opus and Sonnet
   move within noise (Sonnet 7.5 turns against 6.8 with tests on).
-- Haiku is the exception on Next.js: -60 % lines and -55 % tokens against
-  -40 % and -10 %, 8.5 turns against 13.6. Its tests-on reference is
-  crewcut 0.4.1 (2026-10-02), seven ruleset versions back, so that gap
-  mixes the switch with "build the ticket only" and the shorter ruleset
-  that came after; a tests-on re-measure of 0.11.2 on Haiku would separate
-  the two. With tests off Haiku still writes a test in 15 % of the
-  template cells, where the other models write none.
+- Haiku's tests-on reference in the table was crewcut 0.4.1 (2026-10-02),
+  seven ruleset versions back, so crewcut 0.11.3 with tests on was
+  re-measured on both repositories (96 cells, 6.06 USD, no 429): Next.js
+  lines -63 %, tokens -48 %, cost -46 %, time -40 %, 9.7 turns, 47/48
+  correct (one wizard cell left no diff after three turns); template lines
+  -9 %, tokens -30 %, cost -30 %, time -20 %, 11.0 turns, tests in 29 % of
+  the cells, 48/48. Most of the gap to 0.4.1 is the ruleset ("build the
+  ticket only", the shorter rules): the switch itself adds 7 points of
+  tokens and 6 of cost on Next.js, 8 and 5 on the template, in line with
+  Opus. The README's Haiku rows now carry the 0.11.3 figures. With tests
+  off Haiku still writes a test in 15 % of the template cells, where the
+  other models write none. Raw:
+  `results/ponytail-harness-2026-10-02/nextjs-crewcut-0113-results.json`
+  and `features-crewcut-0113-results.json`.
 - Lines move little anywhere (the harness counts test files apart); the
   saving is turns, tokens, cost and time, with every cell correct and every
   guard kept.
