@@ -38,10 +38,10 @@ add(`<title>${title}</title>`);
 add(`<style>
   text { font: 12px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: #52514e; }
   .ink { fill: #0b0b0b; } .grid { stroke: #6b7f90; } .base { fill: #6b7f90; }
-  .crewcut { fill: #eb6834; } .notests { fill: #f4c27a; } .caveman { fill: #1baf7a; } .yagni { fill: #35495e; } .bad { fill: #e34948; }
+  .crewcut { fill: #eb6834; } .notests { fill: #9b59d0; } .caveman { fill: #febc2e; } .yagni { fill: #1baf7a; } .bad { fill: #e34948; }
   @media (prefers-color-scheme: dark) {
     text { fill: #c3c2b7; } .ink { fill: #ffffff; } .grid { stroke: #6b7f90; } .base { fill: #6b7f90; }
-    .crewcut { fill: #eb6834; } .notests { fill: #f4c27a; } .caveman { fill: #199e70; } .yagni { fill: #b8c4ce; } .bad { fill: #e34948; }
+    .crewcut { fill: #eb6834; } .notests { fill: #c792ea; } .caveman { fill: #febc2e; } .yagni { fill: #1baf7a; } .bad { fill: #e34948; }
   }
 </style>`);
 add(`<text x="${W / 2}" y="24" font-size="15" font-weight="600" text-anchor="middle" class="ink">${title}</text>`);

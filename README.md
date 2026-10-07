@@ -162,6 +162,8 @@ Measured on the Opus template, same baseline, 36 cells: LOC -71 %, tokens
 prompt, fewer tokens, and the ladder, the root-cause rule and the never-cut
 list stay. The first session asks you once which you want.
 
+<p align="center"><img src="assets/benchmark-opus-tests.svg" width="860" alt="Tests on against tests off, each arm as a percent of the no-plugin baseline (Opus 5.5, full-stack-fastapi-template). Crewcut with tests on: LOC 30, tokens 60, cost 57, time 51. Crewcut with tests off: 29, 50, 47, 39. The yagni prompt: 28, 56, 51, 44. Safety: every arm 100 percent."></p>
+
 The cut is biggest where a native element replaces a component: on the date
 picker, Opus writes 369 lines with two new dependencies, crewcut a 10-line
 native input. It is near zero on irreducible endpoints, and it follows how

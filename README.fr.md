@@ -169,6 +169,8 @@ mêmes lignes que le prompt, moins de tokens, et l'échelle, la règle de la
 cause racine et la liste de ce qui n'est jamais coupé restent. La première
 session vous demande une fois lequel vous voulez.
 
+<p align="center"><img src="assets/benchmark-opus-tests.svg" width="860" alt="Tests on contre tests off, chaque bras en pourcentage de la baseline sans plugin (Opus 5.5, full-stack-fastapi-template). Crewcut tests on : lignes 30, tokens 60, coût 57, temps 51. Crewcut tests off : 29, 50, 47, 39. Le prompt yagni : 28, 56, 51, 44. Sécurité : chaque bras 100 pour cent."></p>
+
 La coupe est la plus forte quand un élément natif remplace un composant :
 sur le sélecteur de date, Opus écrit 369 lignes avec deux nouvelles
 dépendances, crewcut un input natif de 10 lignes. Elle est proche de zéro

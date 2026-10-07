@@ -7,10 +7,12 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ### Added
 
-- A chart under the first README table: every arm as a percent of the
-  baseline on Opus 5.5 with Next-js-Boilerplate, crewcut with tests on and
-  off, and the seven-word prompt (`assets/benchmark-opus-next.svg`).
-  `chart-bars.mjs` draws the arms it finds, `crewcut-notests` included.
+- Two charts in the README: every arm as a percent of the baseline on
+  Opus 5.5 with Next-js-Boilerplate under the first table
+  (`assets/benchmark-opus-next.svg`), and tests on against tests off on
+  the Opus template under the tests paragraph
+  (`assets/benchmark-opus-tests.svg`). `chart-bars.mjs` draws the arms it
+  finds, `crewcut-notests` included, in the banner's colours.
 
 ## [0.11.2] - 2026-10-07
 
