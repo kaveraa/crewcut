@@ -109,12 +109,14 @@ tasks whose output is executed against adversarial input. Two repositories,
 full-stack-fastapi-template (ponytail's own, FastAPI + React) and
 Next-js-Boilerplate, three model tiers, three or four runs per cell. Each
 cell is the arm's mean over all cells as a percent of the same model with
-no plugin.
+no plugin. The `tests off` row is the same arm with `/crewcut tests off`,
+measured on that tier only.
 
 | crewcut vs no-plugin baseline | LOC | tokens | cost | time | safe |
 |---|--:|--:|--:|--:|--:|
 | **Opus 5.5, Next-js-Boilerplate** | **-82 %** | **-55 %** | **-60 %** | **-67 %** | **100 %** |
 | **Opus 5.5, full-stack-fastapi-template** | **-70 %** | **-40 %** | **-43 %** | **-49 %** | **100 %** |
+| **Opus 5.5, full-stack-fastapi-template, `tests off`** | **-71 %** | **-50 %** | **-53 %** | **-61 %** | **100 %** |
 | **Sonnet 5.5, Next-js-Boilerplate** | **-70 %** | **-11 %** | **-31 %** | **-34 %** | **100 %** |
 | **Haiku 4.5, Next-js-Boilerplate** | **-40 %** | **-10 %** | **-13 %** | **-20 %** | **100 %** |
 | **Haiku 4.5, full-stack-fastapi-template** | **-14 %** | **-3 %** | **-4 %** | **-7 %** | **100 %** |
