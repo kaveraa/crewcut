@@ -153,9 +153,15 @@ prompt coupe à l'aveugle.
   et un registre de dette.
 
 Caveman, le contrôle prose concise, ne coupe aucun code (+4 % de lignes sur
-le template) : prose courte ne veut pas dire code court. Si vous préférez
-l'économie du prompt, `/crewcut tests off` fait écrire un test à crewcut
-seulement quand le ticket le demande, et garde tout le reste.
+le template) : prose courte ne veut pas dire code court.
+
+Si vous préférez l'économie du prompt, `/crewcut tests off` fait écrire un
+test à crewcut seulement quand le ticket le demande, et garde tout le
+reste. Mesuré sur le template Opus, même baseline, 36 cellules : lignes
+-71 %, tokens -50 %, coût -53 %, temps -61 %, 5,9 tours, sûr 21/21. Les
+mêmes lignes que le prompt, moins de tokens, et l'échelle, la règle de la
+cause racine et la liste de ce qui n'est jamais coupé restent. La première
+session vous demande une fois lequel vous voulez.
 
 La coupe est la plus forte quand un élément natif remplace un composant :
 sur le sélecteur de date, Opus écrit 369 lignes avec deux nouvelles
@@ -230,7 +236,7 @@ aussi le plugin.
 | `/crewcut subagents on\|off` | Injecte aussi les règles dans les sous-agents (actif par défaut) |
 | `/crewcut lang <code>`      | Répond en `en`, `es`, `fr`, `de`, `ko` ou `zh` ; demandé une fois à la première session |
 | `/crewcut markers on\|off`   | Commentaire `crewcut:` sur chaque coin coupé (inactif par défaut) |
-| `/crewcut tests on\|off`     | Off : n'écrit un test que si le ticket le demande, n'en prolonge jamais (actif par défaut) |
+| `/crewcut tests on\|off`     | Off : n'écrit un test que si le ticket le demande, n'en prolonge jamais (actif par défaut ; demandé une fois à la première session) |
 | `/crewcut-review [portée]`  | Revue en lecture seule d'un diff                      |
 | `/crewcut-audit [chemin]`   | Même revue sur tout un arbre, classée par lignes à couper |
 | `/crewcut-debt [chemin]`    | Registre des marqueurs `crewcut:`                     |

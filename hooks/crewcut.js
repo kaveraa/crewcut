@@ -179,6 +179,16 @@ function languageOffer(dir) {
     + 'and reply in it from then on. Never ask again.';
 }
 
+// One-time question at the first session; on is stored so it is never asked again.
+function testsOffer(dir) {
+  if (readConfig(dir).tests !== undefined) return '';
+  writeConfig(dir, { tests: true });
+  return 'Tests, once: ask the user, in one line, whether crewcut should keep extending the test file that '
+    + 'covers the code it touches (on, the default) or write a test only when the ticket asks (off: on Opus, '
+    + '-50 % tokens and -53 % cost against -40 % and -43 % with tests on, same lines). '
+    + `On off, set "tests" to false in ${path.join(dir, CONFIG_FILE)}. Never ask again.`;
+}
+
 function readLevel(dir) {
   try {
     const text = fs.readFileSync(path.join(dir, LEVEL_FILE), 'utf8').trim().toLowerCase();
@@ -282,7 +292,7 @@ function onSession(input, env, dir) {
   const rules = withLanguage(loadRuleset(level, rulesetOptions(dir, env)), dir);
   if (!rules) return '';
   if (!keep && fs.existsSync(statuslineCopy(dir))) refreshStatuslineCopy(dir);
-  const offers = keep || isEvalRun(env) ? [] : [languageOffer(dir), statuslineNudge(dir)];
+  const offers = keep || isEvalRun(env) ? [] : [languageOffer(dir), testsOffer(dir), statuslineNudge(dir)];
   return envelope('SessionStart', [rules, ...offers].filter(Boolean).join('\n\n'));
 }
 

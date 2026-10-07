@@ -23,7 +23,7 @@ Commands
   /crewcut subagents on|off  inject the rules into subagents (on by default)
   /crewcut lang <code>       reply language (en es fr de ko zh), asked once
   /crewcut markers on|off    "crewcut:" comment on each corner cut (off by default)
-  /crewcut tests on|off      off: a test only when the ticket asks (on by default)
+  /crewcut tests on|off      off: a test only when the ticket asks (on by default, asked once)
   /crewcut-review [scope]    read-only review of a diff: what to cut
   /crewcut-audit [path]      read-only audit of a whole tree: what to cut
   /crewcut-debt [path]       read-only ledger of the "crewcut:" markers

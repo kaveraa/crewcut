@@ -370,6 +370,21 @@ test('session drops the extend-tests rule when the config turns tests off', () =
   assert.doesNotMatch(payload(run('session', startup, { CLAUDE_CONFIG_DIR: dir })).additionalContext, /then extend it/);
 });
 
+test('the first session asks once whether to keep writing tests', () => {
+  const dir = tempDir();
+  const first = payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir })).additionalContext;
+  assert.match(first, /Tests, once:/);
+  assert.equal(configIn(dir).tests, true);
+  const second = payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir })).additionalContext;
+  assert.doesNotMatch(second, /Tests, once:/);
+  const chosen = tempDir();
+  writeConfig(chosen, { tests: false });
+  assert.doesNotMatch(payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: chosen })).additionalContext, /Tests, once:/);
+  const evalDir = tempDir();
+  const text = payload(run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: evalDir, CLAUDE_CODE_EVAL_CONFINED: '1' })).additionalContext;
+  assert.doesNotMatch(text, /Tests, once:/);
+});
+
 test('CREWCUT_TESTS wins over the config file', () => {
   const dir = tempDir();
   const startup = '{"hook_event_name":"SessionStart","source":"startup"}';
