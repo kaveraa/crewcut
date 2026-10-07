@@ -10,6 +10,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 - A barber shop banner at the top of the README files (`assets/banner.svg`).
 - `evals/RESULTS.md`: the per-case eval tables and the re-measure of each
   version, moved out of the README.
+- `AGENTS.md`: the `full` ruleset as a rules file for agents other than
+  Claude Code; a test keeps it in step with `hooks/ruleset.md`.
 
 ### Changed
 

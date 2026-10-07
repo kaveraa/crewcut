@@ -29,6 +29,11 @@ From a local checkout, for one session: `claude --plugin-dir /path/to/crewcut`.
 The hooks run `node`, so Node 22 or newer must be on the PATH of the shell
 that starts Claude Code. Without it, only the skills work.
 
+Any other agent that reads a rules file (Codex, Cursor, Copilot, Gemini
+CLI, OpenCode and the rest): copy [AGENTS.md](AGENTS.md) into your project.
+It is the `full` ruleset; the levels, the review, the audit and the ledger
+stay with the Claude Code plugin.
+
 ## How it works
 
 At session start, and in every subagent, Claude receives one ruleset: a
@@ -323,7 +328,8 @@ removes the plugin itself. From a shell, the same cleanup is
 
 - The hooks need `node` on the PATH.
 - The level is stored per user, so concurrent sessions share it.
-- Claude Code only.
+- The hooks, levels, review, audit and ledger are Claude Code only; other
+  agents get the ruleset through `AGENTS.md`.
 - A cloud session (claude.ai/code) does not load a plugin installed with
   `/plugin`, nor one a repository turns on in `.claude/settings.json`, and
   has no `/plugin` command. Installing crewcut there is being tested.
