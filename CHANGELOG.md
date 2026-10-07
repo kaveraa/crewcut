@@ -7,6 +7,7 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ### Changed
 
+- README tables: a `tests off` row for the Opus template tier.
 - `/crewcut` shows the tests state; `/crewcut test on|off` is accepted as
   a typo of `tests`; the skill names `tests` among the hook commands.
 

@@ -114,12 +114,14 @@ de sécurité dont la sortie est exécutée sur des entrées hostiles. Deux
 dépôts, full-stack-fastapi-template (celui de ponytail, FastAPI + React) et
 Next-js-Boilerplate, trois paliers de modèle, trois ou quatre runs par
 cellule. Chaque case est la moyenne du bras sur toutes les cellules, en
-pourcentage du même modèle sans plugin.
+pourcentage du même modèle sans plugin. La ligne `tests off` est le même
+bras avec `/crewcut tests off`, mesuré sur ce seul palier.
 
 | crewcut vs baseline sans plugin | lignes | tokens | coût | temps | sûr |
 |---|--:|--:|--:|--:|--:|
 | **Opus 5.5, Next-js-Boilerplate** | **-82 %** | **-55 %** | **-60 %** | **-67 %** | **100 %** |
 | **Opus 5.5, full-stack-fastapi-template** | **-70 %** | **-40 %** | **-43 %** | **-49 %** | **100 %** |
+| **Opus 5.5, full-stack-fastapi-template, `tests off`** | **-71 %** | **-50 %** | **-53 %** | **-61 %** | **100 %** |
 | **Sonnet 5.5, Next-js-Boilerplate** | **-70 %** | **-11 %** | **-31 %** | **-34 %** | **100 %** |
 | **Haiku 4.5, Next-js-Boilerplate** | **-40 %** | **-10 %** | **-13 %** | **-20 %** | **100 %** |
 | **Haiku 4.5, full-stack-fastapi-template** | **-14 %** | **-3 %** | **-4 %** | **-7 %** | **100 %** |
