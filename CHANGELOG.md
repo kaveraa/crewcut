@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.11.3] - 2026-10-07
+
 ### Added
 
 - `/crewcut tests off` measured on every tier, 23.37 USD: Opus Next.js
