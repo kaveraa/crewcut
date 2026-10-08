@@ -5,6 +5,13 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.11.5] - 2026-10-08
+
+### Changed
+
+- CI: `actions/checkout` and `actions/setup-node` v4 -> v7; Dependabot
+  watches the GitHub Actions weekly. No change to the plugin.
+
 ## [0.11.4] - 2026-10-07
 
 ### Changed
