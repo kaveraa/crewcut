@@ -405,3 +405,65 @@ twice; Opus, `csv-export` `root-cause-stated` once; Haiku, five graders
 once each. 12.42 USD for this table, 7.09 USD for the three trials. Six
 Fable runs did not start (a process spawn error, twice that day already)
 and their two cases were run again.
+
+## The cause of a bug in the answer (crewcut 0.17.0, 2026-11-13)
+
+Three graders kept failing with the plugin on. Read side by side, the
+failing and the passing answers gave two different stories.
+
+On `shared-bug` and `csv-export`, `root-cause-stated` failed when the
+answer described the fix and left the cause to be inferred: "formatPrice
+now converts numeric strings to numbers". The ruleset asked for "what
+changed, where" and nothing more, and Fable, the model that holds the
+three sentences most strictly, spent them on the fix and two caveats. The
+Output line now reads "what changed (a bug: its cause first), where".
+
+| Plugin arm, `root-cause-stated` | Before | After |
+|---|--:|--:|
+| Fable 5.2, `shared-bug` | 1 / 3 | 5 / 5 |
+| Opus 5.5, `csv-export` | 2 / 3 | 5 / 5 |
+
+On `date-picker`, every `short-answer` failure carried the same
+sentence: the field was made required like the others, "drop required if
+it should be optional". The passing answers made the same choice and said
+it as a fact, or did not say it. The grader was written against offers of
+a script or of a computed max date; naming a choice the ticket left open
+and how to undo it is not one, so the grader now allows it. This is a
+change of the measure, not of the plugin, and the arm without the plugin
+was run again on that case with the new grader.
+
+The clause takes the ruleset to 634 estimated tokens at its heaviest
+level; the ceiling goes from 630 to 640.
+
+The nine cases with the plugin, three runs, Opus as judge. The arm without
+the plugin is the one of the earlier sections, `date-picker` excepted.
+
+| Model | Score with | was | without | Turns with | without | Session cost with | without |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| Fable 5.2 | 1.00 | 0.99 | 0.88 | 4.6 | 5.7 | 0.203 USD | 0.192 USD |
+| Opus 5.5 | 1.00 | 1.00 | 0.84 | 4.8 | 5.4 | 0.092 USD | 0.087 USD |
+| Sonnet 5.5 | 0.97 | 1.00 | 0.86 | 4.3 | 5.3 | 0.043 USD | 0.041 USD |
+| Haiku 5.5 | 0.97 | 0.98 | 0.84 | 5.2 | 6.0 | 0.003 USD | 0.003 USD |
+
+Fable and Opus pass every grader of every run. Sonnet and Haiku came out
+lower than in the previous section, so both were run a second time, with
+the new wording and with the one of 0.16.0:
+
+| Score with the plugin, nine cases, three runs | 0.16.0 wording | 0.17.0 wording |
+|---|--:|--:|
+| Sonnet 5.5, first suite | 1.00 | 0.97 |
+| Sonnet 5.5, second suite | 0.97 | 0.98 |
+| Haiku 5.5, first suite | 0.98 | 0.97 |
+| Haiku 5.5, second suite | 0.99 | 0.99 |
+
+The same graders fail under both wordings: on Sonnet `explain-bug`
+`full-explanation` and `url-parse` `short-answer`, twice each in a
+suite, when the session reads one file less. The spread between two suites
+of the same wording is as wide as the gap between the wordings: a suite of
+three runs does not separate 0.97 from 1.00 on these two models, and the
+1.00 published for Sonnet in 0.16.0 was the high end of that spread. Three
+cases checked on five runs with the new wording: Sonnet `explain-bug` 4
+out of 5, Haiku `csv-export` 4 out of 5, Haiku `explain-bug` 5 out of 5.
+
+About 26 USD in all. Three Sonnet runs did not start in the first suite
+(the same process spawn error) and their two cases were run again.

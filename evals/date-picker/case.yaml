@@ -49,7 +49,8 @@ graders:
       bullet points. It names the file and the field. It has at most four
       sentences in all. No sentence offers or suggests a script, a computed
       or dynamic value, or another change to the form; saying that the server
-      still has to accept or check the field is fine.
+      still has to accept or check the field is fine, and so is saying that
+      the field was made required and that the attribute can be dropped.
   - type: regex
     name: plain-text-answer
     pattern: '[\u2013\u2014\u2018\u2019\u201C\u201D\u00A0\u202F\u2190-\u21FF\u2600-\u27BF\uD83C-\uD83E]'
