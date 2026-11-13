@@ -416,22 +416,22 @@ test('prompt /crewcut tests off writes the config and re-emits the rules', () =>
   assert.equal(configIn(dir).tests, true);
 });
 
-test('the real ruleset asks for a shortcut: comment only with markers on', () => {
+test('the real ruleset asks for a ~ comment only with markers on', () => {
   const markdown = fs.readFileSync(path.join(__dirname, '..', 'hooks', 'ruleset.md'), 'utf8');
   for (const level of ['lite', 'full', 'ultra']) {
-    assert.doesNotMatch(renderRuleset(level, markdown), /shortcut: </, level);
-    assert.match(renderRuleset(level, markdown, { markers: true }), /\/\/ shortcut: <limit>/, level);
+    assert.doesNotMatch(renderRuleset(level, markdown), /~ </, level);
+    assert.match(renderRuleset(level, markdown, { markers: true }), /\/\/ ~ <limit>/, level);
   }
 });
 
 test('session emits the markers line only when the config enables it', () => {
   const dir = tempDir();
   const startup = '{"hook_event_name":"SessionStart","source":"startup"}';
-  assert.doesNotMatch(payload(run('session', startup, { CLAUDE_CONFIG_DIR: dir })).additionalContext, /shortcut: </);
+  assert.doesNotMatch(payload(run('session', startup, { CLAUDE_CONFIG_DIR: dir })).additionalContext, /~ </);
   writeConfig(dir, { markers: true });
-  assert.match(payload(run('session', startup, { CLAUDE_CONFIG_DIR: dir })).additionalContext, /\/\/ shortcut: <limit>/);
+  assert.match(payload(run('session', startup, { CLAUDE_CONFIG_DIR: dir })).additionalContext, /\/\/ ~ <limit>/);
   writeConfig(dir, { markers: 'yes' });
-  assert.doesNotMatch(payload(run('session', startup, { CLAUDE_CONFIG_DIR: dir })).additionalContext, /shortcut: </);
+  assert.doesNotMatch(payload(run('session', startup, { CLAUDE_CONFIG_DIR: dir })).additionalContext, /~ </);
 });
 
 test('prompt /crewcut markers on writes the config and re-emits the rules with the line', () => {
@@ -439,11 +439,11 @@ test('prompt /crewcut markers on writes the config and re-emits the rules with t
   fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'lite\n');
   const on = payload(run('prompt', promptInput('/crewcut markers on'), { CLAUDE_CONFIG_DIR: dir })).additionalContext;
   assert.match(on, /^crewcut: markers on\n\nCREWCUT ACTIVE - level: lite\./);
-  assert.match(on, /\/\/ shortcut: <limit>/);
+  assert.match(on, /\/\/ ~ <limit>/);
   assert.equal(configIn(dir).markers, true);
   const off = payload(run('prompt', promptInput('/crewcut markers off'), { CLAUDE_CONFIG_DIR: dir })).additionalContext;
   assert.match(off, /^crewcut: markers off\n\nCREWCUT ACTIVE - level: lite\./);
-  assert.doesNotMatch(off, /shortcut: </);
+  assert.doesNotMatch(off, /~ </);
   assert.equal(configIn(dir).markers, false);
   assert.equal(levelIn(dir), 'lite');
 });

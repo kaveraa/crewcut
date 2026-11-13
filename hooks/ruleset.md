@@ -34,4 +34,4 @@ Token discipline:
 [full] - Tools: batch independent calls; no large outputs; no subagent where one read answers.
 [ultra] - Tools: batch independent calls; no large outputs; no subagent; one line when one line answers.
 
-[markers] Known-limit cut only: // shortcut: <limit>, add when: <trigger>.
+[markers] Known-limit cut only: // ~ <limit>, add when: <trigger>.

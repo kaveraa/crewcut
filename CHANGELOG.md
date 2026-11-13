@@ -12,7 +12,7 @@ follows Keep a Changelog and the project follows Semantic Versioning.
   installed source, when an API or a version is not known for sure. Same
   ruleset size. Not measured yet.
 - Comments: the ruleset asks for the why only, in one plain line. The
-  opt-in marker on a cut corner is the neutral `// shortcut:` instead of
+  opt-in marker on a cut corner is a plain `// ~` instead of
   `// crewcut:`, so the plugin never writes its name in the code;
   `/crewcut-debt` still finds the older `crewcut:` markers.
 
