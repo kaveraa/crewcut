@@ -5,6 +5,13 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- The five examples are recorded again with crewcut 0.15.4 through
+  ponytail's harness, unchanged: no `crewcut:` comment is left in them.
+  The date picker run is now 399 lines against 10; the before and after
+  card and its figures follow.
+
 ## [0.15.4] - 2026-11-13
 
 ### Added

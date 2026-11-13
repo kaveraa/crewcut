@@ -2,41 +2,27 @@
 
 Ticket: "Add a color picker component to the frontend."
 
-Repository: [fastapi/full-stack-fastapi-template](https://github.com/fastapi/full-stack-fastapi-template) at `cd83fc1`. Model: Claude Opus 5.5. One headless Claude Code session per arm through ponytail's agentic harness (see [RESULTS.md](../benchmarks/agentic/RESULTS.md)), crewcut 0.6.4, 2026-10-03. The diff is what the session left in the working tree, the reply is its last message; neither is edited. Lines are source lines added, tests counted apart.
+Repository: [fastapi/full-stack-fastapi-template](https://github.com/fastapi/full-stack-fastapi-template) at `cd83fc1`. Model: Claude Opus 5.5. One headless Claude Code session per arm through ponytail's agentic harness, unchanged, crewcut 0.15.4, 2026-11-13 (see [RESULTS.md](../benchmarks/agentic/RESULTS.md)). The diff is what the session left behind, the reply is its last message; neither is edited.
 
-## Without crewcut: 182 lines, 7 turns, 105k tokens, 0.20 USD
+## Without crewcut: 121 lines, 7 turns, 105k tokens, 0.16 USD
 
 ```diff
 diff --git a/frontend/src/components/ui/color-picker.tsx b/frontend/src/components/ui/color-picker.tsx
 new file mode 100644
-index 0000000..cbcce8f
+index 0000000..34b8e93
 --- /dev/null
 +++ b/frontend/src/components/ui/color-picker.tsx
-@@ -0,0 +1,182 @@
+@@ -0,0 +1,121 @@
 +import * as React from "react"
-+import { Check } from "lucide-react"
 +
 +import { cn } from "@/lib/utils"
 +import { Input } from "./input"
 +
-+const DEFAULT_PRESETS = [
-+  "#ef4444",
-+  "#f97316",
-+  "#eab308",
-+  "#22c55e",
-+  "#06b6d4",
-+  "#3b82f6",
-+  "#8b5cf6",
-+  "#ec4899",
-+  "#64748b",
-+  "#000000",
-+]
++const HEX_RE = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i
 +
-+const HEX_PATTERN = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i
-+
-+/** Normalizes "#abc", "abc", "#AABBCC" to "#aabbcc". Returns null if invalid. */
++/** Returns a lowercase `#rrggbb` string, or null if `input` isn't a valid hex color. */
 +function normalizeHex(input: string): string | null {
-+  const match = HEX_PATTERN.exec(input.trim())
++  const match = HEX_RE.exec(input.trim())
 +  if (!match) return null
 +  let hex = match[1].toLowerCase()
 +  if (hex.length === 3) {
@@ -48,135 +34,96 @@ index 0000000..cbcce8f
 +  return `#${hex}`
 +}
 +
-+interface ColorPickerProps
-+  extends Omit<React.ComponentProps<"div">, "onChange" | "defaultValue"> {
-+  value?: string
-+  defaultValue?: string
-+  onChange?: (value: string) => void
++interface ColorPickerProps {
++  value: string
++  onChange: (value: string) => void
++  /** Optional preset swatches shown below the inputs. */
 +  presets?: string[]
++  id?: string
 +  disabled?: boolean
-+  name?: string
-+  inputId?: string
++  className?: string
++  "aria-invalid"?: boolean
 +}
 +
 +function ColorPicker({
 +  value,
-+  defaultValue = "#000000",
 +  onChange,
-+  presets = DEFAULT_PRESETS,
++  presets,
++  id,
 +  disabled,
-+  name,
-+  inputId,
 +  className,
-+  ...props
++  "aria-invalid": ariaInvalid,
 +}: ColorPickerProps) {
-+  const isControlled = value !== undefined
-+  const [internalValue, setInternalValue] = React.useState(
-+    () => normalizeHex(defaultValue) ?? "#000000",
-+  )
-+  const color = isControlled
-+    ? (normalizeHex(value) ?? "#000000")
-+    : internalValue
++  const color = normalizeHex(value) ?? "#000000"
 +  const [draft, setDraft] = React.useState(color)
 +
++  // Keep the text field in sync when the value changes from outside.
 +  React.useEffect(() => {
 +    setDraft(color)
 +  }, [color])
 +
-+  const commit = (next: string) => {
-+    const normalized = normalizeHex(next)
-+    if (!normalized) return
-+    if (!isControlled) setInternalValue(normalized)
-+    setDraft(normalized)
-+    if (normalized !== color) onChange?.(normalized)
++  const commitDraft = () => {
++    const next = normalizeHex(draft)
++    if (next) {
++      setDraft(next)
++      if (next !== color) onChange(next)
++    } else {
++      setDraft(color)
++    }
 +  }
 +
-+  const draftIsValid = normalizeHex(draft) !== null
-+
 +  return (
-+    <div
-+      data-slot="color-picker"
-+      className={cn("flex flex-col gap-2", className)}
-+      {...props}
-+    >
++    <div data-slot="color-picker" className={cn("space-y-2", className)}>
 +      <div className="flex items-center gap-2">
 +        <input
 +          type="color"
 +          aria-label="Pick a color"
-+          data-testid="color-picker-swatch"
 +          value={color}
 +          disabled={disabled}
-+          onChange={(e) => commit(e.target.value)}
-+          className="border-input size-9 shrink-0 cursor-pointer rounded-md border bg-transparent p-1 shadow-xs disabled:cursor-not-allowed disabled:opacity-50 [&::-moz-color-swatch]:rounded-sm [&::-moz-color-swatch]:border-none [&::-webkit-color-swatch]:rounded-sm [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch-wrapper]:p-0"
++          onChange={(e) => onChange(e.target.value.toLowerCase())}
++          className="border-input h-9 w-12 shrink-0 cursor-pointer rounded-md border bg-transparent p-1 shadow-xs disabled:cursor-not-allowed disabled:opacity-50"
 +        />
 +        <Input
-+          id={inputId}
-+          name={name}
-+          aria-label="Hex color"
-+          data-testid="color-picker-input"
++          id={id}
 +          value={draft}
 +          disabled={disabled}
 +          maxLength={7}
 +          spellCheck={false}
 +          autoComplete="off"
-+          aria-invalid={!draftIsValid}
-+          className="font-mono uppercase"
-+          onChange={(e) => {
-+            setDraft(e.target.value)
-+            // Commit full 6-digit hex values immediately while typing;
-+            // shorthand values are committed on blur / Enter.
-+            if (/^#?[0-9a-f]{6}$/i.test(e.target.value.trim())) {
-+              commit(e.target.value)
-+            }
-+          }}
-+          onBlur={() => {
-+            if (draftIsValid) commit(draft)
-+            else setDraft(color)
-+          }}
++          aria-label="Hex color"
++          aria-invalid={ariaInvalid || normalizeHex(draft) === null}
++          onChange={(e) => setDraft(e.target.value)}
++          onBlur={commitDraft}
 +          onKeyDown={(e) => {
 +            if (e.key === "Enter") {
 +              e.preventDefault()
-+              commit(draft)
-+            } else if (e.key === "Escape") {
-+              setDraft(color)
++              commitDraft()
 +            }
 +          }}
++          className="font-mono"
 +        />
 +      </div>
-+      {presets.length > 0 && (
-+        <div
-+          role="radiogroup"
-+          aria-label="Preset colors"
-+          className="flex flex-wrap gap-1.5"
-+        >
++      {presets && presets.length > 0 && (
++        <div className="flex flex-wrap gap-1.5" role="group" aria-label="Preset colors">
 +          {presets.map((preset) => {
-+            const normalized = normalizeHex(preset)
-+            if (!normalized) return null
-+            const selected = normalized === color
++            const presetHex = normalizeHex(preset)
++            if (!presetHex) return null
++            const selected = presetHex === color
 +            return (
 +              <button
-+                key={normalized}
++                key={presetHex}
 +                type="button"
-+                role="radio"
-+                aria-checked={selected}
-+                aria-label={normalized}
-+                title={normalized}
 +                disabled={disabled}
-+                onClick={() => commit(normalized)}
-+                style={{ backgroundColor: normalized }}
++                title={presetHex}
++                aria-label={`Select ${presetHex}`}
++                aria-pressed={selected}
++                onClick={() => onChange(presetHex)}
++                style={{ backgroundColor: presetHex }}
 +                className={cn(
-+                  "border-input flex size-6 items-center justify-center rounded-md border shadow-xs transition-[box-shadow] outline-none disabled:pointer-events-none disabled:opacity-50",
-+                  "focus-visible:ring-ring/50 focus-visible:ring-[3px]",
-+                  selected && "ring-ring ring-2 ring-offset-1 ring-offset-background",
++                  "size-6 rounded-md border border-black/10 shadow-xs outline-none transition-transform hover:scale-110 focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 dark:border-white/20",
++                  selected && "ring-ring ring-2 ring-offset-2 ring-offset-background"
 +                )}
-+              >
-+                {selected && (
-+                  <Check
-+                    className="size-3.5"
-+                    style={{ color: getContrastColor(normalized) }}
-+                  />
-+                )}
-+              </button>
++              />
 +            )
 +          })}
 +        </div>
@@ -185,64 +132,53 @@ index 0000000..cbcce8f
 +  )
 +}
 +
-+/** Picks black or white text for legibility on the given hex background. */
-+function getContrastColor(hex: string): string {
-+  const r = Number.parseInt(hex.slice(1, 3), 16)
-+  const g = Number.parseInt(hex.slice(3, 5), 16)
-+  const b = Number.parseInt(hex.slice(5, 7), 16)
-+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
-+  return luminance > 0.6 ? "#000000" : "#ffffff"
-+}
-+
-+export { ColorPicker, normalizeHex, type ColorPickerProps }
++export { ColorPicker, normalizeHex }
++export type { ColorPickerProps }
 ```
 
 Reply:
 
-I added a reusable `ColorPicker` component in `frontend/src/components/ui/color-picker.tsx`. I haven't run, built or type-checked it, and there are no tests for it. It isn't used on any page yet.
+I added a color picker component in `frontend/src/components/ui/color-picker.tsx`. Nothing uses it yet, and I haven't type-checked, run or tested it.
 
-**What it does:**
-- **Colour square:** clicking it opens the browser's built-in colour picker. I used that instead of a dropdown because the project has no popover library and I didn't install anything.
-- **Hex field:** you can type a colour code like `#3b82f6`, `3b82f6` or the short form `#abc`.
-  - A full six-digit code is applied as you type. A short code is applied when you press Enter or click away.
-  - Escape, or clicking away with an invalid code, puts the field back to the current colour. An invalid code also gives the field a red error border.
-- **Preset colours:** a row of colour buttons, with a tick on the selected one. You can pass your own list with `presets`, or `[]` to hide the row. The tick turns black or white depending on how light the colour is.
-- **Value:** it works with or without the parent managing the value, and `onChange` only fires with a cleaned-up lowercase code like `#aabbcc`. It also accepts `disabled`, `name` and `inputId` (which lets a `<label>` point to the hex field).
+It's a controlled component, like the project's other UI components. You pass in the current color and get each new color back through `onChange`. The values it hands back are always lowercase `#rrggbb`. It has three parts:
 
-Usage:
+- **Color swatch:** the browser's built-in color picker, so I didn't need to add any dependencies.
+- **Hex text field:** accepts `#rgb` or `#rrggbb`, with or without the `#`. It applies the color when you press Enter or click away. Invalid text is flagged while you type and goes back to the last good color on blur.
+- **Optional preset swatches:** pass a `presets` list and a row of clickable swatches appears, with the current one highlighted.
+
+It also supports `id`, `disabled`, `className` and `aria-invalid`, so it can sit inside the existing forms. A small `normalizeHex` helper is exported too.
+
 ```tsx
+import { ColorPicker } from "@/components/ui/color-picker"
+
 const [color, setColor] = useState("#3b82f6")
-<ColorPicker value={color} onChange={setColor} />
+<ColorPicker value={color} onChange={setColor} presets={["#ef4444", "#22c55e", "#3b82f6"]} />
 ```
 
-**Tests:** the frontend only has Playwright end-to-end tests, which run against real pages, and there's no unit-test setup for testing a component on its own. I could put the picker on a page (for example in user settings) and add a Playwright test there if you want.
+The swatch opens the browser's own picker instead of a styled popup like the other menus. A styled popup would need a new popover package, which I couldn't install here. I didn't write tests: the project only has end-to-end tests, and no page shows the picker yet to test against.
 
-## With crewcut: 25 lines, 4 turns, 75k tokens, 0.10 USD
+## With crewcut: 21 lines, 4 turns, 80k tokens, 0.09 USD
 
 ```diff
 diff --git a/frontend/src/components/ui/color-picker.tsx b/frontend/src/components/ui/color-picker.tsx
 new file mode 100644
-index 0000000..2c49979
+index 0000000..0395fdd
 --- /dev/null
 +++ b/frontend/src/components/ui/color-picker.tsx
-@@ -0,0 +1,25 @@
+@@ -0,0 +1,21 @@
 +import type * as React from "react"
 +
 +import { cn } from "@/lib/utils"
 +
-+// crewcut: native <input type="color"> gives the picker UI, keyboard access and hex value for free
-+function ColorPicker({
-+  className,
-+  ...props
-+}: Omit<React.ComponentProps<"input">, "type">) {
++// Native color input: free keyboard, screen reader and eyedropper support.
++function ColorPicker({ className, ...props }: Omit<React.ComponentProps<"input">, "type">) {
 +  return (
 +    <input
 +      type="color"
 +      data-slot="color-picker"
 +      className={cn(
-+        "border-input dark:bg-input/30 h-9 w-14 cursor-pointer rounded-md border bg-transparent p-1 shadow-xs outline-none disabled:cursor-not-allowed disabled:opacity-50",
++        "border-input h-9 w-14 cursor-pointer rounded-md border bg-transparent p-1 shadow-xs outline-none",
 +        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
-+        "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
 +        className
 +      )}
 +      {...props}
@@ -255,6 +191,4 @@ index 0000000..2c49979
 
 Reply:
 
-I added a `ColorPicker` component in `frontend/src/components/ui/color-picker.tsx`. It is the browser's built-in color input, styled like the existing `Input` component, so you get the picker, keyboard use and a hex value (like `#ff0000`) without a new dependency. You use it like any input (`value`, `onChange`, or spread from a react-hook-form field). Nothing was run.
-
-Since you didn't say where it should go, it isn't used on any page yet. If you need preset swatches, transparency or a custom picker panel, that would need a bigger custom component; tell me which one you want.
+I added a `ColorPicker` component in `frontend/src/components/ui/color-picker.tsx`. It wraps the browser's built-in color input and uses the same border and focus styles as the existing `Input`. It takes the normal input props (`value`, `onChange`, `id`, `aria-label`), so pair it with a `Label` or pass `aria-label` so screen readers can name it. It isn't used on any page yet, and I didn't build or test it.
