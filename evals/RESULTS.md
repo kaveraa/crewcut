@@ -111,7 +111,13 @@ turns against 6.2, 0.059 USD in both arms; Haiku 5.5 0.96 against 0.79, 5.4
 turns against 7.0, 0.012 against 0.021 USD. `shared-bug` is fixed in the
 shared function in 3 runs out of 3 with the plugin on all four, 0 without.
 Haiku misses `short-answer` on `date-picker` in all three runs with the
-plugin, and the reuse of the money helper once on `csv-export`.
+plugin, and the reuse of the money helper once on `csv-export`. With
+crewcut 0.15.0 (2026-11-13, Claude Code 2.1.323), the rule that names what
+a change could expose or destroy for users and six tightened wordings:
+Sonnet 0.99 against 0.85, 4.5 turns against 6.2, 0.060 against 0.063 USD;
+Opus 0.98 against 0.79, 5.3 turns against 5.8, 0.109 against 0.106 USD.
+Nothing was lost on the seven cases; the rule itself is measured on
+ponytail 5's benchmark, in `benchmarks/agentic/RESULTS.md`.
 
 What it says:
 
