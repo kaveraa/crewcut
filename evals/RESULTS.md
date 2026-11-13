@@ -94,7 +94,15 @@ reads and turns on `vat-country` (Sonnet 1.0 file against 1.3, 5.7 turns
 against 6.0; Opus 6.3 turns against 7.3) and the one-file cases, where it
 is empty, lose a run on `date-picker` and `explain-bug` in one draw and not
 in the other. Its case is a repository of hundreds of files, outside this
-suite.
+suite. With crewcut 0.13.0 (2026-11-13, Claude Code 2.1.323), the Modern
+line pointed at the official docs, the comment line and the `~` marker:
+Sonnet 0.99 against 0.87, 4.5 turns against 6.0 (-25 %), 0.057 USD in both
+arms; Opus 1.00 against 0.81, 5.2 turns against 5.6, 0.106 against 0.101
+USD. No case grades the three rules themselves: the measure shows nothing
+was lost. The map on Next-js-Boilerplate (115 files, three tickets, four
+runs, Sonnet, crewcut arm): 11.4 turns with the map against 11.5 without,
+29 lines against 30, 245k tokens against 264k, 0.208 against 0.211 USD:
+within noise on a repository this size.
 
 What it says:
 

@@ -225,8 +225,8 @@ courte mais fausse vaut zéro. Dernière mesure sur chaque modèle de travail
 | Modèle | crewcut | Score avec | sans | Tours avec | sans | Coût par run avec | sans |
 |---|---|--:|--:|--:|--:|--:|--:|
 | Fable 5.1 | 0.7.0 | 0,98 | 0,81 | 5,7 | 8,4 | 0,296 USD | 0,414 USD |
-| Sonnet 5.5 | 0.12.0 | 0,96 | 0,86 | 4,5 | 6,2 | 0,061 USD | 0,064 USD |
-| Opus 5.5 | 0.12.0 | 0,97 | 0,80 | 4,9 | 5,7 | 0,106 USD | 0,104 USD |
+| Sonnet 5.5 | 0.13.0 | 0,99 | 0,87 | 4,5 | 6,0 | 0,057 USD | 0,057 USD |
+| Opus 5.5 | 0.13.0 | 1,00 | 0,81 | 5,2 | 5,6 | 0,106 USD | 0,101 USD |
 
 - Le gain grandit avec le projet. `csv-export`, c'est vingt fichiers de
   source et de test avec un bug d'une ligne : avec le plugin, Fable lit 3,3
