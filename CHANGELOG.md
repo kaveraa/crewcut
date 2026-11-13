@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.15.5] - 2026-11-13
+
 ### Changed
 
 - The five examples are recorded again with crewcut 0.15.4 through
