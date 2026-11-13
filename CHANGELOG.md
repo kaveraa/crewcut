@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.15.1] - 2026-11-13
+
 ### Changed
 
 - README: the benchmark figures are tiles whose red deepens with the gain,
