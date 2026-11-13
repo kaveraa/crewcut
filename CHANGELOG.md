@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.15.3] - 2026-11-13
+
 ### Changed
 
 - New banner and one theme for every README image: near-black, a
