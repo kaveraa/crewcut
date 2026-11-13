@@ -108,10 +108,10 @@ at session start, on four models: Fable 5.2 0.99 against 0.82, 4.4 turns
 against 6.1, 0.211 against 0.214 USD; Opus 5.5 1.00 against 0.81, 5.2 turns
 against 5.7, 0.105 against 0.102 USD; Sonnet 5.5 0.98 against 0.86, 4.4
 turns against 6.2, 0.059 USD in both arms; Haiku 5.5 0.96 against 0.79, 5.4
-turns against 7.0, 0.012 against 0.021 USD.  is fixed in the
+turns against 7.0, 0.012 against 0.021 USD. `shared-bug` is fixed in the
 shared function in 3 runs out of 3 with the plugin on all four, 0 without.
-Haiku misses  on  in all three runs with the
-plugin, and the reuse of the money helper once on .
+Haiku misses `short-answer` on `date-picker` in all three runs with the
+plugin, and the reuse of the money helper once on `csv-export`.
 
 What it says:
 

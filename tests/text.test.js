@@ -31,7 +31,7 @@ function describe(match) {
 }
 
 test('tracked files use plain punctuation', () => {
-  const files = git(['ls-files']).split('\n').filter(Boolean);
+  const files = git(['ls-files']).split('\n').filter((file) => file && !file.endsWith('.png')); // an image is not text
   const offenders = [];
   for (const file of files) {
     const match = findBanned(fs.readFileSync(path.join(root, file), 'utf8'));
