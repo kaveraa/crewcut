@@ -261,12 +261,12 @@ off.
 | `/crewcut default <level>`  | Set the level new sessions start at                   |
 | `/crewcut subagents on\|off` | Inject the rules into subagents too (on by default)   |
 | `/crewcut lang <code>`      | Reply in `en`, `es`, `fr`, `de`, `ko` or `zh`; asked once at the first session |
-| `/crewcut markers on\|off`   | `crewcut:` comment on each corner cut (off by default) |
+| `/crewcut markers on\|off`   | `// ~` comment on each corner cut (off by default)     |
 | `/crewcut tests on\|off`     | Off: write a test only when the ticket asks, never extend one (on by default; asked once at the first session) |
 | `/crewcut map on\|off`       | Map of the project's own names at session start, so reuse costs no search (on by default) |
 | `/crewcut-review [scope]`   | Read-only review of a change: bugs, risk, load, tests, speed, what to cut |
 | `/crewcut-audit [path]`     | The same over a whole tree, ranked                    |
-| `/crewcut-debt [path]`      | Ledger of the `crewcut:` markers                      |
+| `/crewcut-debt [path]`      | Ledger of the `// ~` markers                          |
 | `/crewcut-gain`             | What the plugin saves, as measured above              |
 | `/crewcut-help`             | Reference card                                        |
 | `/crewcut uninstall`        | Remove the plugin's files next to your settings       |
@@ -304,16 +304,17 @@ cut: 14 lines
 Lean findings still name the rung where the code should have stopped
 (`skip`, `reuse`, `stdlib`, `native`, `installed`, `one-line`, `merge`,
 `split`, `prose`) and the last line counts the lines they would remove. A
-`crewcut:` marker that names its limit is a decision, not a finding, unless
+`~` marker that names its limit is a decision, not a finding, unless
 the expected load already crosses it. `/crewcut-audit` runs the same review
 over a whole tree, entry points and main flows first, twenty findings at
 most. Both report and change nothing; the level stays as it was.
 
 With `/crewcut markers on`, every corner crewcut cuts on purpose carries a
-comment such as `// crewcut: no retry, add when the API flakes`, never as a
-prefix on a comment that explains code. Markers are off by default: on a
-real project the models put the prefix on ordinary comments too, and a
-plugin's name has no place in your code unless you asked for the ledger.
+comment such as `// ~ no retry, add when the API flakes`, never as
+a prefix on a comment that explains code. Markers are off by default: on a
+real project the models put the prefix on ordinary comments too. The sign
+is discreet: crewcut never writes its name in your code, and every other
+comment says why, in one plain line.
 `/crewcut-debt` gathers the markers into one list and flags those that name
 no condition to revisit:
 
@@ -371,7 +372,7 @@ or `CLAUDE_CONFIG_DIR`):
 | `defaultLevel`    | `CREWCUT_DEFAULT_MODE`    | Level new sessions start at                         |
 | `subagents`       |                           | Inject the ruleset into subagents (about 500 tokens each) |
 | `subagentMatcher` | `CREWCUT_SUBAGENT_MATCHER` | Case-insensitive regular expression on the agent type, for example `explore\|general` |
-| `markers`         |                           | `crewcut:` comment on each corner cut               |
+| `markers`         |                           | `// ~` comment on each corner cut                   |
 | `tests`           | `CREWCUT_TESTS`           | `false` or `off`: write a test only when the ticket asks |
 | `map`             | `CREWCUT_MAP`             | `false` or `off`: no map of the project's names at session start; `CREWCUT_MAP_CHARS` sets its size, 1500 by default |
 
@@ -403,10 +404,12 @@ What the ruleset says, beyond the ladder above.
   what one read answers.
 
 **Modern by default.** Claude checks the versions the project runs,
-language, runtime, framework and libraries, and uses the idioms those
-versions allow, including the compact forms when they stay clear: ternary,
-optional chaining, destructuring, early return. Never an old pattern the
-version has replaced, never a feature the version lacks.
+language, runtime, framework and libraries, and follows what their official
+docs recommend today, including the compact forms when they stay clear:
+ternary, optional chaining, destructuring, early return. Unsure of an API,
+or a version newer than it knows: it reads the docs or the installed source
+instead of guessing. Never a deprecated pattern, never a feature the version
+lacks.
 
 **Plain text only.** In code, comments, commits, pull requests and answers:
 no emoji, no emoticon, no arrow symbol (`->` instead), no long dash (`-`

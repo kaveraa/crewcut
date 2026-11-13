@@ -9,15 +9,16 @@ argument-hint: "[path]"
 # Crewcut debt
 
 With `/crewcut markers on` (off by default), every corner cut on purpose
-carries a `crewcut:` comment naming the limit and the condition to revisit
+carries a `~` comment naming the limit and the condition to revisit
 it. This command gathers them so a shortcut stays a choice instead of
 becoming the design by neglect.
 
 1. Scope: `$ARGUMENTS` if given (a directory inside the project), else the
    project root.
-2. Find the markers with one Grep call for `crewcut:` inside a comment
-   (`//`, `#`, `--`, `/*`, `*`, `<!--`), skipping dependencies, build
-   output and lock files. Do not print the raw matches.
+2. Find the markers with one Grep call for a comment that opens with
+   `~ ` or the older `crewcut:` (after `//`, `#`, `--`, `/*`, `*` or
+   `<!--`), skipping dependencies, build output and lock files. Do not print
+   the raw matches.
 3. Answer with a line for each marker, files in path order:
 
    `<file>:<line>: <what was cut> -> add when: <condition>`

@@ -53,7 +53,7 @@ function parseCommand(prompt) {
   return { command: 'status' };
 }
 
-// options.markers keeps the [markers] line: the crewcut: comment on a cut
+// options.markers keeps the [markers] line: the ~ comment on a cut
 // corner, off by default because models put it on plain comments too.
 function renderRuleset(level, markdown, options = {}) {
   if (level === 'off') return '';

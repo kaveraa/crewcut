@@ -22,12 +22,12 @@ Commands
   /crewcut default <level>   set the default for new sessions
   /crewcut subagents on|off  inject the rules into subagents (on by default)
   /crewcut lang <code>       reply language (en es fr de ko zh), asked once
-  /crewcut markers on|off    "crewcut:" comment on each corner cut (off by default)
+  /crewcut markers on|off    "// ~" comment on each corner cut (off by default)
   /crewcut tests on|off      off: a test only when the ticket asks (on by default, asked once)
   /crewcut map on|off        the project's own names at session start, so reuse costs no search (on by default)
   /crewcut-review [scope]    read-only review of a diff: bugs, risk, load, tests, speed, what to cut
   /crewcut-audit [path]      the same over a whole tree, ranked
-  /crewcut-debt [path]       read-only ledger of the "crewcut:" markers
+  /crewcut-debt [path]       read-only ledger of the "// ~" markers
   /crewcut-gain              what the plugin saves, as measured on its evals
   /crewcut-help              this card
   /crewcut uninstall         remove the plugin's files next to your settings,

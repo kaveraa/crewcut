@@ -273,12 +273,12 @@ aussi le plugin.
 | `/crewcut default <niveau>` | Fixe le niveau de départ des nouvelles sessions       |
 | `/crewcut subagents on\|off` | Injecte aussi les règles dans les sous-agents (actif par défaut) |
 | `/crewcut lang <code>`      | Répond en `en`, `es`, `fr`, `de`, `ko` ou `zh` ; demandé une fois à la première session |
-| `/crewcut markers on\|off`   | Commentaire `crewcut:` sur chaque coin coupé (inactif par défaut) |
+| `/crewcut markers on\|off`   | Commentaire `// ~` sur chaque coin coupé (inactif par défaut)     |
 | `/crewcut tests on\|off`     | Off : n'écrit un test que si le ticket le demande, n'en prolonge jamais (actif par défaut ; demandé une fois à la première session) |
 | `/crewcut map on\|off`       | Carte des noms du projet au démarrage de session, pour que réutiliser ne coûte aucune recherche (actif par défaut) |
 | `/crewcut-review [portée]`  | Revue en lecture seule d'un changement : bugs, risque, charge, tests, vitesse, ce qu'il faut couper |
 | `/crewcut-audit [chemin]`   | La même sur tout un arbre, classée                    |
-| `/crewcut-debt [chemin]`    | Registre des marqueurs `crewcut:`                     |
+| `/crewcut-debt [chemin]`    | Registre des marqueurs `// ~`                         |
 | `/crewcut-gain`             | Ce que le plugin économise, tel que mesuré plus haut  |
 | `/crewcut-help`             | Carte de référence                                    |
 | `/crewcut uninstall`        | Retire les fichiers du plugin à côté de vos réglages  |
@@ -317,20 +317,20 @@ cut: 14 lines
 Les constats de sobriété nomment toujours le barreau où le code aurait dû
 s'arrêter (`skip`, `reuse`, `stdlib`, `native`, `installed`, `one-line`,
 `merge`, `split`, `prose`) et la dernière ligne compte les lignes qu'ils
-retireraient. Un marqueur `crewcut:` qui nomme sa limite est une décision,
+retireraient. Un marqueur `~` qui nomme sa limite est une décision,
 pas un constat, sauf si la charge attendue la dépasse déjà. `/crewcut-audit`
 fait la même revue sur tout un arbre, points d'entrée et flux principaux
 d'abord, vingt constats au plus. Les deux rapportent et ne changent rien ;
 le niveau reste ce qu'il était.
 
 Avec `/crewcut markers on`, chaque coin que crewcut coupe volontairement
-porte un commentaire comme `// crewcut: no retry, add when the API flakes`,
+porte un commentaire comme `// ~ no retry, add when the API flakes`,
 jamais en préfixe d'un commentaire qui explique le code. Les marqueurs sont
 inactifs par défaut : sur un vrai projet les modèles mettent aussi le préfixe
-sur des commentaires ordinaires, et le nom d'un plugin n'a rien à faire dans
-votre code si vous n'avez pas demandé le registre. `/crewcut-debt` rassemble
-les marqueurs en une liste et signale ceux qui ne nomment aucune condition
-pour y revenir :
+sur des commentaires ordinaires. Le signe est discret : crewcut n'écrit jamais
+son nom dans votre code, et tout autre commentaire dit le pourquoi, en une
+ligne simple. `/crewcut-debt` rassemble les marqueurs en une liste et signale
+ceux qui ne nomment aucune condition pour y revenir :
 
 ```
 src/queue.js:18: no retry -> add when: the API flakes
@@ -389,7 +389,7 @@ Les réglages vivent dans `crewcut.json` à côté de vos réglages Claude
 | `defaultLevel`    | `CREWCUT_DEFAULT_MODE`     | Niveau de départ des nouvelles sessions             |
 | `subagents`       |                            | Injecte le ruleset dans les sous-agents (environ 500 tokens chacun) |
 | `subagentMatcher` | `CREWCUT_SUBAGENT_MATCHER` | Expression régulière, insensible à la casse, sur le type d'agent, par exemple `explore\|general` |
-| `markers`         |                            | Commentaire `crewcut:` sur chaque coin coupé        |
+| `markers`         |                            | Commentaire `// ~` sur chaque coin coupé            |
 | `tests`           | `CREWCUT_TESTS`            | `false` ou `off` : n'écrit un test que si le ticket le demande |
 | `map`             | `CREWCUT_MAP`              | `false` ou `off` : pas de carte des noms du projet au démarrage ; `CREWCUT_MAP_CHARS` fixe sa taille, 1500 par défaut |
 
@@ -425,10 +425,12 @@ Ce que dit le ruleset, au-delà de l'échelle plus haut.
   sorties ; pas de sous-agent pour ce qu'une lecture répond.
 
 **Moderne par défaut.** Claude vérifie les versions que le projet utilise,
-langage, runtime, framework et bibliothèques, et emploie les idiomes que ces
-versions permettent, y compris les formes compactes quand elles restent
-claires : ternaire, chaînage optionnel, déstructuration, retour anticipé.
-Jamais un vieux pattern que la version a remplacé, jamais une fonctionnalité
+langage, runtime, framework et bibliothèques, et suit ce que leur
+documentation officielle recommande aujourd'hui, y compris les formes
+compactes quand elles restent claires : ternaire, chaînage optionnel,
+déstructuration, retour anticipé. Un doute sur une API, ou une version plus
+récente que ce qu'il connaît : il lit la documentation ou le code installé
+au lieu de deviner. Jamais un pattern déprécié, jamais une fonctionnalité
 que la version n'a pas.
 
 **Texte brut seulement.** Dans le code, les commentaires, les commits, les

@@ -52,9 +52,9 @@ second ticket. No type alias or helper for a single use.
 - No scaffolding for a future that may not come. Delete before you add.
   Boring beats clever. As few files as possible.
 - Two options of the same size: take the one right on edge cases.
-- No `crewcut:` comment unless the ruleset asks for markers; then one line
-  on a corner cut with a known ceiling, `// crewcut: no retry, add when the
-  API flakes`, never as a prefix on a comment that explains code.
+- Comments say why, in one plain line, and never name crewcut. With markers
+  on, a cut with a known ceiling gets `// ~ no retry, add when the
+  API flakes`; no other comment gets the prefix.
 - Ship the simple version and question the complex request in the same
   reply.
 
@@ -100,10 +100,10 @@ Example, "add a cache for the API responses":
 ## Modern by default
 
 Before writing, check the versions the project runs (lock files, manifests,
-CI config). Use the idioms those versions allow and their compact forms when
-clear (ternary, optional chaining, destructuring, early return). Never an old
-pattern the version has replaced, never a feature the version lacks. Unknown
-version: read it, do not guess.
+CI config) and follow their current official docs, compact forms when clear
+(ternary, optional chaining, destructuring, early return). API unsure or
+version newer than you know: read the docs or the installed source, never
+guess. Never a deprecated pattern or a feature the version lacks.
 
 ## Plain text only
 
