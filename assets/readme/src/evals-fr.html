@@ -1,0 +1,21 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+.row { display: grid; grid-template-columns: 120px 1fr; gap: 18px; align-items: center; margin-top: 26px; }
+.m { font-size: 20px; font-weight: 700; color: #F4EFE6; }
+.bar { height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; font-family: Consolas, monospace; font-size: 15px; font-weight: 700; }
+.bar.w { background: #E34948; color: #FFFFFF; }
+.bar.o { background: #35495E; color: #B8C4CE; margin-top: 6px; }
+.legend { margin-top: 26px; display: flex; gap: 26px; font-family: Consolas, monospace; font-size: 14px; color: #B8C4CE; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; }
+</style>
+<div class="card"><div class="pole"></div>
+<div class="eyebrow">Suite d'évals, sept cas, trois runs chacun</div>
+<h1>Plus court, et <em>plus souvent juste.</em></h1>
+<div class="row"><div class="m">Fable 5.2</div><div><div class="bar w" style="width:99%">0,99</div><div class="bar o" style="width:82%">0,82</div></div></div>
+<div class="row"><div class="m">Opus 5.5</div><div><div class="bar w" style="width:100%">1,00</div><div class="bar o" style="width:81%">0,81</div></div></div>
+<div class="row"><div class="m">Sonnet 5.5</div><div><div class="bar w" style="width:98%">0,98</div><div class="bar o" style="width:86%">0,86</div></div></div>
+<div class="row"><div class="m">Haiku 5.5</div><div><div class="bar w" style="width:96%">0,96</div><div class="bar o" style="width:79%">0,79</div></div></div>
+<div class="legend"><span><i style="background:#E34948"></i>avec crewcut</span><span><i style="background:#35495E"></i>même modèle, sans plugin</span></div>
+<div class="foot">Le score est la part de graders réussis. Chaque cas note la justesse autant que la taille :<br>une réponse plus courte mais fausse vaut zéro.</div>
+</div>
+<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>

@@ -1,0 +1,23 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 30px; }
+.n { font-size: 58px; font-weight: 700; color: #E34948; letter-spacing: -1.5px; line-height: 1; }
+.l { margin-top: 8px; font-family: Consolas, monospace; font-size: 15px; color: #B8C4CE; }
+.safe { display: flex; align-items: baseline; gap: 16px; }
+.safe b { font-size: 40px; color: #F4C27A; letter-spacing: -1px; white-space: nowrap; }
+.safe span { font-size: 18px; color: #E6EDF3; }
+</style>
+<div class="card"><div class="pole"></div>
+<div class="eyebrow">Opus 5.5, avec et sans le plugin</div>
+<h1>Même agent, mêmes tickets. <em>Une fraction du code.</em></h1>
+<div class="grid">
+<div><div class="n">-82 %</div><div class="l">code</div></div>
+<div><div class="n">-55 %</div><div class="l">tokens</div></div>
+<div><div class="n">-60 %</div><div class="l">coût</div></div>
+<div><div class="n">-67 %</div><div class="l">temps</div></div>
+</div>
+<div class="rule"></div>
+<div class="safe"><b>100 %</b><span>des tâches de sécurité passent toujours. Validation et sécurité restent intactes.</span></div>
+<div class="foot">Douze tickets d'une ligne sur Next-js-Boilerplate, sessions Claude Code sans interface,<br>notées sur le git diff, face au même modèle sans plugin.</div>
+</div>
+<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>

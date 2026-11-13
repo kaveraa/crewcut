@@ -10,12 +10,12 @@
 
 <p align="center"><b>English</b> - <a href="https://github.com/kaveraa/crewcut/blob/main/README.fr.md">Français</a></p>
 
-Short hair, short code. A Claude Code plugin for the simplest code that
-works: less code, fewer tokens, short answers, and no cut on safety.
+<p align="center">
+<b>Short hair, short code.</b><br>
+A Claude Code plugin for the simplest code that works: less code, fewer tokens, short answers, and no cut on safety.
+</p>
 
-> **On Opus 5.5, up to 82 % less code and 60 % lower cost** than the same
-> model without the plugin, every safety check kept. Measured with the
-> benchmark ponytail published for itself.
+<p align="center"><img src="assets/readme/numbers.png" width="880" alt="Opus 5.5, with and without the plugin. Same agent, same tickets, a fraction of the code: 82 percent less code, 55 percent fewer tokens, 60 percent lower cost, 67 percent less time. 100 percent of the safety tasks still pass. Twelve one-line tickets on Next-js-Boilerplate, headless Claude Code sessions, scored on the git diff, against the same model with no plugin."></p>
 
 ## Install
 
@@ -36,91 +36,68 @@ stay with the Claude Code plugin.
 
 ## Before and after
 
-Ticket: "Add a date picker component to the frontend." Same repository,
-same model (Opus 5.5), one headless Claude Code session each.
-
-| | Without crewcut | With crewcut |
-|---|---|---|
-| Lines added | 318 | 10 |
-| New packages | 2 (`react-day-picker`, `@radix-ui/react-popover`) | 0 |
-| Turns | 14 | 5 |
-| Cost | 0.37 USD | 0.11 USD |
+<p align="center"><img src="assets/readme/beforeafter.png" width="880" alt="Ticket: add a date picker component to the frontend. Without crewcut: 318 lines, 2 new packages, 14 turns, 0.37 USD. With crewcut: 10 lines, no package, 5 turns, 0.11 USD. The whole component is a function that returns the repository's Input with type date. Same repository, same model, Opus 5.5, one headless session each."></p>
 
 Without the plugin, Opus installs a calendar and a popover, writes a wrapper
 component, a stylesheet and a usage page, and tells you to run `bun install`.
-With it:
+With it, the reply says what the component wraps, that it works with
+`react-hook-form` like the other inputs, that nothing was run, and that the
+styled calendar would cost two packages if you want it.
 
-```tsx
-import type * as React from "react"
-
-import { Input } from "@/components/ui/input"
-
-// crewcut: native <input type="date"> gives the calendar popup, keyboard and screen reader support for free
-function DatePicker(props: Omit<React.ComponentProps<"input">, "type">) {
-  return <Input type="date" data-slot="date-picker" {...props} />
-}
-
-export { DatePicker }
-```
-
-The reply says what it wraps, that it works with `react-hook-form` like the
-other inputs, that nothing was run, and that the styled calendar would cost
-two packages if you want it. Both diffs and both replies, verbatim, with
-four other tickets: [examples/](examples/).
+Both diffs and both replies, verbatim, with four other tickets:
+[examples/](examples/).
 
 ## How it works
 
+<p align="center"><img src="assets/readme/ladder.png" width="880" alt="How it works. Read what the change touches, then take the lowest rung that holds. 1, not needed: skip it and say so in one line. 2, already in this codebase: reuse it. 3, in the standard library: use it. 4, native to the platform, HTML, CSS, SQL, the OS: use it. 5, an installed dependency: use it, never add one. 6, one line: one line. 7, else the minimum that works. Never cut: trust-boundary validation, data-loss handling, security, accessibility, existing tests."></p>
+
 At session start, and in every subagent, Claude receives one ruleset: a
-senior who reads everything and writes almost nothing. For every piece of
-code, it takes the lowest rung that holds:
+senior who reads everything and writes almost nothing.
 
-1. Needs to exist at all? If not, skip it and say so in one line.
-2. Already in this codebase? Reuse it.
-3. Standard library does it? Use it.
-4. Platform does it natively (HTML, CSS, SQL, OS)? Use it.
-5. An installed dependency does it? Use it. Never add one for what a few lines do.
-6. One line? One line.
-7. Only then: the minimum that works.
+- **Build the ticket, not its neighbours.** No optional prop, state, mode or
+  edge case the ticket did not name. A second use case is a second ticket.
+- **Bug fix means root cause.** Find every caller, fix the shared function
+  once, even when the other callers look safe today.
+- **Short never means wrong.** A question gets a full answer, a failing test
+  is fixed and rerun, a file that changed since the last read is read again.
+- **Current practice.** Claude follows what the official docs of the
+  installed versions recommend today, and reads them when unsure.
+- **Clean output.** Comments say why, in one plain line. No emoji, no arrow
+  symbol, no long dash. No AI mention or co-author in commits and pull
+  requests.
 
-**Build the ticket, not its neighbours.** No optional prop, state, mode,
-setting or edge case the ticket did not name. A second use case is a second
-ticket. No type alias or helper for a single use.
+With the ruleset, the session start carries a map of what the project
+already defines, one line per folder with its exported names, and the
+versions that `package.json` and `composer.json` declare. Reusing a helper
+and writing for the versions in use then cost no search.
+`/crewcut map off` drops both.
 
-**Bug fix means root cause.** Find every caller, fix the shared function
-once, even when the other callers look safe today.
+The full ruleset: [The rules](#the-rules).
 
-**Never cut.** Validation at trust boundaries, handling that prevents data
-loss, security, accessibility basics, existing tests, and anything you
-explicitly asked for. Simple is not negligent.
+## Measured
 
-**Short never means wrong.** A question gets a full answer, a failing test
-is fixed and rerun, a file that changed since the last read is read again.
-Fewer tokens is the goal only when the answer stays right.
+<p align="center"><img src="assets/readme/evals.png" width="880" alt="Eval suite, seven cases, three runs each. Shorter, and more often right. Fable 5.2: 0.99 with crewcut, 0.82 for the same model with no plugin. Opus 5.5: 1.00 with, 0.81 without. Sonnet 5.5: 0.98 with, 0.86 without. Haiku 5.5: 0.96 with, 0.79 without. Score is the share of graders passed. Every case grades correctness as well as size: a shorter answer that is wrong scores zero."></p>
 
-**The map.** With the ruleset, the session start carries a map of what
-the project already defines: one line per folder with its exported
-functions, classes and constants, tests and vendored code left out, about
-1 500 characters at most. "Already in this codebase? Reuse it" then costs
-no search, and the model does not rebuild a helper that exists two folders
-away. One more line gives the versions that `package.json` and
-`composer.json` declare, 400 characters at most, so the model writes for
-the versions in use without reading a manifest. `/crewcut map off` drops
-both.
+**Eval suite.** The plugin's own seven cases, three runs each, with and
+without the plugin, Sonnet as judge. Every case grades correctness as well
+as size.
 
-The full ruleset is in [The rules](#the-rules) below.
+| Model | crewcut | Score with | without | Turns with | without | Cost per run with | without |
+|---|---|--:|--:|--:|--:|--:|--:|
+| Fable 5.2 | 0.14.0 | 0.99 | 0.82 | 4.4 | 6.1 | 0.211 USD | 0.214 USD |
+| Opus 5.5 | 0.14.0 | 1.00 | 0.81 | 5.2 | 5.7 | 0.105 USD | 0.102 USD |
+| Sonnet 5.5 | 0.14.0 | 0.98 | 0.86 | 4.4 | 6.2 | 0.059 USD | 0.059 USD |
+| Haiku 5.5 | 0.14.0 | 0.96 | 0.79 | 5.4 | 7.0 | 0.012 USD | 0.021 USD |
 
-## Benchmark
+A bug in a shared function is fixed at its root in 3 runs out of 3 with the
+plugin on all four models, 0 without: every run without it patched the
+caller. Per-case tables and every re-measure:
+[evals/RESULTS.md](evals/RESULTS.md).
 
-Crewcut run through the benchmark ponytail published for itself: twelve
-one-line tickets against a real repository, a headless Claude Code session
-per cell, scored on the `git diff` it leaves behind, with the same controls
-(caveman for terse prose, the seven-word YAGNI prompt) and seven safety
-tasks whose output is executed against adversarial input. Two repositories,
-full-stack-fastapi-template (ponytail's own, FastAPI + React) and
-Next-js-Boilerplate, three model tiers, three or four runs per cell. Each
-cell is the arm's mean over all cells as a percent of the same model with
-no plugin; the Haiku rows are the crewcut 0.11.3 re-measure against that
-run's baseline, the version of every other cell is in RESULTS.md.
+**Agentic benchmark.** Twelve one-line tickets against a real repository, a
+headless Claude Code session per cell, scored on the `git diff` it leaves
+behind, plus seven safety tasks whose output is executed against
+adversarial input. Each cell is a percent of the same model with no plugin.
 
 | crewcut vs no-plugin baseline | LOC | tokens | cost | time | safe |
 |---|--:|--:|--:|--:|--:|
@@ -130,6 +107,16 @@ run's baseline, the version of every other cell is in RESULTS.md.
 | **Haiku 4.5, Next-js-Boilerplate** | **-63 %** | **-48 %** | **-46 %** | **-40 %** | **100 %** |
 | **Haiku 4.5, full-stack-fastapi-template** | **-9 %** | **-30 %** | **-30 %** | **-20 %** | **100 %** |
 | **Sonnet 5.5, full-stack-fastapi-template** | **-8 %** | **+9 %** | **+2 %** | **-2 %** | **100 %** |
+
+The cut follows how much the baseline over-builds, which depends on the
+repository as much as on the model: it is biggest where a native element
+replaces a component, near zero on irreducible endpoints. Tokens fall only
+where the plugin removes turns: on Opus, from 12.1 to 7.5 per ticket.
+
+<p align="center"><img src="assets/benchmark-opus-next.svg" width="860" alt="Each arm as a percent of the no-plugin baseline across LOC, tokens, cost and time (Opus 5.5, Next-js-Boilerplate). Crewcut: LOC 18, tokens 45, cost 40, time 33. Crewcut with tests off: 17, 43, 37, 31. The yagni prompt: 12, 38, 34, 28. Safety: every arm 100 percent."></p>
+
+<details>
+<summary>Tests off, and the seven-word prompt control</summary>
 
 The same arm with `/crewcut tests off`, a test only when the ticket asks:
 
@@ -141,8 +128,6 @@ The same arm with `/crewcut tests off`, a test only when the ticket asks:
 | Haiku 4.5, Next-js-Boilerplate | -60 % | -55 % | -52 % | -48 % | 100 % |
 | Haiku 4.5, full-stack-fastapi-template | -20 % | -38 % | -35 % | -26 % | 100 % |
 | Sonnet 5.5, full-stack-fastapi-template | -17 % | -15 % | -26 % | -24 % | 100 % |
-
-<p align="center"><img src="assets/benchmark-opus-next.svg" width="860" alt="Each arm as a percent of the no-plugin baseline across LOC, tokens, cost and time (Opus 5.5, Next-js-Boilerplate). Crewcut: LOC 18, tokens 45, cost 40, time 33. Crewcut with tests off: 17, 43, 37, 31. The yagni prompt: 12, 38, 34, 28. Safety: every arm 100 percent."></p>
 
 The seven-word prompt "Follow YAGNI principles, and prefer one-liner
 solutions." in the same runs:
@@ -156,92 +141,19 @@ solutions." in the same runs:
 | Haiku 4.5, full-stack-fastapi-template | +12 % | -15 % | +11 % | -5 % | 96 % |
 | Sonnet 5.5, full-stack-fastapi-template | -31 % | -1 % | -12 % | -14 % | 100 % |
 
-**Why a plugin when seven words cut more on Opus?** Because the prompt cuts
-blind.
-
-- It ships barer components, and it skips the tests: on Opus it writes
-  tests in 31 % of the cells against 50 % for crewcut on the template, and
-  in none against 19 % on the boilerplate; on Sonnet, 22 % against 50 %.
-  The harness counts test files apart from LOC, so those tests are where
-  crewcut's extra turns and cost go, not its lines. Every crewcut test
-  extends a test file the repository already had.
-- On Haiku it writes more code than no prompt at all, and once drops a
-  guard, the per-client check of a rate limiter. Crewcut kept every guard on
-  every safety cell of every tier.
-- The ruleset names what never gets cut, fixes a bug at its root rather
-  than at the caller, and ships with levels, a review, an audit and a debt
-  ledger.
+<p align="center"><img src="assets/benchmark-opus-tests.svg" width="860" alt="Tests on against tests off, each arm as a percent of the no-plugin baseline (Opus 5.5, full-stack-fastapi-template). Crewcut with tests on: LOC 30, tokens 60, cost 57, time 51. Crewcut with tests off: 29, 50, 47, 39. The yagni prompt: 28, 56, 51, 44. Safety: every arm 100 percent."></p>
 
 Caveman, the terse-prose control, cuts no code (+4 % LOC on the template):
 short prose is not short code.
 
-If you would rather have the prompt's savings, `/crewcut tests off` makes
-crewcut write a test only when the ticket asks and keeps everything else.
-Measured on every tier (second table above): on the Opus template, tokens
-go from -40 % to -50 % and cost from -43 % to -53 %; on Sonnet's template,
-from +9 % to -15 % and +2 % to -26 %, under the prompt on both; on Haiku,
-cost from -30 % to -35 % on the template and -46 % to -52 % on Next.js.
-Lines barely move, every cell stays correct, every guard stays. Where there is no
-test file to extend, Opus and Sonnet on Next.js, the switch changes nothing.
-The first session asks you once which you want.
+</details>
 
-<p align="center"><img src="assets/benchmark-opus-tests.svg" width="860" alt="Tests on against tests off, each arm as a percent of the no-plugin baseline (Opus 5.5, full-stack-fastapi-template). Crewcut with tests on: LOC 30, tokens 60, cost 57, time 51. Crewcut with tests off: 29, 50, 47, 39. The yagni prompt: 28, 56, 51, 44. Safety: every arm 100 percent."></p>
+The harness is the one ponytail published for its own benchmark, with a
+`crewcut` arm added; the Haiku rows are the crewcut 0.11.3 re-measure. Method,
+per-task tables, limits and how to reproduce:
+[benchmarks/agentic/RESULTS.md](benchmarks/agentic/RESULTS.md).
 
-The cut is biggest where a native element replaces a component: on the date
-picker, Opus writes 369 lines with two new dependencies, crewcut a 10-line
-native input. It is near zero on irreducible endpoints, and it follows how
-much the baseline over-builds, which depends on the repository as much as
-on the model: Sonnet writes 51 lines per ticket on the small FastAPI
-template and 103 on Next-js-Boilerplate, so crewcut cuts 8 % there and
-70 % here. On the template the ruleset read back on every turn is the whole
-cost; crewcut 0.6.3, with a lighter ruleset and six runs per ticket, cuts
-13 % of the lines and 11 % of the cost there at equal tokens. Tokens fall
-only where the plugin removes turns: on Opus, from 12.1 to 7.5 per ticket;
-on Sonnet with Next.js, from 10.4 to 6.8.
-
-Method, per-task tables, the re-measure of each version, limits and how to
-reproduce: [benchmarks/agentic/RESULTS.md](benchmarks/agentic/RESULTS.md).
-Five cells with the diff and the reply of each arm, verbatim:
-[examples/](examples/).
-
-## Eval suite
-
-The plugin's own seven cases, three runs each, with and without the
-plugin, Sonnet as judge
-(`claude plugin eval . --ablation with-without --runs 3 --judge-model sonnet`,
-with `--allow-tools Edit Write`). Score is the share of graders passed;
-every case grades correctness as well as size, so a shorter answer that is
-wrong scores zero. Latest measure on each working model (Claude Code
-2.1.289 for Fable, 2.1.323 for the others):
-
-| Model | crewcut | Score with | without | Turns with | without | Cost per run with | without |
-|---|---|--:|--:|--:|--:|--:|--:|
-| Fable 5.1 | 0.7.0 | 0.98 | 0.81 | 5.7 | 8.4 | 0.296 USD | 0.414 USD |
-| Sonnet 5.5 | 0.13.0 | 0.99 | 0.87 | 4.5 | 6.0 | 0.057 USD | 0.057 USD |
-| Opus 5.5 | 0.13.0 | 1.00 | 0.81 | 5.2 | 5.6 | 0.106 USD | 0.101 USD |
-
-- The savings grow with the project. `csv-export` is twenty source and
-  test files with a one-line bug: with the plugin, Fable reads 3.3 files
-  against 9.0, and `vat-country`, seven modules, 3.0 against 11.0. The
-  one-file cases have nothing to cut, and the ruleset is a fixed cost there.
-- The map, measured the same day with and without it on both models, changes
-  nothing beyond noise on cases this small: Sonnet reads 1.0 file against
-  1.3 on `vat-country` and the totals stay within two points. Its case is
-  the repository of hundreds of files, which the agentic benchmark will
-  measure.
-- `shared-bug` is fixed in the shared function in 3 runs out of 3 with the
-  plugin on all three models, 0 without: every run without it patched the
-  caller.
-- `keep-validation` asks to simplify a handler at a trust boundary and fails
-  if any check disappears: without the plugin, Fable and Opus dropped a
-  check or overstated what they kept. `explain-bug` fails if the explanation
-  is cut short; `vat-country` and `csv-export` fail if an existing test or
-  an untouched module changes.
-
-Per-case tables and the re-measure of each version:
-[evals/RESULTS.md](evals/RESULTS.md).
-
-## Levels
+## Levels and commands
 
 | Level   | What Claude gets                                                        |
 | ------- | ----------------------------------------------------------------------- |
@@ -255,8 +167,6 @@ resumed session and a context compaction keep the level you chose. Typing
 `stop crewcut` or `normal mode` as a whole message also switches the plugin
 off.
 
-## Commands
-
 | Command                     | Effect                                                |
 | --------------------------- | ----------------------------------------------------- |
 | `/crewcut`                  | Show the current level and the default                |
@@ -264,9 +174,9 @@ off.
 | `/crewcut default <level>`  | Set the level new sessions start at                   |
 | `/crewcut subagents on\|off` | Inject the rules into subagents too (on by default)   |
 | `/crewcut lang <code>`      | Reply in `en`, `es`, `fr`, `de`, `ko` or `zh`; asked once at the first session |
-| `/crewcut markers on\|off`   | `// ~` comment on each corner cut (off by default)     |
 | `/crewcut tests on\|off`     | Off: write a test only when the ticket asks, never extend one (on by default; asked once at the first session) |
-| `/crewcut map on\|off`       | Map of the project's own names at session start, so reuse costs no search (on by default) |
+| `/crewcut map on\|off`       | Map of the project's own names and its declared versions at session start (on by default) |
+| `/crewcut markers on\|off`   | `// ~` comment on each corner cut (off by default)     |
 | `/crewcut-review [scope]`   | Read-only review of a change: bugs, risk, load, tests, speed, what to cut |
 | `/crewcut-audit [path]`     | The same over a whole tree, ranked                    |
 | `/crewcut-debt [path]`      | Ledger of the `// ~` markers                          |
@@ -274,17 +184,15 @@ off.
 | `/crewcut-help`             | Reference card                                        |
 | `/crewcut uninstall`        | Remove the plugin's files next to your settings       |
 
-### Review, audit and debt
+## Review, audit and debt
 
 `/crewcut-review` reviews the uncommitted changes, or the last commit when
-there are none; `/crewcut-review main..HEAD`, a PR link or
-`/crewcut-review src/a.js src/b.js` sets the scope. A read-only agent on
-Sonnet reads the diff and the code it touches, callers included, and
-reviews it like the senior who gets paged when it breaks, in this order:
-correct, safe, holds at the load the project expects, tested, fast, lean.
-Every finding comes with a concrete case, the smallest fix and what happens
-if it is skipped, in plain words, grouped as must fix, should fix and nice
-to have, numbered so you can say "fix 2 and 4":
+there are none; a git range, a PR link or file paths set the scope. A
+read-only agent on Sonnet reads the diff and the code it touches, callers
+included, in this order: correct, safe, holds at the load the project
+expects, tested, fast, lean. Every finding comes with a concrete case, the
+smallest fix and what happens if it is skipped, numbered so you can say
+"fix 2 and 4":
 
 ```
 What this does: adds a nightly job that closes the day and bills its orders.
@@ -304,22 +212,13 @@ Verdict: fix 1 first.
 cut: 14 lines
 ```
 
-Lean findings still name the rung where the code should have stopped
-(`skip`, `reuse`, `stdlib`, `native`, `installed`, `one-line`, `merge`,
-`split`, `prose`) and the last line counts the lines they would remove. A
-`~` marker that names its limit is a decision, not a finding, unless
-the expected load already crosses it. `/crewcut-audit` runs the same review
-over a whole tree, entry points and main flows first, twenty findings at
-most. Both report and change nothing; the level stays as it was.
+`/crewcut-audit` runs the same review over a whole tree, entry points and
+main flows first, twenty findings at most. Both report and change nothing.
 
-With `/crewcut markers on`, every corner crewcut cuts on purpose carries a
-comment such as `// ~ no retry, add when the API flakes`, never as
-a prefix on a comment that explains code. Markers are off by default: on a
-real project the models put the prefix on ordinary comments too. The sign
-is discreet: crewcut never writes its name in your code, and every other
-comment says why, in one plain line.
-`/crewcut-debt` gathers the markers into one list and flags those that name
-no condition to revisit:
+With `/crewcut markers on`, a corner cut on purpose carries a comment such
+as `// ~ no retry, add when the API flakes`. The sign is discreet: crewcut
+never writes its name in your code. `/crewcut-debt` gathers the markers and
+flags those that name no condition to revisit:
 
 ```
 src/queue.js:18: no retry -> add when: the API flakes
@@ -327,41 +226,10 @@ src/report.js:40: full table scan -> no trigger
 2 markers, 1 without a trigger
 ```
 
-`/crewcut-gain` prints the figures above as a card. It never claims a saving
-on your repository, since the version you did not build was never written.
+## Reference
 
-### Code agent
-
-The plugin ships `crewcut-coder`, a code agent pinned to Opus with Read,
-Grep, Glob, Edit, Write and Bash. Claude delegates a code task to it
-(implement, fix, refactor, write a test) when the session runs on a lighter
-model or the main context should stay small; you can also ask for it by
-name. It gets the crewcut rules like any subagent and ends with a short
-report: files changed, test result. Search stays with Claude Code's
-built-in Explore agent, review with `crewcut-reviewer` on Sonnet. A task it
-handles is billed at Opus rates, even in a Sonnet session.
-
-## Status line
-
-The plugin ships a status line that prints the level, the model and the
-working directory, for example `crewcut: ultra | Opus | shop`. The level is
-green, amber for `ultra`, grey for `off`; set
-`NO_COLOR=1` to print it plain. On the first start without a status line
-configured, Claude offers once to add it to your settings; say yes, or add
-it yourself:
-
-```json
-"statusLine": { "type": "command", "command": "node \"C:/Users/you/.claude/crewcut-statusline.js\"" }
-```
-
-At session start the hook copies the script to `crewcut-statusline.js` next
-to your Claude settings, under a path that survives plugin updates, and
-refreshes the copy when the plugin changes. The level is kept per project
-(`crewcut-levels/` next to your settings, one file per project off the default),
-so two sessions in two repositories keep their own; the status line reads
-the shared `crewcut-mode`, which carries the level set last.
-
-## Settings
+<details>
+<summary>Settings</summary>
 
 Settings live in `crewcut.json` next to your Claude settings (`~/.claude`,
 or `CLAUDE_CONFIG_DIR`):
@@ -377,7 +245,7 @@ or `CLAUDE_CONFIG_DIR`):
 | `subagentMatcher` | `CREWCUT_SUBAGENT_MATCHER` | Case-insensitive regular expression on the agent type, for example `explore\|general` |
 | `markers`         |                           | `// ~` comment on each corner cut                   |
 | `tests`           | `CREWCUT_TESTS`           | `false` or `off`: write a test only when the ticket asks |
-| `map`             | `CREWCUT_MAP`             | `false` or `off`: no map of the project's names at session start; `CREWCUT_MAP_CHARS` sets its size, 1500 by default |
+| `map`             | `CREWCUT_MAP`             | `false` or `off`: no map and no versions at session start; `CREWCUT_MAP_CHARS` sets the map's size, 1500 by default |
 
 The environment variable wins over the file. A subagent whose type is
 unknown, or a pattern that does not compile, still receives the rules.
@@ -385,7 +253,49 @@ Without a pattern, the two built-in agents that never touch code,
 `claude-code-guide` and `statusline-setup`, receive nothing; a pattern that
 names them brings them back.
 
-## The rules
+</details>
+
+<details>
+<summary>Status line</summary>
+
+The plugin ships a status line that prints the level, the model and the
+working directory, for example `crewcut: ultra | Opus | shop`. The level is
+green, amber for `ultra`, grey for `off`; set `NO_COLOR=1` to print it
+plain. On the first start without a status line configured, Claude offers
+once to add it to your settings; say yes, or add it yourself:
+
+```json
+"statusLine": { "type": "command", "command": "node \"C:/Users/you/.claude/crewcut-statusline.js\"" }
+```
+
+At session start the hook copies the script to `crewcut-statusline.js` next
+to your Claude settings, under a path that survives plugin updates. The
+level is kept per project (`crewcut-levels/` next to your settings, one
+file per project off the default), so two sessions in two repositories keep
+their own; the status line reads the shared `crewcut-mode`, which carries
+the level set last.
+
+</details>
+
+<details>
+<summary>Code agent</summary>
+
+The plugin ships `crewcut-coder`, a code agent on Opus with Read, Grep,
+Glob, Edit, Write and Bash. Claude delegates a code task to it (implement,
+fix, refactor, write a test) when the session runs on a lighter model or
+the main context should stay small; you can also ask for it by name. It
+gets the crewcut rules like any subagent and ends with a short report:
+files changed, test result. Search stays with Claude Code's built-in
+Explore agent, review with `crewcut-reviewer` on Sonnet. A task it handles
+is billed at Opus rates, even in a Sonnet session.
+
+Both agents name their model by alias, so they follow each new Opus and
+Sonnet release without an update of the plugin.
+
+</details>
+
+<details>
+<summary id="the-rules">The rules</summary>
 
 What the ruleset says, beyond the ladder above.
 
@@ -406,6 +316,10 @@ What the ruleset says, beyond the ladder above.
 - Tools: batch independent calls; never print large outputs; no subagent for
   what one read answers.
 
+**Never cut.** Validation at trust boundaries, handling that prevents data
+loss, security, accessibility basics, existing tests, and anything you
+explicitly asked for. Simple is not negligent.
+
 **Modern by default.** Claude checks the versions the project runs,
 language, runtime, framework and libraries, and follows what their official
 docs recommend today, including the compact forms when they stay clear:
@@ -413,6 +327,8 @@ ternary, optional chaining, destructuring, early return. Unsure of an API,
 or a version newer than it knows: it reads the docs or the installed source
 instead of guessing. Never a deprecated pattern, never a feature the version
 lacks.
+
+**Comments.** The why only, in one plain line.
 
 **Plain text only.** In code, comments, commits, pull requests and answers:
 no emoji, no emoticon, no arrow symbol (`->` instead), no long dash (`-`
@@ -425,6 +341,27 @@ line, no trailer; any such watermark found in a message, a PR description
 or a file is removed before the commit or the PR goes out. A pull request
 description says what changed, why, and how it was checked, in a few lines.
 
+</details>
+
+## FAQ
+
+**Why a plugin when the seven-word prompt cuts more on Opus?** Because the
+prompt cuts blind. It ships barer components and skips the tests: on Opus
+it writes tests in 31 % of the cells against 50 % for crewcut on the
+template. On Haiku it writes more code than no prompt at all, and once
+drops a guard, the per-client check of a rate limiter. Crewcut kept every
+guard on every safety cell of every tier, names what never gets cut, and
+fixes a bug at its root rather than at the caller. If you would rather have
+the prompt's savings, `/crewcut tests off` keeps everything else.
+
+**Does it follow new models?** Yes. The ruleset is injected whatever the
+model of the session, and the two agents name theirs by alias. The figures
+above are another matter: each one holds for the model it was measured on,
+named in its row.
+
+**Does it claim a saving on my repository?** No. `/crewcut-gain` prints the
+measured figures; the version you did not build was never written.
+
 ## Update and uninstall
 
 Update with `/plugin marketplace update crewcut` then `/reload-plugins`, or
@@ -432,10 +369,10 @@ enable auto-update for the marketplace in `/plugin`.
 
 Type `/crewcut uninstall` in a session, then `/plugin remove crewcut`. The
 first removes the files the plugin keeps next to your Claude settings (the
-session level and the per-project levels, `crewcut.json`, the status line copy and its flag, plus the
-`statusLine` entry when it points at crewcut's own script); the second
-removes the plugin itself. From a shell, the same cleanup is
-`node <plugin dir>/hooks/crewcut.js uninstall`.
+session level and the per-project levels, `crewcut.json`, the status line
+copy and its flag, plus the `statusLine` entry when it points at crewcut's
+own script); the second removes the plugin itself. From a shell, the same
+cleanup is `node <plugin dir>/hooks/crewcut.js uninstall`.
 
 ## Limitations
 
@@ -444,7 +381,8 @@ removes the plugin itself. From a shell, the same cleanup is
   the level set last, whatever the project.
 - The map lists top-level definitions found by one regular expression per
   language (JavaScript and TypeScript, Python, Go, Rust, Ruby, PHP, Java,
-  Kotlin, C#, Swift); nested or dynamic definitions are not in it.
+  Kotlin, C#, Swift); nested or dynamic definitions are not in it. The
+  versions come from `package.json` and `composer.json` only.
 - The hooks, levels, review, audit and ledger are Claude Code only; other
   agents get the ruleset through `AGENTS.md`.
 - A cloud session (claude.ai/code) does not load a plugin installed with

@@ -1,0 +1,12 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: transparent; }
+body { width: 880px; font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: #E6EDF3; }
+.card { position: relative; width: 880px; padding: 44px 48px 40px 68px; border-radius: 20px; overflow: hidden;
+  background: #1C2831; }
+.pole { position: absolute; left: 0; top: 0; bottom: 0; width: 20px;
+  background: repeating-linear-gradient(135deg, #E34948 0 14px, #F4EFE6 14px 28px, #35495E 28px 42px, #F4EFE6 42px 56px); }
+.eyebrow { font-family: Consolas, "Courier New", monospace; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: #8A9BAB; }
+h1 { font-size: 34px; line-height: 1.2; font-weight: 700; color: #F4EFE6; margin-top: 12px; letter-spacing: -0.3px; }
+h1 em { font-style: normal; color: #E34948; }
+.foot { margin-top: 26px; font-family: Consolas, "Courier New", monospace; font-size: 13px; line-height: 1.5; color: #8A9BAB; }
+.rule { height: 1px; background: #35495E; margin: 26px 0; }

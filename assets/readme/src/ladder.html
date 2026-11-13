@@ -1,0 +1,27 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+ol { list-style: none; margin-top: 24px; }
+li { display: grid; grid-template-columns: 44px 1fr auto; align-items: baseline; padding: 13px 0; border-top: 1px solid #35495E; font-size: 19px; }
+li:last-child { border-bottom: 1px solid #35495E; }
+li .k { font-family: Consolas, monospace; color: #6B7F90; font-size: 17px; }
+li .a { font-family: Consolas, monospace; font-size: 15px; color: #8A9BAB; }
+li.last { font-weight: 700; color: #F4EFE6; }
+li.last .k { color: #E34948; }
+.never { margin-top: 24px; font-size: 16px; line-height: 1.5; color: #B8C4CE; }
+.never b { color: #F4C27A; }
+</style>
+<div class="card"><div class="pole"></div>
+<div class="eyebrow">How it works</div>
+<h1>Read what the change touches, then <em>take the lowest rung that holds.</em></h1>
+<ol>
+<li><span class="k">1</span><span>Not needed?</span><span class="a">skip it, say so in one line</span></li>
+<li><span class="k">2</span><span>Already in this codebase?</span><span class="a">reuse it</span></li>
+<li><span class="k">3</span><span>In the standard library?</span><span class="a">use it</span></li>
+<li><span class="k">4</span><span>Native to the platform?</span><span class="a">HTML, CSS, SQL, the OS</span></li>
+<li><span class="k">5</span><span>An installed dependency?</span><span class="a">use it, never add one</span></li>
+<li><span class="k">6</span><span>One line?</span><span class="a">one line</span></li>
+<li class="last"><span class="k">7</span><span>Else the minimum that works</span><span class="a"></span></li>
+</ol>
+<div class="never"><b>Never cut:</b> trust-boundary validation, data-loss handling, security, accessibility, existing tests.</div>
+</div>
+<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>
