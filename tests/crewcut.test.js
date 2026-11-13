@@ -704,7 +704,7 @@ test('uninstall removes the plugin state and only its own status line entry', ()
   const settings = path.join(dir, 'settings.json');
   const command = 'node "' + path.join(dir, 'crewcut-statusline.js') + '"';
   fs.writeFileSync(settings, JSON.stringify({ theme: 'dark', statusLine: { type: 'command', command } }));
-  run('prompt', promptInput('/crewcut lite'), { CLAUDE_CONFIG_DIR: dir, CLAUDE_PROJECT_DIR: tempDir() });
+  run('prompt', promptInput('/crewcut ultra'), { CLAUDE_CONFIG_DIR: dir, CLAUDE_PROJECT_DIR: tempDir() });
   const removed = uninstall(dir);
   assert.deepEqual(removed, ['crewcut-mode', 'crewcut-nudged', 'crewcut-statusline.js', 'crewcut.json', 'crewcut-levels', 'statusLine in settings.json']);
   assert.ok(!fs.existsSync(path.join(dir, 'crewcut-levels')));
@@ -842,6 +842,24 @@ test('the level is kept per project when Claude Code names one, and mirrored for
   assert.equal(levelFiles(dir, { CLAUDE_PROJECT_DIR: shop }).length, 2);
   assert.equal(levelFiles(dir).length, 1);
   assert.notEqual(levelFiles(dir, { CLAUDE_PROJECT_DIR: shop })[0], levelFiles(dir, { CLAUDE_PROJECT_DIR: blog })[0]);
+});
+
+test('a project at the default level keeps no level file', () => {
+  const dir = tempDir();
+  const levels = path.join(dir, 'crewcut-levels');
+  const count = () => (fs.existsSync(levels) ? fs.readdirSync(levels).length : 0);
+  for (let i = 0; i < 3; i++) run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir, CLAUDE_PROJECT_DIR: tempDir() });
+  assert.equal(count(), 0, 'a session start leaves nothing behind');
+  const shop = { CLAUDE_CONFIG_DIR: dir, CLAUDE_PROJECT_DIR: tempDir() };
+  run('prompt', promptInput('/crewcut ultra'), shop);
+  assert.equal(count(), 1);
+  run('prompt', promptInput('/crewcut lite'), { CLAUDE_CONFIG_DIR: dir, CLAUDE_PROJECT_DIR: tempDir() });
+  run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir, CLAUDE_PROJECT_DIR: tempDir() });
+  assert.equal(readLevel(dir, { CLAUDE_PROJECT_DIR: tempDir() }), null, 'another project never inherits the shared file');
+  assert.equal(readLevel(dir, shop), 'ultra');
+  run('prompt', promptInput('/crewcut full'), shop);
+  assert.equal(count(), 1, 'back at the default, the file goes');
+  assert.equal(readLevel(dir, shop), null);
 });
 
 test('map.js lists the names a project defines, one line per folder, shared folders first', () => {
