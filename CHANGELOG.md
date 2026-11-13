@@ -5,16 +5,23 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-11-13
+
 ### Changed
 
 - Modern by default now points at the official docs: follow what the docs
   of the installed versions recommend today, and read them, or the
   installed source, when an API or a version is not known for sure. Same
-  ruleset size. Not measured yet.
+  ruleset size.
 - Comments: the ruleset asks for the why only, in one plain line. The
   opt-in marker on a cut corner is a plain `// ~` instead of
   `// crewcut:`, so the plugin never writes its name in the code;
   `/crewcut-debt` still finds the older `crewcut:` markers.
+- Measure, seven cases, three runs, Sonnet as judge, Claude Code 2.1.323,
+  no out-of-usage run: Sonnet 0.99 against 0.87 without, 4.5 turns against
+  6.0, 0.057 USD in both arms; Opus 1.00 against 0.81, 5.2 turns against
+  5.6, 0.106 against 0.101 USD. No case grades the three rules themselves:
+  the measure shows nothing was lost.
 
 ## [0.12.1] - 2026-11-13
 
