@@ -1,31 +1,33 @@
 'use strict';
 // crewcut hook: keeps the active level and injects the ruleset for it.
 
+const crypto = require('crypto');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const vm = require('vm');
+const { execFileSync } = require('child_process');
 
 const LEVELS = ['off', 'lite', 'full', 'ultra'];
-const REVIEW = 'review'; // session-only state entered by the review and audit skills
 const DEFAULT_LEVEL = 'full';
 const LANGUAGES = { en: 'English', es: 'Spanish', fr: 'French', de: 'German', ko: 'Korean', zh: 'Simplified Chinese' };
-const LEVEL_FILE = 'crewcut-mode';
+const LEVEL_FILE = 'crewcut-mode'; // shared copy, read by the status line
+const LEVELS_DIR = 'crewcut-levels'; // one file per project, keyed by its path
 const CONFIG_FILE = 'crewcut.json';
 const NUDGE_FILE = 'crewcut-nudged';
 const RULESET_FILE = path.join(__dirname, 'ruleset.md');
+const MAP_FILE = path.join(__dirname, 'map.js');
+const MAP_TIMEOUT_MS = 3000; // the map is a bonus: never hold the rules for it
+const MATCHER_TIMEOUT_MS = 100; // a pathological pattern must not stall the hook
 const STATUSLINE_FILE = path.join(__dirname, 'statusline.js');
 const STATUSLINE_COPY = 'crewcut-statusline.js';
 const SETTINGS_FILE = 'settings.json';
 const STDIN_GRACE_MS = 1000; // never hang a session on a stdin that never closes
 const OFF_PHRASES = ['stop crewcut', 'normal mode'];
 const COMMAND = /^\/crewcut(?::crewcut)?(?:\s+(\S+)(?:\s+(\S+))?(?:\s.*)?)?$/;
-const READ_ONLY_SKILL = /^\/crewcut(?::crewcut)?-(review|audit)(?:\s.*)?$/;
 const TAG = /^\[(lite|full|ultra|markers|tests|notests)\]\s?/;
 const KEEP_LEVEL_SOURCES = ['resume', 'compact'];
 const BOM = 0xfeff;
-
-const REVIEW_RULES = 'CREWCUT ACTIVE - level: review. Read-only: report findings, change no file, run no '
-  + 'command that writes. Back to coding with /crewcut off|lite|full|ultra.';
 
 function normalize(prompt) {
   if (typeof prompt !== 'string') return '';
@@ -35,7 +37,6 @@ function normalize(prompt) {
 function parseCommand(prompt) {
   const text = normalize(prompt);
   if (OFF_PHRASES.includes(text)) return { command: 'set', level: 'off' };
-  if (READ_ONLY_SKILL.test(text)) return { command: 'review' };
   const match = COMMAND.exec(text);
   if (!match) return null;
   const [, first, second] = match;
@@ -43,7 +44,7 @@ function parseCommand(prompt) {
   if (first === 'subagents' && (second === 'on' || second === 'off')) {
     return { command: 'subagents', enabled: second === 'on' };
   }
-  if ((first === 'markers' || first === 'tests' || first === 'test') && (second === 'on' || second === 'off')) {
+  if (['markers', 'tests', 'test', 'map'].includes(first) && (second === 'on' || second === 'off')) {
     return { command: first === 'test' ? 'tests' : first, enabled: second === 'on' };
   }
   if (first === 'uninstall' && !second) return { command: 'uninstall' };
@@ -56,7 +57,6 @@ function parseCommand(prompt) {
 // corner, off by default because models put it on plain comments too.
 function renderRuleset(level, markdown, options = {}) {
   if (level === 'off') return '';
-  if (level === REVIEW) return REVIEW_RULES;
   const holds = {
     markers: options.markers === true,
     tests: options.tests !== false,
@@ -140,6 +140,12 @@ function uninstall(dir) {
     }
   }
   try {
+    fs.rmSync(path.join(dir, LEVELS_DIR), { recursive: true });
+    removed.push(LEVELS_DIR);
+  } catch {
+    // no per-project levels
+  }
+  try {
     const file = path.join(dir, SETTINGS_FILE);
     const settings = readJson(file);
     const command = settings.statusLine && String(settings.statusLine.command || '');
@@ -189,21 +195,40 @@ function testsOffer(dir) {
     + `On off, set "tests" to false in ${path.join(dir, CONFIG_FILE)}. Never ask again.`;
 }
 
-function readLevel(dir) {
-  try {
-    const text = fs.readFileSync(path.join(dir, LEVEL_FILE), 'utf8').trim().toLowerCase();
-    return LEVELS.includes(text) || text === REVIEW ? text : null;
-  } catch {
-    return null;
+// Claude Code names the project in CLAUDE_PROJECT_DIR: the level lives per
+// project, so two sessions in two repositories stop overwriting each other.
+// The shared file is still written for the status line (last write wins).
+function levelFiles(dir, env = {}) {
+  const files = [];
+  const project = String(env.CLAUDE_PROJECT_DIR || '').trim();
+  if (project) {
+    const key = crypto.createHash('sha256').update(path.resolve(project)).digest('hex').slice(0, 24);
+    files.push(path.join(dir, LEVELS_DIR, key));
   }
+  files.push(path.join(dir, LEVEL_FILE));
+  return files;
 }
 
-function writeLevel(dir, level) {
-  try {
-    fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(path.join(dir, LEVEL_FILE), level + '\n');
-  } catch {
-    // best effort: a missing level file only means the default applies
+function readLevel(dir, env = {}) {
+  for (const file of levelFiles(dir, env)) {
+    try {
+      const text = fs.readFileSync(file, 'utf8').trim().toLowerCase();
+      if (LEVELS.includes(text)) return text;
+    } catch {
+      // not there: try the next file
+    }
+  }
+  return null;
+}
+
+function writeLevel(dir, level, env = {}) {
+  for (const file of levelFiles(dir, env)) {
+    try {
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      fs.writeFileSync(file, level + '\n');
+    } catch {
+      // best effort: a missing level file only means the default applies
+    }
   }
 }
 
@@ -215,9 +240,29 @@ function rulesetOptions(dir, env) {
 
 function loadRuleset(level, options) {
   try {
-    return renderRuleset(level, level === REVIEW ? '' : fs.readFileSync(RULESET_FILE, 'utf8'), options);
+    return renderRuleset(level, fs.readFileSync(RULESET_FILE, 'utf8'), options);
   } catch {
     return '';
+  }
+}
+
+// The codebase map: what the project already defines, so "reuse it" costs no
+// search. On by default; CREWCUT_MAP=off or "map": false in the config drops it.
+function mapEnabled(env, dir) {
+  const fromEnv = String(env.CREWCUT_MAP || '').trim().toLowerCase();
+  if (['off', '0', 'false'].includes(fromEnv)) return false;
+  if (['on', '1', 'true'].includes(fromEnv)) return true;
+  return readConfig(dir).map !== false;
+}
+
+function codebaseMap(env) {
+  const root = String(env.CLAUDE_PROJECT_DIR || '').trim() || process.cwd();
+  try {
+    return execFileSync(process.execPath, [MAP_FILE, root], {
+      encoding: 'utf8', timeout: MAP_TIMEOUT_MS, maxBuffer: 64 * 1024, stdio: ['ignore', 'pipe', 'ignore'], env,
+    }).trim();
+  } catch {
+    return ''; // no map is never a reason to hold the rules
   }
 }
 
@@ -287,21 +332,32 @@ function isEvalRun(env) {
 function onSession(input, env, dir) {
   // resume and compact continue a session: keep the level the user chose
   const keep = KEEP_LEVEL_SOURCES.includes(input.source);
-  const level = (keep && readLevel(dir)) || defaultLevel(env, dir);
-  if (!keep) writeLevel(dir, level);
+  const level = (keep && readLevel(dir, env)) || defaultLevel(env, dir);
+  if (!keep) writeLevel(dir, level, env);
   const rules = withLanguage(loadRuleset(level, rulesetOptions(dir, env)), dir);
   if (!rules) return '';
   if (!keep && fs.existsSync(statuslineCopy(dir))) refreshStatuslineCopy(dir);
+  const map = mapEnabled(env, dir) ? codebaseMap(env) : '';
   const offers = keep || isEvalRun(env) ? [] : [languageOffer(dir), testsOffer(dir), statuslineNudge(dir)];
-  return envelope('SessionStart', [rules, ...offers].filter(Boolean).join('\n\n'));
+  return envelope('SessionStart', [rules, map, ...offers].filter(Boolean).join('\n\n'));
+}
+
+// A user pattern runs under a time limit: one that backtracks forever would
+// otherwise hold the hook, and a doubt injects the rules rather than not.
+function matches(matcher, agentType) {
+  try {
+    return vm.runInNewContext('re.test(s)', { re: matcher, s: agentType }, { timeout: MATCHER_TIMEOUT_MS });
+  } catch {
+    return true;
+  }
 }
 
 function onSubagent(input, env, dir) {
   if (readConfig(dir).subagents === false) return '';
   const matcher = subagentMatcher(env, dir);
   const agentType = typeof input.agent_type === 'string' ? input.agent_type.trim() : '';
-  if (matcher ? agentType && !matcher.test(agentType) : NO_CODE_AGENTS.test(agentType)) return '';
-  const level = readLevel(dir) || defaultLevel(env, dir);
+  if (matcher ? agentType && !matches(matcher, agentType) : NO_CODE_AGENTS.test(agentType)) return '';
+  const level = readLevel(dir, env) || defaultLevel(env, dir);
   return envelope('SubagentStart', loadRuleset(level, rulesetOptions(dir, env)));
 }
 
@@ -309,9 +365,10 @@ function onPrompt(input, env, dir) {
   const command = parseCommand(input.prompt);
   if (!command) return '';
   if (command.command === 'status') {
-    const level = readLevel(dir) || defaultLevel(env, dir);
+    const level = readLevel(dir, env) || defaultLevel(env, dir);
     const text = `crewcut: ${level} (default: ${defaultLevel(env, dir)}; levels: ${LEVELS.join(', ')}; `
-      + `language: ${configuredLanguage(dir)}; tests: ${rulesetOptions(dir, env).tests ? 'on' : 'off'})`;
+      + `language: ${configuredLanguage(dir)}; tests: ${rulesetOptions(dir, env).tests ? 'on' : 'off'}; `
+      + `map: ${mapEnabled(env, dir) ? 'on' : 'off'})`;
     return envelope('UserPromptSubmit', text);
   }
   if (command.command === 'default') {
@@ -329,16 +386,22 @@ function onPrompt(input, env, dir) {
   if (command.command === 'markers' || command.command === 'tests') {
     writeConfig(dir, { [command.command]: command.enabled });
     const state = `crewcut: ${command.command} ${command.enabled ? 'on' : 'off'}`;
-    const rules = loadRuleset(readLevel(dir) || defaultLevel(env, dir), rulesetOptions(dir, env));
+    const rules = loadRuleset(readLevel(dir, env) || defaultLevel(env, dir), rulesetOptions(dir, env));
     return envelope('UserPromptSubmit', rules ? `${state}\n\n${rules}` : state);
+  }
+  if (command.command === 'map') {
+    writeConfig(dir, { map: command.enabled });
+    const state = `crewcut: map ${command.enabled ? 'on' : 'off'}`;
+    const map = command.enabled ? codebaseMap(env) : '';
+    return envelope('UserPromptSubmit', map ? `${state}\n\n${map}` : state);
   }
   if (command.command === 'uninstall') {
     const removed = uninstall(dir);
     const what = removed.length ? `removed ${removed.join(', ')}` : 'nothing to remove';
     return envelope('UserPromptSubmit', `crewcut: ${what}. Tell the user to finish with /plugin remove crewcut.`);
   }
-  const level = command.command === 'review' ? REVIEW : command.level;
-  writeLevel(dir, level);
+  const level = command.level;
+  writeLevel(dir, level, env);
   const rules = withLanguage(loadRuleset(level, rulesetOptions(dir, env)), dir);
   const text = rules ? `crewcut: ${level}\n\n${rules}` : `crewcut: ${level}`;
   return envelope('UserPromptSubmit', text);
@@ -362,33 +425,34 @@ function main() {
   }
   let text = '';
   let done = false;
-  const finish = (exitAfter) => {
+  // The write is synchronous and the exit explicit: an asynchronous write can
+  // die with the process on a pipe, and a timer left unreferenced never fires
+  // on a stdin that stays open.
+  const finish = () => {
     if (done) return;
     done = true;
     const output = run(process.argv[2], text, process.env);
-    const after = exitAfter ? () => process.exit(0) : undefined;
-    if (!output) {
-      if (after) after();
-      return;
+    if (output) {
+      try {
+        fs.writeSync(1, output + '\n');
+      } catch {
+        // closed stdout: nothing to do
+      }
     }
-    try {
-      process.stdout.write(output + '\n', after);
-    } catch {
-      if (after) after(); // closed stdout: nothing to do
-    }
+    process.exit(0);
   };
   process.stdin.setEncoding('utf8');
   process.stdin.on('data', (chunk) => { text += chunk; });
-  process.stdin.on('error', () => finish(true));
-  process.stdout.on('error', () => {});
-  process.stdin.on('end', () => finish(false));
+  process.stdin.on('error', finish);
+  process.stdin.on('end', finish);
   // A shell wrapper can swallow the end of stdin; run with what arrived instead of hanging.
-  setTimeout(() => finish(true), STDIN_GRACE_MS).unref();
+  setTimeout(finish, STDIN_GRACE_MS);
 }
 
 module.exports = {
   LEVELS, LANGUAGES, DEFAULT_LEVEL, parseCommand, renderRuleset, configDir,
-  readLevel, writeLevel, readConfig, writeConfig, defaultLevel, run, subagentMatcher, uninstall,
+  readLevel, writeLevel, levelFiles, readConfig, writeConfig, defaultLevel, run, subagentMatcher, uninstall,
+  mapEnabled,
 };
 
 if (require.main === module) main();

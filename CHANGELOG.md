@@ -5,6 +5,56 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-11-13
+
+### Added
+
+- A map of the project at session start: one line per folder with the
+  functions, classes and constants it exports (`hooks/map.js`), tests,
+  vendored and generated files left out, shared folders first, 1500
+  characters at most, 3 seconds at most. "Already in this codebase? Reuse
+  it" costs no grep: on the `csv-export` fixture the map is 115 tokens and
+  names the money helper the ticket must reuse. `/crewcut map on|off`,
+  `"map": false` in `crewcut.json`, `CREWCUT_MAP=off` (wins) and
+  `CREWCUT_MAP_CHARS`. Never sent to subagents.
+- The level is kept per project: Claude Code names the project directory
+  in `CLAUDE_PROJECT_DIR`, and the hook stores one level file per project
+  under `crewcut-levels/` next to the settings. Two sessions in two
+  repositories no longer overwrite each other. `crewcut-mode` still carries
+  the level set last, for the status line. `/crewcut uninstall` removes
+  the directory.
+
+### Changed
+
+- `/crewcut-review` and `/crewcut-audit` rebuilt: the reviewer reads the
+  code the change touches, callers included, and reports in this order:
+  correct, safe, holds at the load the project expects, tested, fast, lean.
+  Every finding carries a concrete case, the smallest fix and what happens
+  if it is skipped, in plain words, grouped as must fix, should fix and
+  nice to have, numbered across groups, with a verdict line. Lean findings
+  keep the ladder rungs and the `cut: <N> lines` total. The review takes a
+  PR link and falls back to the last commit. The agent stays on Sonnet with
+  Read, Grep and Glob.
+- The review and audit skills no longer put the session in a `review`
+  state: they report and change nothing, and the level stays. The hook,
+  the status line and the help card lose that state.
+- Hook: the output is written synchronously and the process exits
+  explicitly, so a pipe closed early or a stdin that never closes cannot
+  lose or hold the rules; the subagent matcher runs under a 100 ms limit,
+  so a pattern that backtracks forever injects the rules instead of
+  stalling the hook.
+- Measure, seven cases, three runs, Sonnet as judge, Claude Code 2.1.323,
+  no out-of-usage run, map on: Sonnet 0.96 against 0.86 without, 4.5 turns
+  against 6.2, 0.061 against 0.064 USD; Opus 0.97 against 0.80, 4.9 turns
+  against 5.7, 0.106 against 0.104 USD. The same day with the map off:
+  Sonnet 0.97, 4.7 turns, 0.060 USD; Opus 0.99, 5.0 turns, 0.107 USD. On
+  these one-to-twenty-file cases the map changes nothing beyond noise; it
+  trims reads and turns where files exist to reuse (`vat-country` on
+  Sonnet 1.0 file read against 1.3, 5.7 turns against 6.0; `csv-export` on
+  Opus 8.3 turns against 8.0) and the one-file cases, where the map is
+  empty, move both ways. Its case is the repository of hundreds of files,
+  which the eval cases do not cover; the agentic benchmark will measure it.
+
 ## [0.11.5] - 2026-10-08
 
 ### Changed

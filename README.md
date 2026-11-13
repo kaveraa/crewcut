@@ -97,6 +97,13 @@ explicitly asked for. Simple is not negligent.
 is fixed and rerun, a file that changed since the last read is read again.
 Fewer tokens is the goal only when the answer stays right.
 
+**The map.** With the ruleset, the session start carries a map of what
+the project already defines: one line per folder with its exported
+functions, classes and constants, tests and vendored code left out, about
+1 500 characters at most. "Already in this codebase? Reuse it" then costs
+no search, and the model does not rebuild a helper that exists two folders
+away. `/crewcut map off` drops it.
+
 The full ruleset is in [The rules](#the-rules) below.
 
 ## Benchmark
@@ -201,18 +208,24 @@ plugin, Sonnet as judge
 (`claude plugin eval . --ablation with-without --runs 3 --judge-model sonnet`,
 with `--allow-tools Edit Write`). Score is the share of graders passed;
 every case grades correctness as well as size, so a shorter answer that is
-wrong scores zero. Latest measure on each working model (Claude Code 2.1.289):
+wrong scores zero. Latest measure on each working model (Claude Code
+2.1.289 for Fable, 2.1.323 for the others):
 
 | Model | crewcut | Score with | without | Turns with | without | Cost per run with | without |
 |---|---|--:|--:|--:|--:|--:|--:|
 | Fable 5.1 | 0.7.0 | 0.98 | 0.81 | 5.7 | 8.4 | 0.296 USD | 0.414 USD |
-| Sonnet 5.5 | 0.9.0 | 0.97 | 0.85 | 4.4 | 5.8 | 0.057 USD | 0.059 USD |
-| Opus 5.5 | 0.9.0 | 0.99 | 0.81 | 5.0 | 6.0 | 0.104 USD | 0.104 USD |
+| Sonnet 5.5 | 0.12.0 | 0.96 | 0.86 | 4.5 | 6.2 | 0.061 USD | 0.064 USD |
+| Opus 5.5 | 0.12.0 | 0.97 | 0.80 | 4.9 | 5.7 | 0.106 USD | 0.104 USD |
 
 - The savings grow with the project. `csv-export` is twenty source and
   test files with a one-line bug: with the plugin, Fable reads 3.3 files
   against 9.0, and `vat-country`, seven modules, 3.0 against 11.0. The
   one-file cases have nothing to cut, and the ruleset is a fixed cost there.
+- The map, measured the same day with and without it on both models, changes
+  nothing beyond noise on cases this small: Sonnet reads 1.0 file against
+  1.3 on `vat-country` and the totals stay within two points. Its case is
+  the repository of hundreds of files, which the agentic benchmark will
+  measure.
 - `shared-bug` is fixed in the shared function in 3 runs out of 3 with the
   plugin on all three models, 0 without: every run without it patched the
   caller.
@@ -250,8 +263,9 @@ off.
 | `/crewcut lang <code>`      | Reply in `en`, `es`, `fr`, `de`, `ko` or `zh`; asked once at the first session |
 | `/crewcut markers on\|off`   | `crewcut:` comment on each corner cut (off by default) |
 | `/crewcut tests on\|off`     | Off: write a test only when the ticket asks, never extend one (on by default; asked once at the first session) |
-| `/crewcut-review [scope]`   | Read-only review of a diff                            |
-| `/crewcut-audit [path]`     | Same review over a whole tree, ranked by lines to cut |
+| `/crewcut map on\|off`       | Map of the project's own names at session start, so reuse costs no search (on by default) |
+| `/crewcut-review [scope]`   | Read-only review of a change: bugs, risk, load, tests, speed, what to cut |
+| `/crewcut-audit [path]`     | The same over a whole tree, ranked                    |
 | `/crewcut-debt [path]`      | Ledger of the `crewcut:` markers                      |
 | `/crewcut-gain`             | What the plugin saves, as measured above              |
 | `/crewcut-help`             | Reference card                                        |
@@ -259,21 +273,41 @@ off.
 
 ### Review, audit and debt
 
-`/crewcut-review` reviews the uncommitted changes; `/crewcut-review main..HEAD`
-or `/crewcut-review src/a.js src/b.js` narrows the scope. A read-only agent
-reports one line per finding, with the rung where the code should have
-stopped (`skip`, `reuse`, `stdlib`, `native`, `installed`, `one-line`, or
-`prose` for unrequested comments and docs):
+`/crewcut-review` reviews the uncommitted changes, or the last commit when
+there are none; `/crewcut-review main..HEAD`, a PR link or
+`/crewcut-review src/a.js src/b.js` sets the scope. A read-only agent on
+Sonnet reads the diff and the code it touches, callers included, and
+reviews it like the senior who gets paged when it breaks, in this order:
+correct, safe, holds at the load the project expects, tested, fast, lean.
+Every finding comes with a concrete case, the smallest fix and what happens
+if it is skipped, in plain words, grouped as must fix, should fix and nice
+to have, numbered so you can say "fix 2 and 4":
 
 ```
-src/signup.js:42: stdlib hand-written email check (18 lines) -> one call to the platform email validator
-cut: 17 lines
+What this does: adds a nightly job that closes the day and bills its orders.
+
+Must fix
+1. Orders land on the wrong day (billing/close_day.py:40-52)
+   What: the job stamps each order with the server clock, which runs in UTC.
+   Problem: an order placed at 00:30 in Berlin is billed on the day before.
+   Fix: take the date once in the shop's time zone; one line, nothing else moves.
+   If skipped: late orders carry the wrong date and accounting corrects them by hand.
+
+Should fix
+2. No test on the billing total (billing/close_day.py:60)
+   ...
+
+Verdict: fix 1 first.
+cut: 14 lines
 ```
 
-`/crewcut-audit` runs the same review over a whole tree. Both put the
-session in a read-only `review` state until you switch to a level again:
-`/crewcut` shows it, a compaction keeps it, and subagents started meanwhile
-receive the read-only rule instead of the ruleset. Neither changes anything.
+Lean findings still name the rung where the code should have stopped
+(`skip`, `reuse`, `stdlib`, `native`, `installed`, `one-line`, `merge`,
+`split`, `prose`) and the last line counts the lines they would remove. A
+`crewcut:` marker that names its limit is a decision, not a finding, unless
+the expected load already crosses it. `/crewcut-audit` runs the same review
+over a whole tree, entry points and main flows first, twenty findings at
+most. Both report and change nothing; the level stays as it was.
 
 With `/crewcut markers on`, every corner crewcut cuts on purpose carries a
 comment such as `// crewcut: no retry, add when the API flakes`, never as a
@@ -307,7 +341,7 @@ handles is billed at Opus rates, even in a Sonnet session.
 
 The plugin ships a status line that prints the level, the model and the
 working directory, for example `crewcut: ultra | Opus | shop`. The level is
-green, amber for `ultra`, blue for `review`, grey for `off`; set
+green, amber for `ultra`, grey for `off`; set
 `NO_COLOR=1` to print it plain. On the first start without a status line
 configured, Claude offers once to add it to your settings; say yes, or add
 it yourself:
@@ -318,7 +352,10 @@ it yourself:
 
 At session start the hook copies the script to `crewcut-statusline.js` next
 to your Claude settings, under a path that survives plugin updates, and
-refreshes the copy when the plugin changes.
+refreshes the copy when the plugin changes. The level is kept per project
+(`crewcut-levels/` next to your settings, one file per project directory),
+so two sessions in two repositories keep their own; the status line reads
+the shared `crewcut-mode`, which carries the level set last.
 
 ## Settings
 
@@ -326,7 +363,7 @@ Settings live in `crewcut.json` next to your Claude settings (`~/.claude`,
 or `CLAUDE_CONFIG_DIR`):
 
 ```json
-{ "defaultLevel": "ultra", "subagents": true, "markers": false }
+{ "defaultLevel": "ultra", "subagents": true, "markers": false, "map": true }
 ```
 
 | Key               | Environment variable      | Effect                                              |
@@ -336,6 +373,7 @@ or `CLAUDE_CONFIG_DIR`):
 | `subagentMatcher` | `CREWCUT_SUBAGENT_MATCHER` | Case-insensitive regular expression on the agent type, for example `explore\|general` |
 | `markers`         |                           | `crewcut:` comment on each corner cut               |
 | `tests`           | `CREWCUT_TESTS`           | `false` or `off`: write a test only when the ticket asks |
+| `map`             | `CREWCUT_MAP`             | `false` or `off`: no map of the project's names at session start; `CREWCUT_MAP_CHARS` sets its size, 1500 by default |
 
 The environment variable wins over the file. A subagent whose type is
 unknown, or a pattern that does not compile, still receives the rules.
@@ -388,7 +426,7 @@ enable auto-update for the marketplace in `/plugin`.
 
 Type `/crewcut uninstall` in a session, then `/plugin remove crewcut`. The
 first removes the files the plugin keeps next to your Claude settings (the
-session level, `crewcut.json`, the status line copy and its flag, plus the
+session level and the per-project levels, `crewcut.json`, the status line copy and its flag, plus the
 `statusLine` entry when it points at crewcut's own script); the second
 removes the plugin itself. From a shell, the same cleanup is
 `node <plugin dir>/hooks/crewcut.js uninstall`.
@@ -396,7 +434,11 @@ removes the plugin itself. From a shell, the same cleanup is
 ## Limitations
 
 - The hooks need `node` on the PATH.
-- The level is stored per user, so concurrent sessions share it.
+- Two sessions in the same project share one level; the status line shows
+  the level set last, whatever the project.
+- The map lists top-level definitions found by one regular expression per
+  language (JavaScript and TypeScript, Python, Go, Rust, Ruby, PHP, Java,
+  Kotlin, C#, Swift); nested or dynamic definitions are not in it.
 - The hooks, levels, review, audit and ledger are Claude Code only; other
   agents get the ruleset through `AGENTS.md`.
 - A cloud session (claude.ai/code) does not load a plugin installed with

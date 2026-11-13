@@ -5,7 +5,8 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
-const { renderRuleset, parseCommand, LEVELS, readLevel, writeLevel, readConfig, writeConfig, run, subagentMatcher, uninstall } = require('../hooks/crewcut.js');
+const { renderRuleset, parseCommand, LEVELS, readLevel, writeLevel, levelFiles, readConfig, writeConfig, run, subagentMatcher, uninstall, mapEnabled } = require('../hooks/crewcut.js');
+const { buildMap, isSource, namesIn } = require('../hooks/map.js');
 
 const sample = [
   'HEAD {level}',
@@ -186,21 +187,21 @@ test('prompt /crewcut alone reports the stored level and writes nothing', () => 
   const dir = tempDir();
   fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'lite\n');
   const out = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir });
-  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: full; levels: off, lite, full, ultra; language: en; tests: on)');
+  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: full; levels: off, lite, full, ultra; language: en; tests: on; map: on)');
   assert.equal(levelIn(dir), 'lite');
 });
 
 test('prompt /crewcut reports the default when no level file exists', () => {
   const dir = tempDir();
   const out = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir, CREWCUT_DEFAULT_MODE: 'lite' });
-  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: lite; levels: off, lite, full, ultra; language: en; tests: on)');
+  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: lite; levels: off, lite, full, ultra; language: en; tests: on; map: on)');
   assert.ok(!fs.existsSync(path.join(dir, 'crewcut-mode')));
 });
 
 test('prompt /crewcut maximum reports status like a bare /crewcut', () => {
   const dir = tempDir();
   const out = run('prompt', promptInput('/crewcut maximum'), { CLAUDE_CONFIG_DIR: dir });
-  assert.equal(payload(out).additionalContext, 'crewcut: full (default: full; levels: off, lite, full, ultra; language: en; tests: on)');
+  assert.equal(payload(out).additionalContext, 'crewcut: full (default: full; levels: off, lite, full, ultra; language: en; tests: on; map: on)');
   assert.ok(!fs.existsSync(path.join(dir, 'crewcut-mode')));
 });
 
@@ -350,7 +351,7 @@ test('status shows tests off once the config turns them off', () => {
   const dir = tempDir();
   writeConfig(dir, { tests: false });
   const out = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir });
-  assert.match(payload(out).additionalContext, /; tests: off\)$/);
+  assert.match(payload(out).additionalContext, /; tests: off; map: on\)$/);
 });
 
 test('renderRuleset keeps a line only when every tag on it holds', () => {
@@ -498,7 +499,7 @@ test('prompt /crewcut alone reports the level and the default', () => {
   writeConfig(dir, { defaultLevel: 'ultra' });
   fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'lite\n');
   const out = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir });
-  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: ultra; levels: off, lite, full, ultra; language: en; tests: on)');
+  assert.equal(payload(out).additionalContext, 'crewcut: lite (default: ultra; levels: off, lite, full, ultra; language: en; tests: on; map: on)');
 });
 
 test('prompt /crewcut subagents off writes the config and acknowledges', () => {
@@ -557,38 +558,23 @@ test('the real ruleset carries the modern-by-default rule at every active level'
   }
 });
 
-test('parseCommand turns the review and audit skills into the review state', () => {
-  assert.deepEqual(parseCommand('/crewcut-review'), { command: 'review' });
-  assert.deepEqual(parseCommand('/crewcut:crewcut-review main..HEAD'), { command: 'review' });
-  assert.deepEqual(parseCommand('/crewcut-audit src'), { command: 'review' });
+test('the review and audit skills are not hook commands: no level change, no output', () => {
+  assert.equal(parseCommand('/crewcut-review'), null);
+  assert.equal(parseCommand('/crewcut:crewcut-review main..HEAD'), null);
+  assert.equal(parseCommand('/crewcut-audit src'), null);
   assert.equal(parseCommand('/crewcut-help'), null);
-});
-
-test('prompt /crewcut-review enters the read-only review state for the session', () => {
   const dir = tempDir();
   fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'ultra\n');
-  const out = run('prompt', promptInput('/crewcut-review'), { CLAUDE_CONFIG_DIR: dir });
-  const text = payload(out).additionalContext;
-  assert.match(text, /^crewcut: review\n\nCREWCUT ACTIVE - level: review\./);
-  assert.match(text, /change no file/);
-  assert.equal(levelIn(dir), 'review');
-  assert.equal(readLevel(dir), 'review');
+  assert.equal(run('prompt', promptInput('/crewcut-review'), { CLAUDE_CONFIG_DIR: dir }), '');
+  assert.equal(levelIn(dir), 'ultra');
 });
 
-test('review state is kept across compaction, reset on startup, left by a level switch', () => {
+test('a stale review level file is ignored and reset on startup', () => {
   const dir = tempDir();
   fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'review\n');
+  assert.equal(readLevel(dir), null);
   const compact = run('session', '{"source":"compact"}', { CLAUDE_CONFIG_DIR: dir });
-  assert.match(payload(compact).additionalContext, /^CREWCUT ACTIVE - level: review\./);
-  assert.equal(levelIn(dir), 'review');
-  const status = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir });
-  assert.equal(payload(status).additionalContext, 'crewcut: review (default: full; levels: off, lite, full, ultra; language: en; tests: on)');
-  const sub = run('subagent', '{}', { CLAUDE_CONFIG_DIR: dir });
-  assert.match(payload(sub).additionalContext, /level: review\./);
-  const back = run('prompt', promptInput('/crewcut full'), { CLAUDE_CONFIG_DIR: dir });
-  assert.match(payload(back).additionalContext, /^crewcut: full\n\nCREWCUT ACTIVE - level: full\./);
-  assert.equal(levelIn(dir), 'full');
-  fs.writeFileSync(path.join(dir, 'crewcut-mode'), 'review\n');
+  assert.match(payload(compact).additionalContext, /^CREWCUT ACTIVE - level: full\./);
   run('session', '{"source":"startup"}', { CLAUDE_CONFIG_DIR: dir });
   assert.equal(levelIn(dir), 'full');
 });
@@ -718,8 +704,10 @@ test('uninstall removes the plugin state and only its own status line entry', ()
   const settings = path.join(dir, 'settings.json');
   const command = 'node "' + path.join(dir, 'crewcut-statusline.js') + '"';
   fs.writeFileSync(settings, JSON.stringify({ theme: 'dark', statusLine: { type: 'command', command } }));
+  run('prompt', promptInput('/crewcut lite'), { CLAUDE_CONFIG_DIR: dir, CLAUDE_PROJECT_DIR: tempDir() });
   const removed = uninstall(dir);
-  assert.deepEqual(removed, ['crewcut-mode', 'crewcut-nudged', 'crewcut-statusline.js', 'crewcut.json', 'statusLine in settings.json']);
+  assert.deepEqual(removed, ['crewcut-mode', 'crewcut-nudged', 'crewcut-statusline.js', 'crewcut.json', 'crewcut-levels', 'statusLine in settings.json']);
+  assert.ok(!fs.existsSync(path.join(dir, 'crewcut-levels')));
   assert.deepEqual(JSON.parse(fs.readFileSync(settings, 'utf8')), { theme: 'dark' });
   for (const name of ['crewcut-mode', 'crewcut-nudged', 'crewcut-statusline.js', 'crewcut.json']) {
     assert.ok(!fs.existsSync(path.join(dir, name)), name);
@@ -824,4 +812,109 @@ test('prompt /crewcut lang stores the language and later rules carry it', () => 
   assert.match(payload(run('prompt', promptInput('/crewcut ultra'), { CLAUDE_CONFIG_DIR: dir })).additionalContext, /in French/);
   assert.doesNotMatch(payload(run('subagent', '{}', { CLAUDE_CONFIG_DIR: dir })).additionalContext, /in French/);
   assert.equal(run('prompt', promptInput('/crewcut off'), { CLAUDE_CONFIG_DIR: dir }).includes('French'), false);
+});
+
+function projectWith(files) {
+  const root = tempDir();
+  for (const [file, text] of Object.entries(files)) {
+    fs.mkdirSync(path.dirname(path.join(root, file)), { recursive: true });
+    fs.writeFileSync(path.join(root, file), text);
+  }
+  return root;
+}
+
+test('the level is kept per project when Claude Code names one, and mirrored for the status line', () => {
+  const dir = tempDir();
+  const shop = tempDir();
+  const blog = tempDir();
+  run('prompt', promptInput('/crewcut ultra'), { CLAUDE_CONFIG_DIR: dir, CLAUDE_PROJECT_DIR: shop });
+  run('prompt', promptInput('/crewcut lite'), { CLAUDE_CONFIG_DIR: dir, CLAUDE_PROJECT_DIR: blog });
+  assert.equal(readLevel(dir, { CLAUDE_PROJECT_DIR: shop }), 'ultra');
+  assert.equal(readLevel(dir, { CLAUDE_PROJECT_DIR: blog }), 'lite');
+  assert.equal(levelIn(dir), 'lite', 'the shared file carries the last write');
+  assert.equal(readLevel(dir), 'lite', 'without a project the shared file is read');
+  const status = run('prompt', promptInput('/crewcut'), { CLAUDE_CONFIG_DIR: dir, CLAUDE_PROJECT_DIR: shop });
+  assert.match(payload(status).additionalContext, /^crewcut: ultra /);
+  const sub = run('subagent', '{"agent_type":"general-purpose"}', { CLAUDE_CONFIG_DIR: dir, CLAUDE_PROJECT_DIR: shop });
+  assert.match(payload(sub).additionalContext, /level: ultra\./);
+  const resumed = run('session', '{"source":"resume"}', { CLAUDE_CONFIG_DIR: dir, CLAUDE_PROJECT_DIR: shop });
+  assert.match(payload(resumed).additionalContext, /level: ultra\./);
+  assert.equal(levelFiles(dir, { CLAUDE_PROJECT_DIR: shop }).length, 2);
+  assert.equal(levelFiles(dir).length, 1);
+  assert.notEqual(levelFiles(dir, { CLAUDE_PROJECT_DIR: shop })[0], levelFiles(dir, { CLAUDE_PROJECT_DIR: blog })[0]);
+});
+
+test('map.js lists the names a project defines, one line per folder, shared folders first', () => {
+  const root = projectWith({
+    'src/app.js': "const { slugify } = require('./utils/text');\nmodule.exports = { start, stop };\n",
+    'src/utils/text.js': 'export function slugify(s) {}\nexport const SEP = "-";\nexport default function hidden() {}\n',
+    'api/handlers.py': 'def list_orders():\n    pass\n\nclass OrderView:\n    pass\n\ndef _private():\n    pass\n',
+    'src/Billing.php': '<?php\nfinal class Invoice {}\nfunction vat(float $x): float {}\n',
+    'tests/app.test.js': 'export function neverListed() {}\n',
+    'node_modules/dep/index.js': 'export function neverListedEither() {}\n',
+    'README.md': '# hi\n',
+  });
+  const map = buildMap(root);
+  const lines = map.split('\n');
+  assert.equal(lines[0], 'Already in this codebase (reuse before writing):');
+  assert.equal(lines[1], 'api/: list_orders, OrderView', 'api is a shared folder and comes first');
+  assert.equal(lines[2], 'src/utils/: slugify, SEP');
+  const src = lines.find((line) => line.startsWith('src/: '));
+  assert.deepEqual(src.slice('src/: '.length).split(', ').sort(), ['Invoice', 'start', 'stop', 'vat']);
+  assert.doesNotMatch(map, /neverListed|_private|hidden|default/);
+  assert.ok(isSource('src/a.ts') && !isSource('src/a.test.ts') && !isSource('dist/a.js') && !isSource('src/a.css'));
+  assert.deepEqual(namesIn('x.go', 'func Parse() {}\nfunc (s *S) Run() {}\nfunc helper() {}\ntype Order struct{}\n'), ['Parse', 'Run', 'Order']);
+  assert.deepEqual(namesIn('x.rs', 'pub fn parse() {}\nfn hidden() {}\npub struct Order;\n'), ['parse', 'Order']);
+  assert.deepEqual(namesIn('x.js', 'export { a as b, c, default }\n'), ['b', 'c']);
+});
+
+test('map.js stays inside its budget, keeps the shared folders and counts what it drops', () => {
+  const files = {};
+  for (let i = 0; i < 12; i++) files[`feature${i}/thing.js`] = `export function feature${i}Handler() {}\nexport function feature${i}View() {}\n`;
+  files['lib/core.js'] = 'export function core() {}\n';
+  const root = projectWith(files);
+  const map = buildMap(root, 220);
+  assert.ok(map.length <= 220 + 40, map);
+  assert.match(map, /^lib\/: core$/m);
+  assert.match(map, /^\(\d+ more folders not listed\)$/m);
+  assert.equal(buildMap(projectWith({ 'README.md': 'nothing to list\n' })), '');
+});
+
+test('session startup carries the codebase map of the project, unless switched off', () => {
+  const dir = tempDir();
+  const root = projectWith({ 'src/money.js': 'export function formatCents(c) {}\nexport function parseEuros(s) {}\n' });
+  const env = { CLAUDE_CONFIG_DIR: dir, CLAUDE_PROJECT_DIR: root, CLAUDE_CODE_EVAL_CONFINED: '1' };
+  const text = payload(run('session', '{"source":"startup"}', env)).additionalContext;
+  assert.match(text, /CREWCUT ACTIVE[\s\S]*Already in this codebase \(reuse before writing\):\nsrc\/: formatCents, parseEuros$/);
+  assert.match(payload(run('session', '{"source":"compact"}', env)).additionalContext, /formatCents/);
+  assert.doesNotMatch(payload(run('subagent', '{"agent_type":"general-purpose"}', env)).additionalContext, /formatCents/);
+  assert.doesNotMatch(payload(run('session', '{"source":"startup"}', { ...env, CREWCUT_MAP: 'off' })).additionalContext, /formatCents/);
+  writeConfig(dir, { map: false });
+  assert.equal(mapEnabled(env, dir), false);
+  assert.doesNotMatch(payload(run('session', '{"source":"startup"}', env)).additionalContext, /formatCents/);
+  assert.equal(mapEnabled({ ...env, CREWCUT_MAP: 'on' }, dir), true);
+  assert.equal(run('session', '{"source":"startup"}', { ...env, CREWCUT_DEFAULT_MODE: 'off' }), '', 'off means no map either');
+});
+
+test('prompt /crewcut map on|off writes the config and hands over the map when switching on', () => {
+  const dir = tempDir();
+  const root = projectWith({ 'lib/a.py': 'def alpha():\n    pass\n' });
+  const env = { CLAUDE_CONFIG_DIR: dir, CLAUDE_PROJECT_DIR: root };
+  assert.deepEqual(parseCommand('/crewcut map off'), { command: 'map', enabled: false });
+  assert.deepEqual(parseCommand('/crewcut map maybe'), { command: 'status' });
+  assert.equal(payload(run('prompt', promptInput('/crewcut map off'), env)).additionalContext, 'crewcut: map off');
+  assert.equal(configIn(dir).map, false);
+  const on = payload(run('prompt', promptInput('/crewcut map on'), env)).additionalContext;
+  assert.match(on, /^crewcut: map on\n\nAlready in this codebase \(reuse before writing\):\nlib\/: alpha$/);
+  assert.equal(configIn(dir).map, true);
+  assert.match(payload(run('prompt', promptInput('/crewcut'), env)).additionalContext, /map: on\)$/);
+});
+
+test('a pathological subagent matcher neither hangs the hook nor silences the rules', () => {
+  const dir = tempDir();
+  writeConfig(dir, { subagentMatcher: '^(a+)+$' });
+  const started = Date.now();
+  const out = run('subagent', JSON.stringify({ agent_type: 'a'.repeat(40) + 'b' }), { CLAUDE_CONFIG_DIR: dir });
+  assert.ok(Date.now() - started < 2000, 'the matcher was cut short');
+  assert.match(payload(out).additionalContext, /CREWCUT ACTIVE/);
 });

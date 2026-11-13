@@ -102,6 +102,13 @@ complète, un test qui échoue est corrigé et relancé, un fichier qui a chang�
 depuis la dernière lecture est relu. Moins de tokens n'est le but que si la
 réponse reste juste.
 
+**La carte.** Avec le ruleset, le démarrage de session porte une carte de
+ce que le projet définit déjà : une ligne par dossier avec ses fonctions,
+classes et constantes exportées, tests et code vendu exclus, environ
+1 500 caractères au plus. « Déjà dans ce code ? Réutilise-le » ne coûte
+alors aucune recherche, et le modèle ne reconstruit pas un helper qui
+existe deux dossiers plus loin. `/crewcut map off` la retire.
+
 Le ruleset complet est dans [Les règles](#les-règles) plus bas.
 
 ## Benchmark
@@ -213,18 +220,23 @@ comme juge
 avec `--allow-tools Edit Write`). Le score est la part des graders passés ;
 chaque cas note la justesse autant que la taille, donc une réponse plus
 courte mais fausse vaut zéro. Dernière mesure sur chaque modèle de travail
-(Claude Code 2.1.289) :
+(Claude Code 2.1.289 pour Fable, 2.1.323 pour les autres) :
 
 | Modèle | crewcut | Score avec | sans | Tours avec | sans | Coût par run avec | sans |
 |---|---|--:|--:|--:|--:|--:|--:|
 | Fable 5.1 | 0.7.0 | 0,98 | 0,81 | 5,7 | 8,4 | 0,296 USD | 0,414 USD |
-| Sonnet 5.5 | 0.9.0 | 0,97 | 0,85 | 4,4 | 5,8 | 0,057 USD | 0,059 USD |
-| Opus 5.5 | 0.9.0 | 0,99 | 0,81 | 5,0 | 6,0 | 0,104 USD | 0,104 USD |
+| Sonnet 5.5 | 0.12.0 | 0,96 | 0,86 | 4,5 | 6,2 | 0,061 USD | 0,064 USD |
+| Opus 5.5 | 0.12.0 | 0,97 | 0,80 | 4,9 | 5,7 | 0,106 USD | 0,104 USD |
 
 - Le gain grandit avec le projet. `csv-export`, c'est vingt fichiers de
   source et de test avec un bug d'une ligne : avec le plugin, Fable lit 3,3
   fichiers contre 9,0, et `vat-country`, sept modules, 3,0 contre 11,0. Les
   cas à un fichier n'ont rien à couper, et le ruleset y est un coût fixe.
+- La carte, mesurée le même jour avec et sans elle sur les deux modèles, ne
+  change rien au-delà du bruit sur des cas aussi petits : Sonnet lit 1,0
+  fichier contre 1,3 sur `vat-country` et les totaux restent à deux points.
+  Son terrain est le dépôt de centaines de fichiers, que le benchmark
+  agentique mesurera.
 - `shared-bug` est corrigé dans la fonction partagée dans 3 runs sur 3 avec
   le plugin sur les trois modèles, 0 sans : chaque run sans lui a rustiné
   l'appelant.
@@ -263,8 +275,9 @@ aussi le plugin.
 | `/crewcut lang <code>`      | Répond en `en`, `es`, `fr`, `de`, `ko` ou `zh` ; demandé une fois à la première session |
 | `/crewcut markers on\|off`   | Commentaire `crewcut:` sur chaque coin coupé (inactif par défaut) |
 | `/crewcut tests on\|off`     | Off : n'écrit un test que si le ticket le demande, n'en prolonge jamais (actif par défaut ; demandé une fois à la première session) |
-| `/crewcut-review [portée]`  | Revue en lecture seule d'un diff                      |
-| `/crewcut-audit [chemin]`   | Même revue sur tout un arbre, classée par lignes à couper |
+| `/crewcut map on\|off`       | Carte des noms du projet au démarrage de session, pour que réutiliser ne coûte aucune recherche (actif par défaut) |
+| `/crewcut-review [portée]`  | Revue en lecture seule d'un changement : bugs, risque, charge, tests, vitesse, ce qu'il faut couper |
+| `/crewcut-audit [chemin]`   | La même sur tout un arbre, classée                    |
 | `/crewcut-debt [chemin]`    | Registre des marqueurs `crewcut:`                     |
 | `/crewcut-gain`             | Ce que le plugin économise, tel que mesuré plus haut  |
 | `/crewcut-help`             | Carte de référence                                    |
@@ -272,23 +285,43 @@ aussi le plugin.
 
 ### Revue, audit et dette
 
-`/crewcut-review` passe en revue les changements non commités ;
-`/crewcut-review main..HEAD` ou `/crewcut-review src/a.js src/b.js` réduit
-la portée. Un agent en lecture seule rapporte une ligne par constat, avec le
-barreau où le code aurait dû s'arrêter (`skip`, `reuse`, `stdlib`, `native`,
-`installed`, `one-line`, ou `prose` pour les commentaires et la doc non
-demandés) :
+`/crewcut-review` passe en revue les changements non commités, ou le
+dernier commit s'il n'y en a pas ; `/crewcut-review main..HEAD`, un lien de
+PR ou `/crewcut-review src/a.js src/b.js` fixe la portée. Un agent en
+lecture seule sur Sonnet lit le diff et le code qu'il touche, appelants
+compris, et le relit comme le senior qu'on appelle quand ça casse, dans cet
+ordre : juste, sûr, tient à la charge que le projet attend, testé, rapide,
+sobre. Chaque constat vient avec un cas concret, le plus petit correctif et
+ce qui arrive si on le saute, en mots simples, groupé en à corriger, à
+corriger ensuite et bon à prendre, numéroté pour que vous puissiez dire
+« corrige 2 et 4 » :
 
 ```
-src/signup.js:42: stdlib hand-written email check (18 lines) -> one call to the platform email validator
-cut: 17 lines
+What this does: adds a nightly job that closes the day and bills its orders.
+
+Must fix
+1. Orders land on the wrong day (billing/close_day.py:40-52)
+   What: the job stamps each order with the server clock, which runs in UTC.
+   Problem: an order placed at 00:30 in Berlin is billed on the day before.
+   Fix: take the date once in the shop's time zone; one line, nothing else moves.
+   If skipped: late orders carry the wrong date and accounting corrects them by hand.
+
+Should fix
+2. No test on the billing total (billing/close_day.py:60)
+   ...
+
+Verdict: fix 1 first.
+cut: 14 lines
 ```
 
-`/crewcut-audit` fait la même revue sur tout un arbre. Les deux mettent la
-session dans un état `review` en lecture seule jusqu'à ce que vous repassiez
-à un niveau : `/crewcut` l'affiche, une compaction le garde, et les
-sous-agents démarrés entre-temps reçoivent la règle de lecture seule à la
-place du ruleset. Aucun des deux ne change quoi que ce soit.
+Les constats de sobriété nomment toujours le barreau où le code aurait dû
+s'arrêter (`skip`, `reuse`, `stdlib`, `native`, `installed`, `one-line`,
+`merge`, `split`, `prose`) et la dernière ligne compte les lignes qu'ils
+retireraient. Un marqueur `crewcut:` qui nomme sa limite est une décision,
+pas un constat, sauf si la charge attendue la dépasse déjà. `/crewcut-audit`
+fait la même revue sur tout un arbre, points d'entrée et flux principaux
+d'abord, vingt constats au plus. Les deux rapportent et ne changent rien ;
+le niveau reste ce qu'il était.
 
 Avec `/crewcut markers on`, chaque coin que crewcut coupe volontairement
 porte un commentaire comme `// crewcut: no retry, add when the API flakes`,
@@ -325,7 +358,7 @@ au tarif Opus, même dans une session Sonnet.
 
 Le plugin fournit une ligne de statut qui affiche le niveau, le modèle et le
 dossier de travail, par exemple `crewcut: ultra | Opus | shop`. Le niveau
-est en vert, ambre pour `ultra`, bleu pour `review`, gris pour `off` ; posez
+est en vert, ambre pour `ultra`, gris pour `off` ; posez
 `NO_COLOR=1` pour l'afficher sans couleur. Au premier démarrage sans ligne
 de statut configurée, Claude propose une fois de l'ajouter à vos réglages ;
 dites oui, ou ajoutez-la vous-même :
@@ -337,7 +370,10 @@ dites oui, ou ajoutez-la vous-même :
 Au démarrage de la session, le hook copie le script dans
 `crewcut-statusline.js` à côté de vos réglages Claude, sous un chemin qui
 survit aux mises à jour du plugin, et rafraîchit la copie quand le plugin
-change.
+change. Le niveau est gardé par projet (`crewcut-levels/` à côté de vos
+réglages, un fichier par dossier de projet), donc deux sessions dans deux
+dépôts gardent chacune le sien ; la ligne de statut lit le `crewcut-mode`
+partagé, qui porte le dernier niveau posé.
 
 ## Réglages
 
@@ -345,7 +381,7 @@ Les réglages vivent dans `crewcut.json` à côté de vos réglages Claude
 (`~/.claude`, ou `CLAUDE_CONFIG_DIR`) :
 
 ```json
-{ "defaultLevel": "ultra", "subagents": true, "markers": false }
+{ "defaultLevel": "ultra", "subagents": true, "markers": false, "map": true }
 ```
 
 | Clé               | Variable d'environnement   | Effet                                               |
@@ -355,6 +391,7 @@ Les réglages vivent dans `crewcut.json` à côté de vos réglages Claude
 | `subagentMatcher` | `CREWCUT_SUBAGENT_MATCHER` | Expression régulière, insensible à la casse, sur le type d'agent, par exemple `explore\|general` |
 | `markers`         |                            | Commentaire `crewcut:` sur chaque coin coupé        |
 | `tests`           | `CREWCUT_TESTS`            | `false` ou `off` : n'écrit un test que si le ticket le demande |
+| `map`             | `CREWCUT_MAP`              | `false` ou `off` : pas de carte des noms du projet au démarrage ; `CREWCUT_MAP_CHARS` fixe sa taille, 1500 par défaut |
 
 La variable d'environnement l'emporte sur le fichier. Un sous-agent dont le
 type est inconnu, ou un motif qui ne compile pas, reçoit quand même les
@@ -415,16 +452,20 @@ Mettez à jour avec `/plugin marketplace update crewcut` puis
 
 Tapez `/crewcut uninstall` dans une session, puis `/plugin remove crewcut`.
 Le premier retire les fichiers que le plugin garde à côté de vos réglages
-Claude (le niveau de la session, `crewcut.json`, la copie de la ligne de
-statut et son drapeau, plus l'entrée `statusLine` quand elle pointe vers le
+Claude (le niveau de la session et les niveaux par projet, `crewcut.json`,
+la copie de la ligne de statut et son drapeau, plus l'entrée `statusLine` quand elle pointe vers le
 script de crewcut) ; le second retire le plugin lui-même. Depuis un shell, le
 même nettoyage est `node <dossier du plugin>/hooks/crewcut.js uninstall`.
 
 ## Limites
 
 - Les hooks ont besoin de `node` dans le PATH.
-- Le niveau est stocké par utilisateur, donc les sessions simultanées le
-  partagent.
+- Deux sessions dans le même projet partagent un niveau ; la ligne de statut
+  affiche le dernier niveau posé, quel que soit le projet.
+- La carte liste les définitions de premier niveau trouvées par une
+  expression régulière par langage (JavaScript et TypeScript, Python, Go,
+  Rust, Ruby, PHP, Java, Kotlin, C#, Swift) ; les définitions imbriquées ou
+  dynamiques n'y sont pas.
 - Les hooks, les niveaux, la revue, l'audit et le registre sont réservés à
   Claude Code ; les autres agents reçoivent le ruleset par `AGENTS.md`.
 - Une session cloud (claude.ai/code) ne charge ni un plugin installé avec
