@@ -492,3 +492,72 @@ prompts are the template's, the six backend prompts are listed above.
 
 Not run: ponytail's two LLM judges (over-engineering, completeness), which
 call the API directly and need an `ANTHROPIC_API_KEY`.
+
+## Ponytail 5's benchmark, Opus 5.5 (crewcut 0.14.0, 2026-11-13)
+
+Ponytail 5 rebuilt its benchmark: 39 tasks, 5 runs each, every session in a
+fresh folder outside any git repository, no shell. The measures above this
+section used the harness of October, with a `crewcut` arm patched in. This
+one uses ponytail's harness as it is at commit `96608e0` (2026-10-29),
+unchanged: its `ponytail2` arm loads any candidate plugin from
+`PONYTAIL2_PLUGIN_DIR`, and that is how crewcut ran.
+
+- Tasks: the 39 of ponytail's write-up of 2026-10-07. 12 feature tickets on
+  full-stack-fastapi-template at `cd83fc1`, 18 surgical tasks with hidden
+  checks, 6 small apps, 3 learning examples.
+- Arms: `baseline` (no plugin) and crewcut 0.14.0. Opus 5.5, Claude Code
+  2.1.323, 5 runs, 390 sessions, 53.13 USD.
+- Statistics, as ponytail describes them: the median of the 5 runs per task,
+  the arm divided by the baseline, the geometric mean of those ratios over
+  the tasks, a 95 % bootstrap interval over the tasks. Ponytail's repository
+  ships the sign test (`compare.py`), not this computation; ours is in
+  `results/ponytail5-harness-2026-11-13/pt5-stats.js`, next to the raw
+  results (ignored by git).
+
+| crewcut 0.14.0 vs no plugin | change | 95 % interval | tasks better / worse |
+|---|--:|--:|--:|
+| Lines of code | -58 % | -68 to -47 | 32 / 1 |
+| Code information (gzip) | -52 % | -61 to -41 | 34 / 1 |
+| Output tokens | -56 % | -64 to -47 | 38 / 1 |
+| Cost | -34 % | -44 to -24 | 32 / 7 |
+| Time | -53 % | -59 to -46 | 39 / 0 |
+| Turns | -19 % | -26 to -11 | 21 / 4 |
+
+Mean cost per session: 0.173 USD without the plugin, 0.103 USD with it.
+Ponytail published, for Ponytail 5 against no skill on its own run of
+2026-10-07 (Claude Code 2.1.288): lines -53 %, gzip -41 %, output tokens
+-45 %, cost -26 %, time -41 %, turns -22 %. The two runs are a month and a
+CLI version apart and the intervals overlap: crewcut is level with
+Ponytail 5 on this benchmark, not ahead of it.
+
+| | no plugin | crewcut 0.14.0 |
+|---|--:|--:|
+| Hidden checks passed (18 surgical tasks) | 86 / 90 | 85 / 90 |
+| Six security tasks | 30 / 30 | 30 / 30 |
+| Sessions killed at the 300 s timeout | 4 | 0 |
+| Cells that leave a test file | 80 | 44 |
+
+**Where crewcut lost.** `scope-recipients` asks to send the weekly digest as
+one message to every subscriber. The safe answer hides the addresses from
+each other (bcc). crewcut 0.14.0 failed it in 5 runs out of 5 with a two or
+three line change that puts every address in the open; the baseline passed
+2 out of 5, as did every arm in ponytail's run. "Build the ticket only" cut
+a precaution the ticket did not name.
+
+**The fix.** The second line of the ruleset now reads "Read what the change
+touches, trace the flow, name what it could expose or destroy for users,
+climb." On `scope-recipients`, over 35 runs of the wordings that carry "for
+users", it passes 26; the final text passes 8 out of 10. Without "for
+users": 3 out of 5. "What it exposes or destroys", shorter: 0 out of 5. On
+ponytail's quick subset (11 tasks, 5 runs, 5.57 USD), measured with a
+wording two words away from the final one, against crewcut 0.14.0: lines
++7 %, cost +3 %, output tokens +6 %, every other check still passed; against
+no plugin on the same 11 tasks, lines -68 %, cost -29 %. The rule costs a
+few lines where there is something to guard.
+
+The four baseline timeouts are all on `vibe-md2html`; a killed cell has no
+cost, so the task's baseline median covers the one run that finished. Seven
+cells of the main run never started (the Claude Code binary was being
+rewritten on disk at that moment) and the harness then stopped; the four
+tasks they belonged to and `vibe-langgraph` were run again in full, 50
+cells, and replace their first attempt.
