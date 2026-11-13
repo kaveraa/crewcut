@@ -11,6 +11,21 @@ follows Keep a Changelog and the project follows Semantic Versioning.
   agentic benchmark, the two controls, the rules, the levels and commands,
   the review format. The text under each card is a few lines; every table
   stays available as text in a folded block.
+- The ruleset asks, before writing, to name what the change could expose or
+  destroy for users. On the privacy task of ponytail 5's benchmark
+  (one digest to every subscriber without showing their addresses),
+  crewcut 0.14.0 failed 5 runs out of 5; with the rule, the final text
+  passes 8 out of 10, against 2 out of 5 for the model with no plugin. Six
+  neighbouring wordings were tightened to keep the ruleset under 600
+  tokens.
+
+### Added
+
+- Ponytail 5's benchmark, unchanged harness, Opus 5.5, 39 tasks, 5 runs,
+  390 sessions: crewcut 0.14.0 against no plugin, lines -58 %, output
+  tokens -56 %, time -53 %, cost -34 %, hidden checks 85 out of 90 against
+  86. Method, limits and the comparison with ponytail's own figures:
+  `benchmarks/agentic/RESULTS.md`.
 
 ## [0.14.0] - 2026-11-13
 

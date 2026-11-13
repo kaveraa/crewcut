@@ -272,7 +272,8 @@ Ce que dit le ruleset, au-delà de l'échelle plus haut.
 **Jamais coupé.** La validation aux frontières de confiance, ce qui évite
 une perte de données, la sécurité, les bases de l'accessibilité, les tests
 existants, et tout ce que vous avez explicitement demandé. Simple ne veut
-pas dire négligent.
+pas dire négligent. Avant d'écrire, Claude nomme ce que le changement
+pourrait exposer ou détruire pour les utilisateurs.
 
 **Moderne par défaut.** Claude vérifie les versions que le projet utilise,
 langage, runtime, framework et bibliothèques, et suit ce que leur

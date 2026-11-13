@@ -263,7 +263,8 @@ What the ruleset says, beyond the ladder above.
 
 **Never cut.** Validation at trust boundaries, handling that prevents data
 loss, security, accessibility basics, existing tests, and anything you
-explicitly asked for. Simple is not negligent.
+explicitly asked for. Simple is not negligent. Before writing, Claude names
+what the change could expose or destroy for users.
 
 **Modern by default.** Claude checks the versions the project runs,
 language, runtime, framework and libraries, and follows what their official
