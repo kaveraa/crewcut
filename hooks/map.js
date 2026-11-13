@@ -12,12 +12,16 @@ const DEFAULT_BUDGET = 1500;
 const MAX_FILES = 3000;
 const NAMES_PER_FILE = 10;
 const WALK_DEPTH = 5;
+const MAX_FILE_BYTES = 512 * 1024;
 
 const SOURCE = /\.(js|jsx|mjs|cjs|ts|tsx|py|go|rs|rb|php|java|kt|cs|swift)$/;
 const SKIP_DIR = /(^|\/)(node_modules|\.git|dist|build|out|vendor|venv|\.venv|__pycache__|coverage|\.next|target|migrations|fixtures|tests?|__tests__|spec|e2e|storage|public)(\/|$)/;
 const SKIP_FILE = /(^|\/)(test_[^/]*|[^/]*(_test|\.test|\.spec|\.min|\.d|\.generated)\.[a-z]+)$/;
 const SHARED_DIR = /(^|\/)(lib|libs|utils?|helpers?|services?|components?|hooks|core|common|shared|api|models?|domain|support)(\/|$)/i;
 const IDENT = /^[A-Za-z_$][\w$]*$/;
+// A path is text the repository controls and the map lands in the session
+// context: only plain path characters pass, so no folder name smuggles a line in.
+const SAFE_PATH = /^[\w.@+-]+(\/[\w.@+-]+)*$/;
 
 // One entry per language family: the regexes that catch a top-level definition.
 // A default export is left out: nothing imports it by that name.
@@ -90,7 +94,7 @@ function namesIn(file, text) {
 }
 
 function isSource(file) {
-  return SOURCE.test(file) && !SKIP_DIR.test(file) && !SKIP_FILE.test(file);
+  return SAFE_PATH.test(file) && SOURCE.test(file) && !SKIP_DIR.test(file) && !SKIP_FILE.test(file);
 }
 
 // Folders that other code imports from go first: when the budget cuts the
@@ -107,7 +111,10 @@ function buildMap(root, budget = DEFAULT_BUDGET) {
   for (const file of files) {
     let text;
     try {
-      text = fs.readFileSync(path.join(root, file), 'utf8');
+      const full = path.join(root, file);
+      const stat = fs.lstatSync(full);
+      if (!stat.isFile() || stat.size > MAX_FILE_BYTES) continue; // a symlink, a pipe or a bundle
+      text = fs.readFileSync(full, 'utf8');
     } catch {
       continue;
     }
