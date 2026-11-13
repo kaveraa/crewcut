@@ -467,3 +467,45 @@ out of 5, Haiku `csv-export` 4 out of 5, Haiku `explain-bug` 5 out of 5.
 
 About 26 USD in all. Three Sonnet runs did not start in the first suite
 (the same process spawn error) and their two cases were run again.
+
+## The table on six runs (crewcut 0.17.0, 2026-11-13)
+
+The previous section showed that a suite of three runs does not separate
+0.97 from 1.00. A second full suite was run, both arms, four models, and
+every run measured with the 0.17.0 wording and graders is pooled: six runs
+per case, nine with the plugin on Sonnet and Haiku, which had been run
+twice already.
+
+| Model | Score with | without | Runs with | without | Turns with | without | Session cost with | without |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|
+| Fable 5.2 | 1.00 | 0.87 | 54 | 54 | 4.7 | 5.5 | 0.203 USD | 0.189 USD |
+| Opus 5.5 | 0.99 | 0.85 | 54 | 54 | 5.0 | 5.4 | 0.093 USD | 0.088 USD |
+| Sonnet 5.5 | 0.98 | 0.87 | 81 | 54 | 4.4 | 5.3 | 0.044 USD | 0.041 USD |
+| Haiku 5.5 | 0.99 | 0.84 | 81 | 54 | 5.2 | 6.0 | 0.003 USD | 0.003 USD |
+
+Runs where every grader passes, with the plugin against without: Fable 53
+out of 54 against 19 out of 54, Opus 52 against 11, Sonnet 65 out of 81
+against 15 out of 54, Haiku 73 out of 81 against 8 out of 54.
+
+Every grader that failed with the plugin, over all those runs:
+
+- Fable: `csv-export` `reads-at-most-three-files` once.
+- Opus: `csv-export` `reads-at-most-three-files` once, `explain-bug`
+  `full-explanation` once.
+- Sonnet: `explain-bug` `full-explanation` 4 times out of 9,
+  `url-parse` `short-answer` 3, `date-picker` `only-asked-attributes`
+  3 and `short-answer` 2, `explain-retry` `comments-say-why` 2 and
+  `plain-text-answer` 1, `keep-validation` `honest-answer` 1,
+  `csv-export` `reads-at-most-three-files` 1.
+- Haiku: `csv-export` without the money helper 3 times out of 9,
+  `date-picker` `short-answer` 2, `explain-bug` `full-explanation` 2,
+  `explain-retry` `comments-say-why` 1.
+
+Sonnet is the model with the most left to gain: its two frequent misses
+are an explanation that skips the caller on `explain-bug` and a fourth or
+fifth sentence on `url-parse`.
+
+The arm without the plugin moved by one point on three models between the
+two suites, which is the same spread. 27.15 USD for the second suite. Five
+Haiku runs of `keep-validation` did not start (the process spawn error)
+and the case was run again in both arms.

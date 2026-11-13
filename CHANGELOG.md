@@ -5,6 +5,14 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- Eval tables on at least six runs per case instead of three, since three
+  did not separate 0.97 from 1.00: Fable 5.2 1.00 against 0.87 without the
+  plugin, Opus 5.5 0.99 against 0.85, Sonnet 5.5 0.98 against 0.87, Haiku
+  5.5 0.99 against 0.84. The notebook lists every grader that still fails
+  with the plugin.
+
 ## [0.17.0] - 2026-11-13
 
 ### Changed
