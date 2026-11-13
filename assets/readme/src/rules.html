@@ -1,0 +1,21 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+.r { display: grid; grid-template-columns: 250px 1fr; gap: 20px; padding: 15px 0; border-top: 1px solid #35495E; align-items: baseline; }
+.r:last-of-type { border-bottom: 1px solid #35495E; }
+.r b { font-size: 18px; color: #F4EFE6; }
+.r span { font-size: 16px; line-height: 1.45; color: #B8C4CE; }
+.rs { margin-top: 26px; }
+</style>
+<div class="card"><div class="pole"></div>
+<div class="eyebrow">The ruleset, at every session start</div>
+<h1>A senior who reads everything <em>and writes almost nothing.</em></h1>
+<div class="rs">
+<div class="r"><b>Build the ticket only</b><span>No optional prop, state, mode or edge case it did not name. A second use case is a second ticket.</span></div>
+<div class="r"><b>Fix the root cause</b><span>Find every caller, fix the shared function once, even when the other callers look safe.</span></div>
+<div class="r"><b>Short never means wrong</b><span>A question gets a full answer. A failing test is fixed and rerun.</span></div>
+<div class="r"><b>Current practice</b><span>Follow what the official docs of the installed versions recommend today. Unsure: read them.</span></div>
+<div class="r"><b>Clean output</b><span>Comments say why, in one plain line. No emoji, no arrow, no long dash. No AI trace in commits.</span></div>
+</div>
+<div class="foot">With it: a map of the names the project already defines, and the versions it declares,<br>so reuse and version-correct code cost no search.</div>
+</div>
+<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>

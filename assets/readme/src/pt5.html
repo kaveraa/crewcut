@@ -1,0 +1,28 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+td.bar { width: 230px; padding-left: 24px; }
+td.bar i { display: block; height: 14px; border-radius: 4px; background: #E34948; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 24px; }
+.two div { border: 1px solid #35495E; border-radius: 12px; padding: 14px 18px; font-size: 15.5px; line-height: 1.5; color: #B8C4CE; }
+.two b { display: block; font-family: Consolas, monospace; font-size: 22px; color: #F4EFE6; }
+.two .warn b { color: #F4C27A; }
+</style>
+<div class="card"><div class="pole"></div>
+<div class="eyebrow">Ponytail 5's benchmark, crewcut 0.14.0 against no plugin</div>
+<h1>Measured the way ponytail measures itself. <em>Level with it.</em></h1>
+<table>
+<tr><th>opus 5.5, 39 tasks, 5 runs</th><th>change</th><th>95 % interval</th><th>tasks better / worse</th><th></th></tr>
+<tr class="top"><td>Lines of code</td><td class="hot">-58 %</td><td>-68 to -47</td><td>32 / 1</td><td class="bar"><i style="width:58%"></i></td></tr>
+<tr><td>Code information, gzip</td><td class="hot">-52 %</td><td>-61 to -41</td><td>34 / 1</td><td class="bar"><i style="width:52%"></i></td></tr>
+<tr><td>Output tokens</td><td class="hot">-56 %</td><td>-64 to -47</td><td>38 / 1</td><td class="bar"><i style="width:56%"></i></td></tr>
+<tr><td>Cost</td><td class="warm">-34 %</td><td>-44 to -24</td><td>32 / 7</td><td class="bar"><i style="width:34%"></i></td></tr>
+<tr><td>Time</td><td class="hot">-53 %</td><td>-59 to -46</td><td>39 / 0</td><td class="bar"><i style="width:53%"></i></td></tr>
+<tr><td>Turns</td><td class="warm">-19 %</td><td>-26 to -11</td><td>21 / 4</td><td class="bar"><i style="width:19%"></i></td></tr>
+</table>
+<div class="two">
+<div><b>85 / 90</b>hidden checks passed, 86 without the plugin. Six security tasks: 30 of 30 in both arms.</div>
+<div class="warn"><b>0 / 5, then 8 / 10</b>on the privacy task, before and after the rule that names what a change could expose.</div>
+</div>
+<div class="foot">Ponytail 5 published, for itself: code -53 %, output tokens -45 %, cost -26 %, time -41 %.<br>Two runs a month apart, intervals overlap.</div>
+</div>
+<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>

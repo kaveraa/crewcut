@@ -10,3 +10,13 @@ h1 { font-size: 34px; line-height: 1.2; font-weight: 700; color: #F4EFE6; margin
 h1 em { font-style: normal; color: #E34948; }
 .foot { margin-top: 26px; font-family: Consolas, "Courier New", monospace; font-size: 13px; line-height: 1.5; color: #8A9BAB; }
 .rule { height: 1px; background: #35495E; margin: 26px 0; }
+table { width: 100%; border-collapse: collapse; margin-top: 26px; font-size: 17px; }
+th { text-align: right; padding: 0 0 12px 12px; font-family: Consolas, "Courier New", monospace; font-size: 13px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; color: #8A9BAB; }
+th:first-child, td:first-child { text-align: left; padding-left: 0; }
+td { text-align: right; padding: 13px 0 13px 12px; border-top: 1px solid #35495E; font-family: Consolas, "Courier New", monospace; color: #B8C4CE; white-space: nowrap; }
+td:first-child { font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: #E6EDF3; white-space: normal; }
+td small { display: block; font-size: 13px; color: #8A9BAB; margin-top: 2px; }
+td.hot { color: #E34948; font-weight: 700; }
+td.warm { color: #F4C27A; }
+td.ok { color: #1BAF7A; }
+tr.top td:first-child { font-weight: 700; color: #F4EFE6; }

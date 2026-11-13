@@ -7,6 +7,10 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ### Changed
 
+- README: the tables become cards too, in English and in French: the
+  agentic benchmark, the two controls, the rules, the levels and commands,
+  the review format. The text under each card is a few lines; every table
+  stays available as text in a folded block.
 - The ruleset asks, before writing, to name what the change could expose or
   destroy for users. On the privacy task of ponytail 5's benchmark
   (one digest to every subscriber without showing their addresses),
