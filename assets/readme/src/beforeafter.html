@@ -1,0 +1,31 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 28px; }
+.col { border: 1px solid #35495E; border-radius: 14px; padding: 20px 22px; }
+.col.with { border-color: #E34948; background: rgba(227, 73, 72, 0.08); }
+.tag { font-family: Consolas, monospace; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: #8A9BAB; }
+.with .tag { color: #E34948; }
+.big { font-size: 52px; font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-top: 6px; color: #6B7F90; }
+.with .big { color: #F4EFE6; }
+.big small { font-size: 20px; font-weight: 400; letter-spacing: 0; margin-left: 6px; }
+ul { list-style: none; margin-top: 12px; font-family: Consolas, monospace; font-size: 15px; line-height: 1.75; color: #B8C4CE; }
+ul b { font-weight: 400; display: inline-block; width: 92px; color: #8A9BAB; }
+pre { margin-top: 22px; padding: 18px 22px; border-radius: 12px; background: #0E151B; font-family: Consolas, monospace; font-size: 14.5px; line-height: 1.6; color: #B8C4CE; }
+pre i { font-style: normal; color: #F4C27A; }
+pre u { text-decoration: none; color: #C792EA; }
+</style>
+<div class="card"><div class="pole"></div>
+<div class="eyebrow">"Add a date picker component to the frontend."</div>
+<h1>The agent installs a calendar. <em>crewcut uses the browser's.</em></h1>
+<div class="cols">
+<div class="col"><div class="tag">Without crewcut</div><div class="big">318<small>lines</small></div>
+<ul><li><b>packages</b>2 new</li><li><b>turns</b>14</li><li><b>cost</b>0.37 USD</li></ul></div>
+<div class="col with"><div class="tag">With crewcut</div><div class="big">10<small>lines</small></div>
+<ul><li><b>packages</b>none</li><li><b>turns</b>5</li><li><b>cost</b>0.11 USD</li></ul></div>
+</div>
+<pre><u>function</u> DatePicker(props: Omit&lt;React.ComponentProps&lt;"input"&gt;, "type"&gt;) {
+  <u>return</u> &lt;Input <i>type="date"</i> data-slot="date-picker" {...props} /&gt;
+}</pre>
+<div class="foot">Same repository, same model (Opus 5.5), one headless session each.<br>Calendar popup, keyboard and screen reader support come with the native input.</div>
+</div>
+<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>

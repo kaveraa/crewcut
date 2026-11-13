@@ -7,6 +7,11 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ### Added
 
+- README rebuilt around four cards, in English and in French: the Opus
+  figures, the date picker before and after, the ladder and the eval suite.
+  The reference sections fold, the detailed benchmark tables too. Sources
+  and a render script are in `assets/readme/`.
+
 - The session start carries the versions the project declares, read from
   `package.json` (engines, dependencies, devDependencies) and
   `composer.json` (require, require-dev), in one line of 400 characters at

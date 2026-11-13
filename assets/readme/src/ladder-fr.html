@@ -1,0 +1,27 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+ol { list-style: none; margin-top: 24px; }
+li { display: grid; grid-template-columns: 44px 1fr auto; align-items: baseline; padding: 13px 0; border-top: 1px solid #35495E; font-size: 19px; }
+li:last-child { border-bottom: 1px solid #35495E; }
+li .k { font-family: Consolas, monospace; color: #6B7F90; font-size: 17px; }
+li .a { font-family: Consolas, monospace; font-size: 15px; color: #8A9BAB; }
+li.last { font-weight: 700; color: #F4EFE6; }
+li.last .k { color: #E34948; }
+.never { margin-top: 24px; font-size: 16px; line-height: 1.5; color: #B8C4CE; }
+.never b { color: #F4C27A; }
+</style>
+<div class="card"><div class="pole"></div>
+<div class="eyebrow">Comment ça marche</div>
+<h1>Lire ce que le changement touche, puis <em>prendre le barreau le plus bas qui tient.</em></h1>
+<ol>
+<li><span class="k">1</span><span>Pas nécessaire ?</span><span class="a">on saute, et on le dit en une ligne</span></li>
+<li><span class="k">2</span><span>Déjà dans ce code ?</span><span class="a">on réutilise</span></li>
+<li><span class="k">3</span><span>Dans la bibliothèque standard ?</span><span class="a">on l'utilise</span></li>
+<li><span class="k">4</span><span>Natif à la plateforme ?</span><span class="a">HTML, CSS, SQL, l'OS</span></li>
+<li><span class="k">5</span><span>Une dépendance installée ?</span><span class="a">on l'utilise, jamais d'ajout</span></li>
+<li><span class="k">6</span><span>Une ligne ?</span><span class="a">une ligne</span></li>
+<li class="last"><span class="k">7</span><span>Sinon, le minimum qui marche</span><span class="a"></span></li>
+</ol>
+<div class="never"><b>Jamais coupé :</b> validation aux frontières de confiance, pertes de données, sécurité, accessibilité, tests.</div>
+</div>
+<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>
