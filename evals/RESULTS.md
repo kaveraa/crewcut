@@ -119,6 +119,56 @@ Opus 0.98 against 0.79, 5.3 turns against 5.8, 0.109 against 0.106 USD.
 Nothing was lost on the seven cases; the rule itself is measured on
 ponytail 5's benchmark, in `benchmarks/agentic/RESULTS.md`.
 
+## The owner's rules as graders, Opus as judge (crewcut 0.15.3, 2026-11-13)
+
+Twenty-four graders added to the seven cases, for the rules that had none:
+no long dash, curly quote, arrow, symbol or emoji in the last message
+(`plain-text-answer`, every case) or in the edited file
+(`plain-text-in-code`); the word crewcut nowhere in the edited file
+(`no-crewcut-in-code`); no block comment and no two comment lines in a row
+(`comments-one-line`, three cases); every comment gives a reason
+(`comments-say-why`, judged, two cases). The first four are regular
+expressions: free, and the same on every run.
+
+The judge is now Opus 5.5 (`--judge-model opus`), on every judged grader,
+old and new. Scores before this section were judged by Sonnet and had fewer
+graders: they do not compare with these.
+
+| Model | Score with | without | Turns with | without | Session cost with | without |
+|---|--:|--:|--:|--:|--:|--:|
+| Fable 5.2 | 0.98 | 0.87 | 4.4 | 6.1 | 0.202 USD | 0.193 USD |
+| Opus 5.5 | 1.00 | 0.80 | 5.3 | 6.0 | 0.092 USD | 0.089 USD |
+| Sonnet 5.5 | 0.99 | 0.88 | 4.6 | 6.0 | 0.045 USD | 0.042 USD |
+| Haiku 5.5 | 0.98 | 0.87 | 5.6 | 6.9 | 0.003 USD | 0.003 USD |
+
+Seven cases, three runs, Claude Code 2.1.323, no out-of-usage run, 23.33 USD
+with the judge. One Opus run without the plugin failed to start on
+`explain-bug` (a process spawn error) and has no grader.
+
+**The cost column changed meaning.** The harness reports one cost per run
+that includes the judge. Every "cost per run" published before this section
+carried it: about 0.01 to 0.02 USD with Sonnet as judge, more without the
+plugin because longer answers cost more to judge. On Haiku that was most of
+the figure: 0.012 against 0.021 USD was 0.003 against 0.003 USD of session.
+The column above is the session alone. On these small cases the plugin
+costs the same or a little more per session (its ruleset is read on every
+turn) and saves turns.
+
+**What the new graders show.** With the plugin, every model passes all of
+them, but for one Haiku answer with a banned character. Without it:
+
+| Grader, runs passed without the plugin | Fable | Opus | Sonnet | Haiku |
+|---|--:|--:|--:|--:|
+| plain-text-answer | 18 / 21 | 18 / 20 | 21 / 21 | 18 / 21 |
+| comments-say-why | 6 / 6 | 3 / 6 | 6 / 6 | 6 / 6 |
+
+The three other graders pass in every run of both arms: no model writes a
+banned character in code, a block comment or the plugin's name on these
+cases. They are guards for the day a ruleset or a model changes that. No
+grader covers "current practice" (it needs a case built on an API that
+changed between two versions) nor the commit rules (the sessions have no
+shell).
+
 What it says:
 
 - The savings show up with the size of the project. `csv-export` is twenty

@@ -34,3 +34,7 @@ graders:
       could go without applying one. The explanation is complete and not
       truncated for brevity; it may be short, but every step above is
       present.
+  - type: regex
+    name: plain-text-answer
+    pattern: '[\u2013\u2014\u2018\u2019\u201C\u201D\u00A0\u202F\u2190-\u21FF\u2600-\u27BF\uD83C-\uD83E]'
+    match: not_contains

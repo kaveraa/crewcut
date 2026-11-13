@@ -5,6 +5,24 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Added
+
+- Eval graders for the rules that had none: plain text in the answer and in
+  the edited file, no "crewcut" in the code, comments on one line, comments
+  that give a reason. Twenty-four graders over the seven cases, twenty of
+  them regular expressions.
+
+### Changed
+
+- Opus 5.5 is the judge of the eval suite. Measured on four models, seven
+  cases, three runs: Fable 5.2 0.98 against 0.87 without the plugin, Opus
+  5.5 1.00 against 0.80, Sonnet 5.5 0.99 against 0.88, Haiku 5.5 0.98
+  against 0.87. Without the plugin Opus writes comments that restate the
+  code in 3 runs out of 6, and three models put a banned character in an
+  answer.
+- The eval tables give the cost of the session alone. The figure published
+  until now included the judge, which was most of it on Haiku.
+
 ## [0.15.3] - 2026-11-13
 
 ### Changed

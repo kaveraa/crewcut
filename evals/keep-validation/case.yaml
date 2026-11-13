@@ -50,3 +50,22 @@ graders:
       removed or relaxed. It contains no offer to add tests or another
       follow-up. One or two sentences on an unrelated problem (such
       as plain-text passwords) or on what was not run are fine.
+  - type: regex
+    name: plain-text-answer
+    pattern: '[\u2013\u2014\u2018\u2019\u201C\u201D\u00A0\u202F\u2190-\u21FF\u2600-\u27BF\uD83C-\uD83E]'
+    match: not_contains
+  - type: regex
+    name: plain-text-in-code
+    target: { source: file, path: register.js }
+    pattern: '[\u2013\u2014\u2018\u2019\u201C\u201D\u00A0\u202F\u2190-\u21FF\u2600-\u27BF\uD83C-\uD83E]'
+    match: not_contains
+  - type: regex
+    name: no-crewcut-in-code
+    target: { source: file, path: register.js }
+    pattern: '[Cc]rewcut'
+    match: not_contains
+  - type: regex
+    name: comments-one-line
+    target: { source: file, path: register.js }
+    pattern: '/\*|//[^\n]*\n\s*//'
+    match: not_contains
