@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-11-13
+
 ### Changed
 
 - The answer to a bug fix names the cause first. The Output rule now reads
