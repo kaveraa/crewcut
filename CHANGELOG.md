@@ -5,6 +5,13 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- Shorter skill and agent descriptions, the text Claude Code loads in every
+  session: about 150 tokens less. The main skill no longer asks to be
+  loaded on every coding task: on the eval cases neither Sonnet nor Opus
+  loaded it, the ruleset from the hook does the work.
+
 ## [0.13.1] - 2026-11-13
 
 ### Fixed

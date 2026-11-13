@@ -1,6 +1,6 @@
 ---
 name: crewcut-reviewer
-description: Read-only reviewer of a diff or a tree. Finds what is wrong, unsafe, fragile at the real load, untested or bigger than it needs to be, and names the shorter version.
+description: Read-only reviewer of a diff or a tree: what is wrong, unsafe, fragile under load, untested or oversized, with the shorter version.
 tools: Read, Grep, Glob
 model: sonnet
 ---
