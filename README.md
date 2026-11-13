@@ -46,7 +46,7 @@ The full ruleset is in [The rules](#the-rules), under Reference.
 
 ## Measured
 
-<p align="center"><img src="assets/readme/evals.png" width="880" alt="Eval suite, eight cases, three runs each. Shorter, and more often right. Fable 5.2: 0.98 with crewcut, 0.89 for the same model with no plugin. Opus 5.5: 0.99 with, 0.86 without. Sonnet 5.5: 0.99 with, 0.87 without. Haiku 5.5: 0.98 with, 0.86 without. Score is the share of graders passed. Every case grades correctness as well as size: a shorter answer that is wrong scores zero."></p>
+<p align="center"><img src="assets/readme/evals.png" width="880" alt="Eval suite, nine cases, three runs each. Shorter, and more often right. Fable 5.2: 0.98 with crewcut, 0.88 for the same model with no plugin. Opus 5.5: 0.99 with, 0.85 without. Sonnet 5.5: 0.98 with, 0.86 without. Haiku 5.5: 0.97 with, 0.84 without. Score is the share of graders passed. Every case grades correctness as well as size: a shorter answer that is wrong scores zero."></p>
 
 <p align="center"><img src="assets/readme/pt5.png" width="880" alt="Ponytail 5's benchmark, crewcut 0.14.0 against no plugin, Opus 5.5, 39 tasks, 5 runs. Lines of code minus 58 percent, 95 percent interval minus 68 to minus 47, better on 32 tasks and worse on 1. Code information minus 52 percent. Output tokens minus 56 percent. Cost minus 34 percent, interval minus 44 to minus 24. Time minus 53 percent. Turns minus 19 percent. Hidden checks: 85 of 90 passed, 86 without the plugin. Six security tasks: 30 of 30 in both arms. Privacy task: 0 of 5, then 8 of 10 after the rule that names what a change could expose. Ponytail 5 published for itself: code minus 53 percent, output tokens minus 45, cost minus 26, time minus 41. Two runs a month apart, intervals overlap."></p>
 
@@ -66,15 +66,15 @@ limits and how to reproduce:
 <details>
 <summary>The figures as text</summary>
 
-Eval suite, eight cases, three runs each, Opus 5.5 as judge. The cost is the
+Eval suite, nine cases, three runs each, Opus 5.5 as judge. The cost is the
 session alone, without the judge:
 
 | Model | crewcut | Score with | without | Turns with | without | Cost per run with | without |
 |---|---|--:|--:|--:|--:|--:|--:|
-| Fable 5.2 | 0.15.6 | 0.98 | 0.89 | 4.3 | 6.0 | 0.197 USD | 0.189 USD |
-| Opus 5.5 | 0.15.6 | 0.99 | 0.86 | 4.8 | 5.7 | 0.089 USD | 0.086 USD |
-| Sonnet 5.5 | 0.15.6 | 0.99 | 0.87 | 4.4 | 5.6 | 0.043 USD | 0.040 USD |
-| Haiku 5.5 | 0.15.6 | 0.98 | 0.86 | 5.3 | 6.4 | 0.003 USD | 0.003 USD |
+| Fable 5.2 | 0.15.7 | 0.98 | 0.88 | 4.3 | 5.7 | 0.203 USD | 0.192 USD |
+| Opus 5.5 | 0.15.7 | 0.99 | 0.85 | 4.7 | 5.4 | 0.090 USD | 0.087 USD |
+| Sonnet 5.5 | 0.15.7 | 0.98 | 0.86 | 4.4 | 5.3 | 0.044 USD | 0.041 USD |
+| Haiku 5.5 | 0.15.7 | 0.97 | 0.84 | 5.2 | 6.0 | 0.003 USD | 0.003 USD |
 
 Ponytail 5's benchmark, Opus 5.5, 39 tasks, 5 runs, crewcut 0.14.0 against
 no plugin:

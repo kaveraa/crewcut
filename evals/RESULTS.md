@@ -304,3 +304,56 @@ boundary and fails if any check disappears; `explain-bug` asks a question
 and fails if the explanation is cut short; `vat-country` and `csv-export`
 fail if an existing test or an untouched module changes.
 
+## A ninth case for long text and comments: explain-retry (crewcut 0.15.7, 2026-11-13)
+
+On the older cases the plain text and comment graders passed almost
+everywhere, in both arms: short tasks do not invite long prose or comment
+blocks. This case does. One file, a fetch with retries and no comment; the
+ticket: "A new hire starts on Monday. Explain in your answer how
+fetchWithRetry in src/retry.js works, step by step, and add the comments
+the code needs." Fourteen graders: the code is untouched, the answer covers
+six behaviours (missing two fails), no banned character in the answer or
+the file, no block comment and no two comment lines in a row, every comment
+gives a reason.
+
+| Runs passed, with / without the plugin | Fable | Opus | Sonnet | Haiku |
+|---|--:|--:|--:|--:|
+| Score | 1.00 / 0.79 | 0.94 / 0.70 | 0.88 / 0.73 | 0.88 / 0.70 |
+| full-explanation | 3 / 3 | 3 / 3 | 3 / 3 | 3 / 3 |
+| plain-text-answer | 3 / 0 | 3 / 0 | 1 / 0 | 3 / 0 |
+| comments-one-line | 3 / 0 | 3 / 0 | 3 / 0 | 2 / 0 |
+| comments-say-why | 3 / 2 | 1 / 0 | 1 / 0 | 0 / 0 |
+
+Three runs per arm, 4.46 USD with the judge. The explanation is complete in
+every run of both arms: the plugin's shorter answer loses nothing here.
+
+**Without the plugin, no model writes a plain answer and none keeps its
+comments to one line**: 0 run out of 12 on each. An explanation in steps
+brings long dashes and arrows, and "add the comments" brings blocks.
+
+**With the plugin, two weak spots.** Sonnet still puts a long dash in its
+answer in 2 runs out of 3: the plain text rule holds on short answers and
+gives way on a long one. And `comments-say-why` passes in 5 runs out of 12
+with the plugin. The comments were read: most give a reason ("4xx is the
+caller's fault, so retrying cannot help"), and one per file names the
+mechanism instead ("Exponential backoff, capped at 5s"). The grader asks
+that every comment give a reason, so one such line fails the file. That is
+what "why only" says; the rule is not yet followed to the letter.
+
+A first launch of this run found no `claude` command for any model: the
+Claude Code binary was being rewritten on disk at that minute, at the same
+version, as during the benchmark earlier in the day. No session had
+started; the run was launched again.
+
+## Nine cases (crewcut 0.15.7, 2026-11-13)
+
+| Model | Score with | without | Turns with | without | Session cost with | without |
+|---|--:|--:|--:|--:|--:|--:|
+| Fable 5.2 | 0.98 | 0.88 | 4.3 | 5.7 | 0.203 USD | 0.192 USD |
+| Opus 5.5 | 0.99 | 0.85 | 4.7 | 5.4 | 0.090 USD | 0.087 USD |
+| Sonnet 5.5 | 0.98 | 0.86 | 4.4 | 5.3 | 0.044 USD | 0.041 USD |
+| Haiku 5.5 | 0.97 | 0.84 | 5.2 | 6.0 | 0.003 USD | 0.003 USD |
+
+As for the eight-case table, this joins measures of the same day on the
+same plugin code: the eight cases and `explain-retry`. 54 runs per model,
+none in error.
