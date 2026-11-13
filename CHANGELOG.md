@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.15.4] - 2026-11-13
+
 ### Added
 
 - Eval graders for the rules that had none: plain text in the answer and in
