@@ -107,7 +107,10 @@ ce que le projet définit déjà : une ligne par dossier avec ses fonctions,
 classes et constantes exportées, tests et code vendu exclus, environ
 1 500 caractères au plus. « Déjà dans ce code ? Réutilise-le » ne coûte
 alors aucune recherche, et le modèle ne reconstruit pas un helper qui
-existe deux dossiers plus loin. `/crewcut map off` la retire.
+existe deux dossiers plus loin. Une ligne de plus donne les versions que
+`package.json` et `composer.json` déclarent, 400 caractères au plus, pour
+que le modèle écrive pour les versions utilisées sans lire un manifeste.
+`/crewcut map off` retire les deux.
 
 Le ruleset complet est dans [Les règles](#les-règles) plus bas.
 

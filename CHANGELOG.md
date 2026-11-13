@@ -5,6 +5,15 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Added
+
+- The session start carries the versions the project declares, read from
+  `package.json` (engines, dependencies, devDependencies) and
+  `composer.json` (require, require-dev), in one line of 400 characters at
+  most, with the map: following the docs of the installed versions costs
+  no read. Names and ranges with unusual characters are left out.
+  `/crewcut map off` drops it with the map. Not measured yet.
+
 ## [0.13.1] - 2026-11-13
 
 ### Fixed

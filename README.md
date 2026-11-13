@@ -102,7 +102,10 @@ the project already defines: one line per folder with its exported
 functions, classes and constants, tests and vendored code left out, about
 1 500 characters at most. "Already in this codebase? Reuse it" then costs
 no search, and the model does not rebuild a helper that exists two folders
-away. `/crewcut map off` drops it.
+away. One more line gives the versions that `package.json` and
+`composer.json` declare, 400 characters at most, so the model writes for
+the versions in use without reading a manifest. `/crewcut map off` drops
+both.
 
 The full ruleset is in [The rules](#the-rules) below.
 
