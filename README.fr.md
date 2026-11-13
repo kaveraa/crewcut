@@ -51,7 +51,7 @@ Le ruleset complet est dans [Les règles](#les-regles), sous Référence.
 
 ## Mesuré
 
-<p align="center"><img src="assets/readme/evals-fr.png" width="880" alt="Suite d'évals, sept cas, trois runs chacun. Plus court, et plus souvent juste. Fable 5.2 : 0,99 avec crewcut, 0,82 pour le même modèle sans plugin. Opus 5.5 : 1,00 avec, 0,81 sans. Sonnet 5.5 : 0,98 avec, 0,86 sans. Haiku 5.5 : 0,96 avec, 0,79 sans. Le score est la part de graders réussis. Chaque cas note la justesse autant que la taille : une réponse plus courte mais fausse vaut zéro."></p>
+<p align="center"><img src="assets/readme/evals-fr.png" width="880" alt="Suite d'évals, sept cas, trois runs chacun. Plus court, et plus souvent juste. Fable 5.2 : 0,99 avec crewcut, 0,82 pour le même modèle sans plugin. Opus 5.5 : 0,98 avec, 0,79 sans. Sonnet 5.5 : 0,99 avec, 0,85 sans. Haiku 5.5 : 0,96 avec, 0,79 sans. Le score est la part de graders réussis. Chaque cas note la justesse autant que la taille : une réponse plus courte mais fausse vaut zéro."></p>
 
 <p align="center"><img src="assets/readme/pt5-fr.png" width="880" alt="Le benchmark de ponytail 5, crewcut 0.14.0 face à sans plugin, Opus 5.5, 39 tâches, 5 runs. Lignes de code moins 58 pour cent, intervalle à 95 pour cent de moins 68 à moins 47, mieux sur 32 tâches et pire sur 1. Information de code moins 52 pour cent. Tokens de sortie moins 56 pour cent. Coût moins 34 pour cent, intervalle de moins 44 à moins 24. Temps moins 53 pour cent. Tours moins 19 pour cent. Vérifications cachées : 85 sur 90 réussies, 86 sans le plugin. Six tâches de sécurité : 30 sur 30 dans les deux bras. Tâche de confidentialité : 0 sur 5, puis 8 sur 10 après la règle qui nomme ce qu'un changement peut exposer. Ponytail 5 a publié pour lui-même : code moins 53 pour cent, tokens de sortie moins 45, coût moins 26, temps moins 41. Deux runs à un mois d'écart, les intervalles se recouvrent."></p>
 
@@ -74,8 +74,8 @@ Suite d'évals, sept cas, trois runs chacun, Sonnet comme juge :
 | Modèle | crewcut | Score avec | sans | Tours avec | sans | Coût par run avec | sans |
 |---|---|--:|--:|--:|--:|--:|--:|
 | Fable 5.2 | 0.14.0 | 0,99 | 0,82 | 4,4 | 6,1 | 0,211 USD | 0,214 USD |
-| Opus 5.5 | 0.14.0 | 1,00 | 0,81 | 5,2 | 5,7 | 0,105 USD | 0,102 USD |
-| Sonnet 5.5 | 0.14.0 | 0,98 | 0,86 | 4,4 | 6,2 | 0,059 USD | 0,059 USD |
+| Opus 5.5 | 0.15.0 | 0,98 | 0,79 | 5,3 | 5,8 | 0,109 USD | 0,106 USD |
+| Sonnet 5.5 | 0.15.0 | 0,99 | 0,85 | 4,5 | 6,2 | 0,060 USD | 0,063 USD |
 | Haiku 5.5 | 0.14.0 | 0,96 | 0,79 | 5,4 | 7,0 | 0,012 USD | 0,021 USD |
 
 Le benchmark de ponytail 5, Opus 5.5, 39 tâches, 5 runs, crewcut 0.14.0

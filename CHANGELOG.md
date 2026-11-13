@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-11-13
+
 ### Changed
 
 - README: the tables become cards too, in English and in French: the
@@ -17,7 +19,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
   crewcut 0.14.0 failed 5 runs out of 5; with the rule, the final text
   passes 8 out of 10, against 2 out of 5 for the model with no plugin. Six
   neighbouring wordings were tightened to keep the ruleset under 600
-  tokens.
+  tokens. On the eval suite, seven cases, three runs, Sonnet as judge:
+  Sonnet 0.99 against 0.85 without, Opus 0.98 against 0.79.
 
 ### Added
 
