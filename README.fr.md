@@ -1,6 +1,6 @@
 # crewcut
 
-<p align="center"><img src="https://raw.githubusercontent.com/kaveraa/crewcut/acdf351/assets/banner.svg" alt="crewcut" width="100%"></p>
+<p align="center"><img src="assets/banner.png" alt="crewcut : cheveux courts, code court. Un plugin Claude Code." width="100%"></p>
 
 <p align="center">
 <a href="https://github.com/kaveraa/crewcut/actions/workflows/tests.yml"><img src="https://github.com/kaveraa/crewcut/actions/workflows/tests.yml/badge.svg" alt="tests"></a>

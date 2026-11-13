@@ -1,0 +1,35 @@
+<!doctype html><meta charset="utf-8">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: transparent; }
+body { width: 1280px; font-family: Consolas, "Courier New", monospace; color: #E6EDF3; }
+.b { position: relative; width: 1280px; height: 400px; border-radius: 22px; overflow: hidden; background: #0B1015; }
+.code { position: absolute; inset: 0; padding: 18px 26px; font-size: 13px; line-height: 1.62; color: #223140; word-break: break-all; overflow: hidden; }
+.code.kept { color: #3B4E60; clip-path: inset(0 0 50% 0); }
+.fade { position: absolute; inset: 0; background: radial-gradient(ellipse 62% 78% at 50% 50%, rgba(11,16,21,0.97) 0%, rgba(11,16,21,0.90) 45%, rgba(11,16,21,0.25) 100%); }
+.cut { position: absolute; left: 0; right: 0; top: 200px; height: 2px; background: linear-gradient(90deg, rgba(227,73,72,0), #E34948 12%, #E34948 88%, rgba(227,73,72,0)); box-shadow: 0 0 22px 2px rgba(227,73,72,0.55); }
+.mid { position: absolute; left: 0; right: 0; top: 0; height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.tag { font-size: 13px; letter-spacing: 5px; color: #8A9BAB; text-transform: uppercase; }
+.tag b { color: #E34948; font-weight: 400; }
+.name { margin-top: 20px; font-size: 118px; font-weight: 700; letter-spacing: -5px; line-height: 1; color: #F4EFE6; background: #0B1015; padding: 0 26px 10px; }
+.line { margin-top: 18px; font-size: 22px; color: #B8C4CE; background: #0B1015; padding: 2px 18px; }
+.line b { color: #E34948; font-weight: 400; }
+.stats { position: absolute; left: 0; right: 0; bottom: 34px; display: flex; justify-content: center; gap: 34px; font-size: 14px; letter-spacing: 1px; color: #8A9BAB; }
+.stats b { color: #F4EFE6; font-weight: 700; }
+</style>
+<div class="b">
+<div class="code" id="c1"></div><div class="code kept" id="c2"></div>
+<div class="fade"></div><div class="cut"></div>
+<div class="mid">
+<div class="tag"><b>&gt;_</b>&nbsp; Claude Code plugin</div>
+<div class="name">crewcut</div>
+<div class="line">Short hair, <b>short code.</b></div>
+</div>
+<div class="stats"><span><b>-58 %</b> code</span><span><b>-53 %</b> time</span><span><b>-34 %</b> cost</span><span><b>30 / 30</b> security runs</span></div>
+</div>
+<script>
+const src = 'import * as React from "react" import { CalendarIcon } from "lucide-react" import { Button } from "@/components/ui/button" import { DayPicker } from "react-day-picker" import * as Popover from "@radix-ui/react-popover" type DatePickerProps = { value?: Date; onChange?: (date: Date) => void; placeholder?: string; disabledDates?: Date[]; weekStartsOn?: number } function DatePicker({ value, onChange, placeholder = "Pick a date", disabledDates, weekStartsOn = 0 }: DatePickerProps) { const [open, setOpen] = React.useState(false) const containerRef = React.useRef<HTMLDivElement>(null) React.useEffect(() => { if (!open) return const handlePointerDown = (event: PointerEvent) => { if (!containerRef.current?.contains(event.target as Node)) setOpen(false) } document.addEventListener("pointerdown", handlePointerDown) return () => document.removeEventListener("pointerdown", handlePointerDown) }, [open]) return ( <div ref={containerRef} className="relative inline-block"> <Button variant="outline" aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen((prev) => !prev)}> <CalendarIcon /> {value ? new Intl.DateTimeFormat(undefined).format(value) : placeholder} </Button> {open && ( <div role="dialog" className="absolute top-full z-50 mt-1 rounded-md border p-3 shadow-md"> <DayPicker mode="single" selected={value} onSelect={(date) => { onChange?.(date); setOpen(false) }} disabled={disabledDates} /> </div> )} </div> ) } ';
+const text = src.repeat(4);
+document.getElementById('c1').textContent = text;
+document.getElementById('c2').textContent = text;
+</script>

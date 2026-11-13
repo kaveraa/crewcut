@@ -1,18 +1,18 @@
 <!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
 <style>
-.plot { position: relative; margin-top: 44px; height: 300px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; align-items: end; border-bottom: 1px solid #35495E; }
-.line { position: absolute; left: 0; right: 0; border-top: 1px dashed #35495E; }
-.line span { position: absolute; left: 0; top: -19px; font-family: Consolas, monospace; font-size: 12px; color: #6B7F90; }
+.plot { position: relative; margin-top: 44px; height: 300px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; align-items: end; border-bottom: 1px solid #1F2B35; }
+.line { position: absolute; left: 0; right: 0; border-top: 1px dashed #1F2B35; }
+.line span { position: absolute; left: 0; top: -19px; font-size: 12px; color: #6B7F90; }
 .col { position: relative; height: 100%; display: flex; align-items: flex-end; justify-content: center; gap: 8px; }
 .b { width: 44px; border-radius: 6px 6px 0 0; position: relative; }
-.b.base { background: #35495E; }
+.b.base { background: #2A3945; }
 .b.cut { background: #E34948; }
-.b span { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); font-family: Consolas, monospace; font-size: 17px; font-weight: 700; color: #FFFFFF; white-space: nowrap; }
+.b span { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); font-size: 17px; font-weight: 700; color: #FFFFFF; white-space: nowrap; }
 .pt { position: absolute; left: 50%; width: 56px; margin-left: 0; border-top: 3px solid #F4C27A; }
 .labels { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; margin-top: 12px; }
 .labels div { text-align: center; font-size: 15px; color: #E6EDF3; }
-.labels small { display: block; margin-top: 3px; font-family: Consolas, monospace; font-size: 12.5px; color: #8A9BAB; }
-.legend { margin-top: 24px; display: flex; gap: 26px; font-family: Consolas, monospace; font-size: 14px; color: #B8C4CE; align-items: center; }
+.labels small { display: block; margin-top: 3px; font-size: 12.5px; color: #8A9BAB; }
+.legend { margin-top: 24px; display: flex; gap: 26px; font-size: 14px; color: #B8C4CE; align-items: center; }
 .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; vertical-align: -1px; }
 .legend u { display: inline-block; width: 22px; border-top: 2px solid #F4C27A; margin-right: 8px; vertical-align: 4px; text-decoration: none; }
 </style>
@@ -24,7 +24,7 @@
 <div class="line" style="bottom:50%"></div>
 </div>
 <div class="labels" id="l"></div>
-<div class="legend"><span><i style="background:#35495E"></i>no plugin</span><span><i style="background:#E34948"></i>crewcut 0.14.0</span><span><u></u>Ponytail 5, its own published run</span></div>
+<div class="legend"><span><i style="background:#2A3945"></i>no plugin</span><span><i style="background:#E34948"></i>crewcut 0.14.0</span><span><u></u>Ponytail 5, its own published run</span></div>
 <div class="foot">Share of the no-plugin baseline: median per task, geometric mean over the 39 tasks.<br>The two plugins were measured a month apart; their intervals overlap.</div>
 </div>
 <script>
