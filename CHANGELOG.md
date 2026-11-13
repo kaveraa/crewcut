@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.15.6] - 2026-11-13
+
 ### Added
 
 - An eighth eval case, `zod-email`, for the rule on current practice: the
