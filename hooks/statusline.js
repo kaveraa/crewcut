@@ -8,7 +8,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const LEVELS = ['off', 'lite', 'full', 'ultra', 'review'];
+const LEVELS = ['off', 'lite', 'full', 'ultra'];
 
 function configDir(env) {
   return env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), '.claude');
@@ -28,10 +28,10 @@ function level(env) {
   const stored = readText(path.join(dir, 'crewcut-mode')).trim().toLowerCase();
   if (LEVELS.includes(stored)) return stored;
   const fromEnv = String(env.CREWCUT_DEFAULT_MODE || '').trim().toLowerCase();
-  if (LEVELS.includes(fromEnv) && fromEnv !== 'review') return fromEnv;
+  if (LEVELS.includes(fromEnv)) return fromEnv;
   try {
     const fromFile = String(JSON.parse(readText(path.join(dir, 'crewcut.json'))).defaultLevel || '').toLowerCase();
-    if (LEVELS.includes(fromFile) && fromFile !== 'review') return fromFile;
+    if (LEVELS.includes(fromFile)) return fromFile;
   } catch {
     // no usable config file
   }
@@ -39,7 +39,7 @@ function level(env) {
 }
 
 // 256-colour codes per level; NO_COLOR (https://no-color.org) switches them off.
-const COLOURS = { off: 245, lite: 114, full: 114, ultra: 214, review: 80 };
+const COLOURS = { off: 245, lite: 114, full: 114, ultra: 214 };
 const ESC = String.fromCharCode(27);
 
 function badge(name, env) {

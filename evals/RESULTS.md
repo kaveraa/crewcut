@@ -82,7 +82,19 @@ for the first time (below): Sonnet 0.97 against 0.85, 4.4 turns against
 5.8 (-24 %), 0.057 against 0.059 USD (-3 %); Opus 0.99 against 0.81, 5.0
 turns against 6.0, 0.104 USD in both arms. `date-picker` 0.90 against 0.71
 on Sonnet (the baseline adds a `max` attribute in every run, the plugin in
-one run out of three), 1.00 against 0.81 on Opus.
+one run out of three), 1.00 against 0.81 on Opus. With crewcut 0.12.0
+(2026-11-13, Claude Code 2.1.323) and the codebase map at session start:
+Sonnet 0.96 against 0.86, 4.5 turns against 6.2 (-27 %), 0.061 against
+0.064 USD (-5 %); Opus 0.97 against 0.80, 4.9 turns against 5.7, 0.106
+against 0.104 USD. The same seven cases the same day with the map off:
+Sonnet 0.97, 4.7 turns, 0.060 USD; Opus 0.99, 5.0 turns, 0.107 USD. The
+map adds 56 to 115 tokens where the fixture has source files and nothing on
+the one-file cases, and the totals move within noise either way: it trims
+reads and turns on `vat-country` (Sonnet 1.0 file against 1.3, 5.7 turns
+against 6.0; Opus 6.3 turns against 7.3) and the one-file cases, where it
+is empty, lose a run on `date-picker` and `explain-bug` in one draw and not
+in the other. Its case is a repository of hundreds of files, outside this
+suite.
 
 What it says:
 

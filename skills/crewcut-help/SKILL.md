@@ -24,8 +24,9 @@ Commands
   /crewcut lang <code>       reply language (en es fr de ko zh), asked once
   /crewcut markers on|off    "crewcut:" comment on each corner cut (off by default)
   /crewcut tests on|off      off: a test only when the ticket asks (on by default, asked once)
-  /crewcut-review [scope]    read-only review of a diff: what to cut
-  /crewcut-audit [path]      read-only audit of a whole tree: what to cut
+  /crewcut map on|off        the project's own names at session start, so reuse costs no search (on by default)
+  /crewcut-review [scope]    read-only review of a diff: bugs, risk, load, tests, speed, what to cut
+  /crewcut-audit [path]      the same over a whole tree, ranked
   /crewcut-debt [path]       read-only ledger of the "crewcut:" markers
   /crewcut-gain              what the plugin saves, as measured on its evals
   /crewcut-help              this card
@@ -34,17 +35,21 @@ Commands
 
 Also: "stop crewcut" or "normal mode" as a whole message = /crewcut off.
 A resumed session and a context compaction keep the level you chose.
-/crewcut-review and /crewcut-audit put the session in the read-only
-"review" state until the next /crewcut <level>.
+/crewcut-review and /crewcut-audit report and change nothing; the level
+stays as it was.
 
 Settings
   CREWCUT_DEFAULT_MODE       env var, wins over the config file
   ~/.claude/crewcut.json     { "defaultLevel": "...", "subagents": true|false,
                                "markers": true|false, "tests": true|false,
+                               "map": true|false,
                                "subagentMatcher": "<regex on the agent type>" }
   CREWCUT_SUBAGENT_MATCHER   env var, wins over subagentMatcher in the file
   CREWCUT_TESTS=on|off       env var, wins over tests in the file
-  ~/.claude/crewcut-mode     the level of the current session (per user)
+  CREWCUT_MAP=on|off         env var, wins over map in the file
+  CREWCUT_MAP_CHARS=<n>      size of the map, 1500 by default
+  ~/.claude/crewcut-levels/  the level of each project; crewcut-mode mirrors
+                             the last one set, for the status line
   statusline                 "statusLine": { "type": "command",
                              "command": "node \"~/.claude/crewcut-statusline.js\"" }
                              (the hook keeps that copy up to date; NO_COLOR=1
