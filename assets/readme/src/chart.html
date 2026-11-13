@@ -1,0 +1,44 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+.plot { position: relative; margin-top: 44px; height: 300px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; align-items: end; border-bottom: 1px solid #35495E; }
+.line { position: absolute; left: 0; right: 0; border-top: 1px dashed #35495E; }
+.line span { position: absolute; left: 0; top: -19px; font-family: Consolas, monospace; font-size: 12px; color: #6B7F90; }
+.col { position: relative; height: 100%; display: flex; align-items: flex-end; justify-content: center; gap: 8px; }
+.b { width: 44px; border-radius: 6px 6px 0 0; position: relative; }
+.b.base { background: #35495E; }
+.b.cut { background: #E34948; }
+.b span { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); font-family: Consolas, monospace; font-size: 17px; font-weight: 700; color: #FFFFFF; white-space: nowrap; }
+.pt { position: absolute; left: 50%; width: 56px; margin-left: 0; border-top: 3px solid #F4C27A; }
+.labels { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; margin-top: 12px; }
+.labels div { text-align: center; font-size: 15px; color: #E6EDF3; }
+.labels small { display: block; margin-top: 3px; font-family: Consolas, monospace; font-size: 12.5px; color: #8A9BAB; }
+.legend { margin-top: 24px; display: flex; gap: 26px; font-family: Consolas, monospace; font-size: 14px; color: #B8C4CE; align-items: center; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; vertical-align: -1px; }
+.legend u { display: inline-block; width: 22px; border-top: 2px solid #F4C27A; margin-right: 8px; vertical-align: 4px; text-decoration: none; }
+</style>
+<div class="card"><div class="pole"></div>
+<div class="eyebrow">Ponytail 5's benchmark, Opus 5.5, 39 tasks, 5 runs</div>
+<h1>What is left of the baseline <em>once crewcut is on.</em></h1>
+<div class="plot" id="p">
+<div class="line" style="bottom:100%"><span>100 % = no plugin</span></div>
+<div class="line" style="bottom:50%"></div>
+</div>
+<div class="labels" id="l"></div>
+<div class="legend"><span><i style="background:#35495E"></i>no plugin</span><span><i style="background:#E34948"></i>crewcut 0.14.0</span><span><u></u>Ponytail 5, its own published run</span></div>
+<div class="foot">Share of the no-plugin baseline: median per task, geometric mean over the 39 tasks.<br>The two plugins were measured a month apart; their intervals overlap.</div>
+</div>
+<script>
+const data = [['Code', 42, 47, '-58 %'], ['Code, gzip', 48, 59, '-52 %'], ['Output tokens', 44, 55, '-56 %'], ['Cost', 66, 74, '-34 %'], ['Time', 47, 59, '-53 %'], ['Turns', 81, 78, '-19 %']];
+const p = document.getElementById('p');
+const l = document.getElementById('l');
+for (const [name, cut, pt5, change] of data) {
+  const col = document.createElement('div');
+  col.className = 'col';
+  col.innerHTML = `<div class="b base" style="height:100%"></div><div class="b cut" style="height:${cut}%"><span>${cut}</span></div><div class="pt" style="bottom:${pt5}%"></div>`;
+  p.appendChild(col);
+  const lab = document.createElement('div');
+  lab.innerHTML = `${name}<small>${change}</small>`;
+  l.appendChild(lab);
+}
+document.documentElement.dataset.h = Math.ceil(document.querySelector('.card').getBoundingClientRect().height);
+</script>
