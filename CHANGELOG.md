@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-11-13
+
 ### Added
 
 - README rebuilt around four cards, in English and in French: the Opus
@@ -17,7 +19,6 @@ follows Keep a Changelog and the project follows Semantic Versioning.
   0.86; Haiku 5.5 0.96 against 0.79, at 0.012 against 0.021 USD per run.
   The Fable row replaces the 5.1 measure of crewcut 0.7.0; the Haiku row is
   new.
-
 - The session start carries the versions the project declares, read from
   `package.json` (engines, dependencies, devDependencies) and
   `composer.json` (require, require-dev), in one line of 400 characters at
