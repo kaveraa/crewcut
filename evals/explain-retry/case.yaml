@@ -1,0 +1,73 @@
+schema_version: "1.0"
+name: explain-retry
+description: "A request for a long explanation and for comments, where a model reaches for arrows, long dashes, emoji and comment blocks. Expected: a full explanation in plain text, few one-line comments that give a reason, the code untouched."
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: A new hire starts on Monday. Explain in your answer how fetchWithRetry in src/retry.js works, step by step, and add the comments the code needs.
+  max_turns: 10
+  timeout_seconds: 300
+  allowed_tools: [Read, Edit, Grep, Glob, Skill]
+runs: 3
+graders:
+  - type: file_exists
+    name: no-new-file
+    path: "**/*"
+    exists: false
+  - type: regex
+    name: keeps-attempts
+    target: { source: file, path: src/retry.js }
+    pattern: 'attempts = 4'
+    match: contains
+  - type: regex
+    name: keeps-status-check
+    target: { source: file, path: src/retry.js }
+    pattern: 'if \(response\.status < 500\) return response;'
+    match: contains
+  - type: regex
+    name: keeps-abort
+    target: { source: file, path: src/retry.js }
+    pattern: 'if \(error\.name === ''AbortError''\) throw error;'
+    match: contains
+  - type: regex
+    name: keeps-backoff
+    target: { source: file, path: src/retry.js }
+    pattern: 'delay = Math\.min\(delay \* 2, 5000\);'
+    match: contains
+  - type: regex
+    name: plain-text-answer
+    pattern: '[\u2013\u2014\u2018\u2019\u201C\u201D\u00A0\u202F\u2190-\u21FF\u2600-\u27BF\uD83C-\uD83E]'
+    match: not_contains
+  - type: regex
+    name: plain-text-in-code
+    target: { source: file, path: src/retry.js }
+    pattern: '[\u2013\u2014\u2018\u2019\u201C\u201D\u00A0\u202F\u2190-\u21FF\u2600-\u27BF\uD83C-\uD83E]'
+    match: not_contains
+  - type: regex
+    name: no-crewcut-in-code
+    target: { source: file, path: src/retry.js }
+    pattern: '[Cc]rewcut'
+    match: not_contains
+  - type: regex
+    name: comments-one-line
+    target: { source: file, path: src/retry.js }
+    pattern: '/\*|//[^\n]*\n\s*//'
+    match: not_contains
+  - type: llm
+    name: comments-say-why
+    focus: { source: file, path: src/retry.js }
+    criteria: >
+      Every comment in the file gives a reason or a constraint the code
+      cannot show. No comment restates what the next line does, and none
+      names a tool or an assistant. A file with no comment fails: the
+      request asked for the comments the code needs.
+  - type: llm
+    name: full-explanation
+    criteria: >
+      The final message explains all of these: it tries up to four times by
+      default; a response with a status below 500, 4xx included, is returned
+      at once and not retried; a 5xx response or a network error is retried;
+      an aborted request is rethrown at once; the wait starts at 200 ms,
+      doubles each time, is capped at 5 seconds and gets a small random
+      extra; after the last attempt the last error is thrown. Missing two or
+      more of these fails.

@@ -5,6 +5,22 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Added
+
+- A ninth eval case, `explain-retry`: a long explanation and comments to
+  write, where a model reaches for long dashes, arrows and comment blocks.
+  Without the plugin no model writes a plain answer or one-line comments,
+  0 run out of 12 each. With it, 10 and 11 out of 12, and the explanation
+  stays complete in every run. Two weak spots: Sonnet 5.5 keeps a long
+  dash in 2 answers out of 3, and one comment per file often names the
+  mechanism instead of the reason.
+
+### Changed
+
+- The eval tables and the eval card count nine cases: Fable 5.2 0.98
+  against 0.88 without the plugin, Opus 5.5 0.99 against 0.85, Sonnet 5.5
+  0.98 against 0.86, Haiku 5.5 0.97 against 0.84.
+
 ## [0.15.7] - 2026-11-13
 
 ### Changed
