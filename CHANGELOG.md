@@ -5,6 +5,15 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.15.2] - 2026-11-13
+
+### Changed
+
+- The plugin, marketplace and package descriptions give the figure of
+  ponytail 5's benchmark, 58 % less code on Opus, in place of the best cell
+  of the October harness, and say "every security run passed", which is
+  what was measured. No change to the plugin.
+
 ## [0.15.1] - 2026-11-13
 
 ### Changed
