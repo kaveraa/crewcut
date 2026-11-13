@@ -209,21 +209,28 @@ function levelFiles(dir, env = {}) {
   return files;
 }
 
+// A named project reads its own file only: no file means the default level,
+// never the level another project left in the shared file.
 function readLevel(dir, env = {}) {
-  for (const file of levelFiles(dir, env)) {
-    try {
-      const text = fs.readFileSync(file, 'utf8').trim().toLowerCase();
-      if (LEVELS.includes(text)) return text;
-    } catch {
-      // not there: try the next file
-    }
+  try {
+    const text = fs.readFileSync(levelFiles(dir, env)[0], 'utf8').trim().toLowerCase();
+    if (LEVELS.includes(text)) return text;
+  } catch {
+    // not there: the default applies
   }
   return null;
 }
 
+// A project at the default level keeps no file, so the directory holds only
+// the projects where the user chose another level.
 function writeLevel(dir, level, env = {}) {
-  for (const file of levelFiles(dir, env)) {
+  const files = levelFiles(dir, env);
+  for (const file of files) {
     try {
+      if (files.length > 1 && file === files[0] && level === defaultLevel(env, dir)) {
+        fs.rmSync(file, { force: true });
+        continue;
+      }
       fs.mkdirSync(path.dirname(file), { recursive: true });
       fs.writeFileSync(file, level + '\n');
     } catch {

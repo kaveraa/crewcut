@@ -5,6 +5,13 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Fixed
+
+- A project at the default level keeps no file under `crewcut-levels/`:
+  the directory no longer grows by one file for every folder a session
+  starts in. A named project reads its own level only, so it never picks
+  up the level another project left in the shared file.
+
 ## [0.13.0] - 2026-11-13
 
 ### Changed

@@ -48,7 +48,7 @@ Settings
   CREWCUT_TESTS=on|off       env var, wins over tests in the file
   CREWCUT_MAP=on|off         env var, wins over map in the file
   CREWCUT_MAP_CHARS=<n>      size of the map, 1500 by default
-  ~/.claude/crewcut-levels/  the level of each project; crewcut-mode mirrors
+  ~/.claude/crewcut-levels/  the level of each project off the default; crewcut-mode mirrors
                              the last one set, for the status line
   statusline                 "statusLine": { "type": "command",
                              "command": "node \"~/.claude/crewcut-statusline.js\"" }

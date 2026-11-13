@@ -354,7 +354,7 @@ it yourself:
 At session start the hook copies the script to `crewcut-statusline.js` next
 to your Claude settings, under a path that survives plugin updates, and
 refreshes the copy when the plugin changes. The level is kept per project
-(`crewcut-levels/` next to your settings, one file per project directory),
+(`crewcut-levels/` next to your settings, one file per project off the default),
 so two sessions in two repositories keep their own; the status line reads
 the shared `crewcut-mode`, which carries the level set last.
 

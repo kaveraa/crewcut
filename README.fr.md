@@ -371,7 +371,7 @@ Au démarrage de la session, le hook copie le script dans
 `crewcut-statusline.js` à côté de vos réglages Claude, sous un chemin qui
 survit aux mises à jour du plugin, et rafraîchit la copie quand le plugin
 change. Le niveau est gardé par projet (`crewcut-levels/` à côté de vos
-réglages, un fichier par dossier de projet), donc deux sessions dans deux
+réglages, un fichier par projet hors du niveau par défaut), donc deux sessions dans deux
 dépôts gardent chacune le sien ; la ligne de statut lit le `crewcut-mode`
 partagé, qui porte le dernier niveau posé.
 
