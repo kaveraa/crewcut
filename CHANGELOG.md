@@ -5,6 +5,13 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- The eval tables and the eval card count eight cases: the seven measured
+  with Opus as judge and `zod-email`, same day, same plugin code. Fable 5.2
+  0.98 against 0.89 without the plugin, Opus 5.5 0.99 against 0.86, Sonnet
+  5.5 0.99 against 0.87, Haiku 5.5 0.98 against 0.86.
+
 ## [0.15.6] - 2026-11-13
 
 ### Added
