@@ -54,3 +54,29 @@ graders:
       that an invalid URL throws, or that the function is not exported). A
       sentence saying the code was not run or tested does not count as that
       side note.
+  - type: regex
+    name: plain-text-answer
+    pattern: '[\u2013\u2014\u2018\u2019\u201C\u201D\u00A0\u202F\u2190-\u21FF\u2600-\u27BF\uD83C-\uD83E]'
+    match: not_contains
+  - type: regex
+    name: plain-text-in-code
+    target: { source: file, path: links.js }
+    pattern: '[\u2013\u2014\u2018\u2019\u201C\u201D\u00A0\u202F\u2190-\u21FF\u2600-\u27BF\uD83C-\uD83E]'
+    match: not_contains
+  - type: regex
+    name: no-crewcut-in-code
+    target: { source: file, path: links.js }
+    pattern: '[Cc]rewcut'
+    match: not_contains
+  - type: regex
+    name: comments-one-line
+    target: { source: file, path: links.js }
+    pattern: '/\*|//[^\n]*\n\s*//'
+    match: not_contains
+  - type: llm
+    name: comments-say-why
+    focus: { source: file, path: links.js }
+    criteria: >
+      Every comment in the file gives a reason or a constraint the code
+      cannot show. No comment restates what the next line does, and none
+      names a tool or an assistant. A file with no comment passes.
