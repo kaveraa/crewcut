@@ -312,7 +312,8 @@ test('the real ruleset carries the quality guard at every active level', () => {
     const text = renderRuleset(level, markdown);
     assert.match(text, /Short never means wrong/, level);
     assert.match(text, /failing test is fixed and rerun/, level);
-    assert.match(text, /changed since your last read/, level);
+    assert.match(text, /changed since last read/, level);
+    assert.match(text, /name what it could expose or destroy for users/, level);
   }
 });
 
