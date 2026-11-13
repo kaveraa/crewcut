@@ -5,6 +5,14 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Fixed
+
+- The codebase map reads regular files only, 512 KB at most: a symlink, a
+  pipe or a bundle no longer eats its time budget. Paths with characters
+  other than letters, digits, `.`, `_`, `-`, `@` and `+` stay out of the map,
+  so no folder name a repository controls can put a line of its own in the
+  session context.
+
 ## [0.12.0] - 2026-11-13
 
 ### Added
