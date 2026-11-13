@@ -5,6 +5,13 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- README: the benchmark figures are tiles whose red deepens with the gain,
+  in place of tables on a dark card, and a bar chart shows what is left of
+  the no-plugin baseline next to what Ponytail 5 published for itself.
+  English and French, same figures as before.
+
 ## [0.15.0] - 2026-11-13
 
 ### Changed

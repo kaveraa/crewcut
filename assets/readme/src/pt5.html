@@ -1,8 +1,11 @@
 <!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
 <style>
-td.bar { width: 230px; padding-left: 24px; }
-td.bar i { display: block; height: 14px; border-radius: 4px; background: #E34948; }
-.two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 24px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 28px; }
+.tile { border-radius: 12px; padding: 16px 18px 14px; }
+.tile .k { font-size: 15px; color: #F4EFE6; }
+.tile .v { font-family: Consolas, monospace; font-size: 38px; font-weight: 700; color: #FFFFFF; line-height: 1.15; margin-top: 4px; }
+.tile .d { font-family: Consolas, monospace; font-size: 13px; color: #F4EFE6; opacity: 0.85; margin-top: 4px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
 .two div { border: 1px solid #35495E; border-radius: 12px; padding: 14px 18px; font-size: 15.5px; line-height: 1.5; color: #B8C4CE; }
 .two b { display: block; font-family: Consolas, monospace; font-size: 22px; color: #F4EFE6; }
 .two .warn b { color: #F4C27A; }
@@ -10,19 +13,23 @@ td.bar i { display: block; height: 14px; border-radius: 4px; background: #E34948
 <div class="card"><div class="pole"></div>
 <div class="eyebrow">Ponytail 5's benchmark, crewcut 0.14.0 against no plugin</div>
 <h1>Measured the way ponytail measures itself. <em>Level with it.</em></h1>
-<table>
-<tr><th>opus 5.5, 39 tasks, 5 runs</th><th>change</th><th>95 % interval</th><th>tasks better / worse</th><th></th></tr>
-<tr class="top"><td>Lines of code</td><td class="hot">-58 %</td><td>-68 to -47</td><td>32 / 1</td><td class="bar"><i style="width:58%"></i></td></tr>
-<tr><td>Code information, gzip</td><td class="hot">-52 %</td><td>-61 to -41</td><td>34 / 1</td><td class="bar"><i style="width:52%"></i></td></tr>
-<tr><td>Output tokens</td><td class="hot">-56 %</td><td>-64 to -47</td><td>38 / 1</td><td class="bar"><i style="width:56%"></i></td></tr>
-<tr><td>Cost</td><td class="warm">-34 %</td><td>-44 to -24</td><td>32 / 7</td><td class="bar"><i style="width:34%"></i></td></tr>
-<tr><td>Time</td><td class="hot">-53 %</td><td>-59 to -46</td><td>39 / 0</td><td class="bar"><i style="width:53%"></i></td></tr>
-<tr><td>Turns</td><td class="warm">-19 %</td><td>-26 to -11</td><td>21 / 4</td><td class="bar"><i style="width:19%"></i></td></tr>
-</table>
+<div class="tiles" id="g"></div>
 <div class="two">
 <div><b>85 / 90</b>hidden checks passed, 86 without the plugin. Six security tasks: 30 of 30 in both arms.</div>
 <div class="warn"><b>0 / 5, then 8 / 10</b>on the privacy task, before and after the rule that names what a change could expose.</div>
 </div>
-<div class="foot">Ponytail 5 published, for itself: code -53 %, output tokens -45 %, cost -26 %, time -41 %.<br>Two runs a month apart, intervals overlap.</div>
+<div class="foot">Opus 5.5, 39 tasks, 5 runs each. Ponytail 5 published, for itself: code -53 %, output tokens<br>-45 %, cost -26 %, time -41 %. Two runs a month apart, intervals overlap.</div>
 </div>
-<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>
+<script>
+const L = { interval: '95 % interval', tasks: 'tasks better / worse', to: 'to' };
+const rows = [['Lines of code', -58, -68, -47, '32 / 1'], ['Code information, gzip', -52, -61, -41, '34 / 1'], ['Output tokens', -56, -64, -47, '38 / 1'], ['Cost', -34, -44, -24, '32 / 7'], ['Time', -53, -59, -46, '39 / 0'], ['Turns', -19, -26, -11, '21 / 4']];
+const g = document.getElementById('g');
+for (const [name, v, low, high, tasks] of rows) {
+  const d = document.createElement('div');
+  d.className = 'tile';
+  d.style.background = `rgba(227,73,72,${(0.12 + 0.88 * (-v / 58)).toFixed(2)})`;
+  d.innerHTML = `<div class="k">${name}</div><div class="v">${v} %</div><div class="d">${L.interval} ${low} ${L.to} ${high}</div><div class="d">${L.tasks} ${tasks}</div>`;
+  g.appendChild(d);
+}
+document.documentElement.dataset.h = Math.ceil(document.querySelector('.card').getBoundingClientRect().height);
+</script>

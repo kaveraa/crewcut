@@ -1,16 +1,46 @@
 <!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+.grid { display: grid; grid-template-columns: 196px repeat(6, 1fr) 70px; gap: 6px; margin-top: 12px; align-items: stretch; }
+.arms { display: grid; grid-template-columns: 196px repeat(3, 1fr) 70px; gap: 6px; margin-top: 28px; }
+.arms div { font-size: 15px; font-weight: 700; color: #F4EFE6; text-align: center; padding-bottom: 2px; }
+.h { font-family: Consolas, monospace; font-size: 11.5px; letter-spacing: 1.5px; text-transform: uppercase; color: #8A9BAB; text-align: center; padding-bottom: 4px; }
+.who { display: flex; flex-direction: column; justify-content: center; }
+.who b { font-size: 16px; color: #F4EFE6; }
+.who span { font-size: 12.5px; color: #8A9BAB; margin-top: 2px; }
+.t { border-radius: 8px; height: 52px; display: flex; align-items: center; justify-content: center; font-family: Consolas, monospace; font-size: 16px; font-weight: 700; color: #FFFFFF; }
+.t.up { background: #2A3945; color: #8A9BAB; font-weight: 400; }
+.ok, .bad { border-radius: 8px; height: 52px; display: flex; align-items: center; justify-content: center; font-family: Consolas, monospace; font-size: 14px; }
+.ok { color: #1BAF7A; border: 1px solid #1BAF7A; }
+.bad { color: #1C2831; background: #F4C27A; font-weight: 700; }
+</style>
 <div class="card"><div class="pole"></div>
-<div class="eyebrow">Mêmes runs, deux contrôles : code et coût face à sans plugin</div>
+<div class="eyebrow">Mêmes runs, deux contrôles, face au même modèle sans plugin</div>
 <h1>Sept mots coupent autant. <em>Ils coupent aussi un garde-fou.</em></h1>
-<table>
-<tr><th>modèle, dépôt</th><th>crewcut</th><th>tests off</th><th>prompt yagni</th><th>prompt sûr</th></tr>
-<tr class="top"><td>Opus 5.5<small>Next-js-Boilerplate</small></td><td>-82 % / -60 %</td><td>-83 % / -63 %</td><td>-88 % / -66 %</td><td class="ok">100 %</td></tr>
-<tr><td>Opus 5.5<small>full-stack-fastapi-template</small></td><td>-70 % / -43 %</td><td>-71 % / -53 %</td><td>-72 % / -49 %</td><td class="ok">100 %</td></tr>
-<tr><td>Sonnet 5.5<small>Next-js-Boilerplate</small></td><td>-70 % / -31 %</td><td>-69 % / -27 %</td><td>-74 % / -38 %</td><td class="ok">100 %</td></tr>
-<tr><td>Haiku 4.5<small>Next-js-Boilerplate</small></td><td>-63 % / -46 %</td><td>-60 % / -52 %</td><td>-29 % / -7 %</td><td class="hot">96 %</td></tr>
-<tr><td>Haiku 4.5<small>full-stack-fastapi-template</small></td><td>-9 % / -30 %</td><td>-20 % / -35 %</td><td>+12 % / +11 %</td><td class="hot">96 %</td></tr>
-<tr><td>Sonnet 5.5<small>full-stack-fastapi-template</small></td><td>-8 % / +2 %</td><td>-17 % / -26 %</td><td>-31 % / -12 %</td><td class="ok">100 %</td></tr>
-</table>
+<div class="arms"><div></div><div>crewcut</div><div>crewcut, tests off</div><div>prompt YAGNI</div><div></div></div>
+<div class="grid" id="g"></div>
 <div class="foot">Le prompt : "Follow YAGNI principles, and prefer one-liner solutions." Il saute les tests, et sur Haiku<br>il retire une fois le contrôle par client d'un limiteur de débit. crewcut est sûr sur chaque cellule.</div>
 </div>
-<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>
+<script>
+const L = { head: ['modèle, dépôt', 'code', 'coût', 'code', 'coût', 'code', 'coût', 'prompt sûr'] };
+const rows = [
+  ['Opus 5.5', 'Next-js-Boilerplate', -82, -60, -83, -63, -88, -66, 100],
+  ['Opus 5.5', 'fastapi-template', -70, -43, -71, -53, -72, -49, 100],
+  ['Sonnet 5.5', 'Next-js-Boilerplate', -70, -31, -69, -27, -74, -38, 100],
+  ['Haiku 4.5', 'Next-js-Boilerplate', -63, -46, -60, -52, -29, -7, 96],
+  ['Haiku 4.5', 'fastapi-template', -9, -30, -20, -35, 12, 11, 96],
+  ['Sonnet 5.5', 'fastapi-template', -8, 2, -17, -26, -31, -12, 100],
+];
+const g = document.getElementById('g');
+const add = (cls, html, style) => { const d = document.createElement('div'); d.className = cls; d.innerHTML = html; if (style) d.style.cssText = style; g.appendChild(d); };
+L.head.forEach((h, i) => add('h', h, i === 0 ? 'text-align:left' : ''));
+for (const [model, repo, ...vals] of rows) {
+  add('who', `<b>${model}</b><span>${repo}</span>`);
+  const safe = vals.pop();
+  for (const v of vals) {
+    if (v >= 0) add('t up', `+${v}`);
+    else add('t', `${v}`, `background: rgba(227,73,72,${(0.12 + 0.88 * (-v / 88)).toFixed(2)})`);
+  }
+  add(safe === 100 ? 'ok' : 'bad', `${safe} %`);
+}
+document.documentElement.dataset.h = Math.ceil(document.querySelector('.card').getBoundingClientRect().height);
+</script>

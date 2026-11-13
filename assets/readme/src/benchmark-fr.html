@@ -1,16 +1,43 @@
 <!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+.grid { display: grid; grid-template-columns: 210px repeat(4, 1fr) 84px; gap: 8px; margin-top: 28px; align-items: stretch; }
+.h { font-family: Consolas, monospace; font-size: 12.5px; letter-spacing: 2px; text-transform: uppercase; color: #8A9BAB; text-align: center; padding-bottom: 4px; }
+.h:first-child { text-align: left; }
+.who { display: flex; flex-direction: column; justify-content: center; }
+.who b { font-size: 17px; color: #F4EFE6; }
+.who span { font-size: 13px; color: #8A9BAB; margin-top: 2px; }
+.t { border-radius: 10px; height: 58px; display: flex; align-items: center; justify-content: center; font-family: Consolas, monospace; font-size: 20px; font-weight: 700; color: #FFFFFF; }
+.t.up { background: #2A3945; color: #8A9BAB; font-weight: 400; }
+.ok { border-radius: 10px; height: 58px; display: flex; align-items: center; justify-content: center; font-family: Consolas, monospace; font-size: 15px; color: #1BAF7A; border: 1px solid #1BAF7A; }
+.scale { display: flex; align-items: center; gap: 10px; margin-top: 24px; font-family: Consolas, monospace; font-size: 13px; color: #8A9BAB; }
+.scale i { display: block; width: 180px; height: 10px; border-radius: 5px; background: linear-gradient(90deg, rgba(227,73,72,0.12), rgba(227,73,72,1)); }
+</style>
 <div class="card"><div class="pole"></div>
 <div class="eyebrow">Harnais d'octobre, trois modèles, deux dépôts</div>
-<h1>Moins de code sur chaque modèle. <em>Moins de tokens là où des tours disparaissent.</em></h1>
-<table>
-<tr><th>modèle, dépôt</th><th>code</th><th>tokens</th><th>coût</th><th>temps</th><th>sûr</th></tr>
-<tr class="top"><td>Opus 5.5<small>Next-js-Boilerplate</small></td><td class="hot">-82 %</td><td class="hot">-55 %</td><td class="hot">-60 %</td><td class="hot">-67 %</td><td class="ok">100 %</td></tr>
-<tr><td>Opus 5.5<small>full-stack-fastapi-template</small></td><td class="hot">-70 %</td><td class="warm">-40 %</td><td class="warm">-43 %</td><td class="warm">-49 %</td><td class="ok">100 %</td></tr>
-<tr><td>Sonnet 5.5<small>Next-js-Boilerplate</small></td><td class="hot">-70 %</td><td class="warm">-11 %</td><td class="warm">-31 %</td><td class="warm">-34 %</td><td class="ok">100 %</td></tr>
-<tr><td>Haiku 4.5<small>Next-js-Boilerplate</small></td><td class="hot">-63 %</td><td class="warm">-48 %</td><td class="warm">-46 %</td><td class="warm">-40 %</td><td class="ok">100 %</td></tr>
-<tr><td>Haiku 4.5<small>full-stack-fastapi-template</small></td><td class="warm">-9 %</td><td class="warm">-30 %</td><td class="warm">-30 %</td><td class="warm">-20 %</td><td class="ok">100 %</td></tr>
-<tr><td>Sonnet 5.5<small>full-stack-fastapi-template</small></td><td class="warm">-8 %</td><td>+9 %</td><td>+2 %</td><td class="warm">-2 %</td><td class="ok">100 %</td></tr>
-</table>
+<h1>Plus le modèle sur-construit, <em>plus il y a à couper.</em></h1>
+<div class="grid" id="g"></div>
+<div class="scale"><span>0 %</span><i></i><span>-82 %</span><span style="margin-left:18px">face au même modèle sans plugin</span></div>
 <div class="foot">Douze tickets d'une ligne par dépôt, une session Claude Code sans interface par cellule, notée sur<br>le git diff. Sûr : sept tâches dont la sortie est exécutée sur des entrées hostiles.</div>
 </div>
-<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>
+<script>
+const rows = [
+  ['Opus 5.5', 'Next-js-Boilerplate', -82, -55, -60, -67],
+  ['Opus 5.5', 'fastapi-template', -70, -40, -43, -49],
+  ['Sonnet 5.5', 'Next-js-Boilerplate', -70, -11, -31, -34],
+  ['Haiku 4.5', 'Next-js-Boilerplate', -63, -48, -46, -40],
+  ['Haiku 4.5', 'fastapi-template', -9, -30, -30, -20],
+  ['Sonnet 5.5', 'fastapi-template', -8, 9, 2, -2],
+];
+const g = document.getElementById('g');
+const add = (cls, html, style) => { const d = document.createElement('div'); d.className = cls; d.innerHTML = html; if (style) d.style.cssText = style; g.appendChild(d); };
+for (const h of ['modèle, dépôt', 'code', 'tokens', 'coût', 'temps', 'sûr']) add('h', h);
+for (const [model, repo, ...vals] of rows) {
+  add('who', `<b>${model}</b><span>${repo}</span>`);
+  for (const v of vals) {
+    if (v >= 0) add('t up', `+${v} %`);
+    else add('t', `${v} %`, `background: rgba(227,73,72,${(0.12 + 0.88 * (-v / 82)).toFixed(2)})`);
+  }
+  add('ok', '100 %');
+}
+document.documentElement.dataset.h = Math.ceil(document.querySelector('.card').getBoundingClientRect().height);
+</script>
