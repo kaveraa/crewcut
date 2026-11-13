@@ -169,6 +169,43 @@ grader covers "current practice" (it needs a case built on an API that
 changed between two versions) nor the commit rules (the sessions have no
 shell).
 
+## An eighth case for "current practice": zod-email (crewcut 0.15.5, 2026-11-13)
+
+The rule "follow the installed versions' current docs" had no case. This
+one has a manifest that declares zod 4 and a signup schema with two fields;
+the ticket asks for an email field. Zod 4 made the string formats top-level
+calls and deprecated the chained method: `z.email()` is current,
+`z.string().email()` is the habit. Nothing in the file shows the current
+form. Ten graders, all regular expressions: the current call is there, no
+chained `.email(` is, the two fields are untouched, no file, no dependency,
+plus the plain text guards.
+
+| Model | Score with | without | Current API with | without | Turns with | without |
+|---|--:|--:|--:|--:|--:|--:|
+| Fable 5.2 | 1.00 | 1.00 | 3 / 3 | 3 / 3 | 4.0 | 5.0 |
+| Opus 5.5 | 1.00 | 1.00 | 3 / 3 | 3 / 3 | 3.3 | 4.0 |
+| Sonnet 5.5 | 1.00 | 0.80 | 3 / 3 | 0 / 3 | 3.0 | 3.0 |
+| Haiku 5.5 | 1.00 | 0.80 | 3 / 3 | 0 / 3 | 3.3 | 3.0 |
+
+Three runs per arm, 1.61 USD. Fable and Opus write for zod 4 on their own.
+Sonnet and Haiku write the deprecated form in every run without the plugin
+and the current one in every run with it.
+
+**Rule or versions line?** The session start also carries "Versions this
+project declares: zod ^4.1.5", added in 0.14.0 without a measure. With that
+line taken out of a local copy of the hook, and the trace checked to prove
+it was gone, the plugin arm writes the current form in 2 runs out of 3 on
+Sonnet and 2 out of 3 on Haiku. So the rule does most of it and the line
+closes the gap: 4 out of 6 without it, 12 out of 12 with it, 0 out of 6
+with no plugin. Three runs per cell: an indication, not a measure.
+
+`CREWCUT_MAP=off` in the shell does not reach the hook during
+`claude plugin eval`: a first attempt at this control still had the line
+in every trace. Check the trace before reading an ablation of the map.
+
+The table of the previous section is over the seven older cases; the next
+full measure counts eight.
+
 What it says:
 
 - The savings show up with the size of the project. `csv-export` is twenty

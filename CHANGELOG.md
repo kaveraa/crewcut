@@ -5,6 +5,16 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Added
+
+- An eighth eval case, `zod-email`, for the rule on current practice: the
+  manifest declares zod 4, where `z.email()` replaces the chained
+  `z.string().email()`. Without the plugin Sonnet 5.5 and Haiku 5.5 write
+  the deprecated form in 3 runs out of 3; with it, the current one in 3 out
+  of 3. Fable 5.2 and Opus 5.5 write the current form either way. With the
+  versions line taken out, the plugin gets 2 out of 3 on both: the rule
+  does most of it, the line closes the gap.
+
 ## [0.15.5] - 2026-11-13
 
 ### Changed
