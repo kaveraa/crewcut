@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.12.1] - 2026-11-13
+
 ### Fixed
 
 - The codebase map reads regular files only, 512 KB at most: a symlink, a
