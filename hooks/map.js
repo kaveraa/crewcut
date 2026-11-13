@@ -22,6 +22,9 @@ const IDENT = /^[A-Za-z_$][\w$]*$/;
 // A path is text the repository controls and the map lands in the session
 // context: only plain path characters pass, so no folder name smuggles a line in.
 const SAFE_PATH = /^[\w.@+-]+(\/[\w.@+-]+)*$/;
+const SAFE_DEP = /^[\w@/.-]{1,60}$/;
+const SAFE_RANGE = /^[\w.^~<>=*|-]{1,30}$/;
+const VERSIONS_BUDGET = 400;
 
 // One entry per language family: the regexes that catch a top-level definition.
 // A default export is left out: nothing imports it by that name.
@@ -143,11 +146,39 @@ function buildMap(root, budget = DEFAULT_BUDGET) {
   return lines.length > 1 ? lines.join('\n') : '';
 }
 
-module.exports = { buildMap, isSource, namesIn, DEFAULT_BUDGET };
+// The versions the manifests declare, so following the docs of the installed
+// versions costs no read. Names and ranges are text the repository controls:
+// only plain characters pass.
+function versions(root) {
+  const pairs = [];
+  for (const [file, keys] of [['package.json', ['engines', 'dependencies', 'devDependencies']], ['composer.json', ['require', 'require-dev']]]) {
+    try {
+      const full = path.join(root, file);
+      const stat = fs.lstatSync(full);
+      if (!stat.isFile() || stat.size > MAX_FILE_BYTES) continue;
+      const manifest = JSON.parse(fs.readFileSync(full, 'utf8'));
+      for (const key of keys) {
+        for (const [name, range] of Object.entries(manifest[key] || {})) {
+          if (SAFE_DEP.test(name) && SAFE_RANGE.test(range)) pairs.push(`${name} ${range}`);
+        }
+      }
+    } catch {
+      // no manifest, or not JSON: nothing to say
+    }
+  }
+  let line = 'Versions this project declares:';
+  for (const pair of pairs) {
+    if (line.length + pair.length + 2 > VERSIONS_BUDGET) break;
+    line += `${line.endsWith(':') ? ' ' : ', '}${pair}`;
+  }
+  return pairs.length ? line : '';
+}
+
+module.exports = { buildMap, versions, isSource, namesIn, DEFAULT_BUDGET };
 
 if (require.main === module) {
   const root = process.argv[2] || process.cwd();
   const budget = Number(process.env.CREWCUT_MAP_CHARS) || DEFAULT_BUDGET;
-  const map = buildMap(path.resolve(root), budget);
+  const map = [versions(path.resolve(root)), buildMap(path.resolve(root), budget)].filter(Boolean).join('\n');
   if (map) process.stdout.write(map + '\n');
 }
