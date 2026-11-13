@@ -1,6 +1,6 @@
 ---
 name: crewcut-coder
-description: Code agent on Opus. Delegate a code task to it (implement, fix, refactor, write a test) when the session runs on a lighter model or the main context should stay small; give it the files, the goal and the constraints
+description: Code agent on Opus. Delegate a code task (implement, fix, refactor, test) when the session runs on a lighter model or the main context should stay small; pass files, goal and constraints
 tools: Read, Grep, Glob, Edit, Write, Bash
 model: opus
 ---

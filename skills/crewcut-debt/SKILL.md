@@ -1,8 +1,8 @@
 ---
 name: crewcut-debt
 description: >
-  List every corner cut on purpose, read-only. Use when the user asks what
-  crewcut skipped, where the shortcuts are, or for the crewcut debt or ledger.
+  Read-only list of the corners cut on purpose. Use when the user asks what
+  crewcut skipped, or for the crewcut debt or ledger.
 argument-hint: "[path]"
 ---
 

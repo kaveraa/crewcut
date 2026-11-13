@@ -1,11 +1,9 @@
 ---
 name: crewcut
 description: >
-  The simplest code that works: less code, fewer reads, short answers, few tool calls.
-  Use on any coding task (write, fix, refactor, review, pick a dependency) and
-  whenever the user says "crewcut", "simplest", "minimal", "yagni", "do less",
-  "too long", "too many tokens", or complains about over-engineering, bloat or
-  boilerplate. Not for prose, translation or general questions.
+  The simplest code that works. Use when the user says "crewcut", "simplest",
+  "minimal", "yagni" or "do less", or complains about bloat, and the crewcut
+  rules are not already in context. Not for prose or general questions.
 argument-hint: "[off|lite|full|ultra]"
 ---
 

@@ -1,11 +1,8 @@
 ---
 name: crewcut-review
 description: >
-  Review a change like the senior who gets paged when it breaks: bugs,
-  security, real load, missing tests, slow paths and what to cut, each
-  finding with its concrete case and the shortest fix. Read-only. Use when
-  the user asks for a review, a code review, a crewcut review, or wants to
-  know what could be cut.
+  Read-only review of a change: bugs, security, load, missing tests, slow
+  paths, what to cut. Use when the user asks for a review or what could be cut.
 argument-hint: "[git range, PR link or files]"
 ---
 
