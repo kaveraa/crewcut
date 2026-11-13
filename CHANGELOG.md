@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.13.1] - 2026-11-13
+
 ### Fixed
 
 - A project at the default level keeps no file under `crewcut-levels/`:
