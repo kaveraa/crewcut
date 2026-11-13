@@ -11,6 +11,12 @@ follows Keep a Changelog and the project follows Semantic Versioning.
   figures, the date picker before and after, the ladder and the eval suite.
   The reference sections fold, the detailed benchmark tables too. Sources
   and a render script are in `assets/readme/`.
+- Eval suite measured on the current models, Claude Code 2.1.323, seven
+  cases, three runs, Sonnet as judge, no out-of-usage run: Fable 5.2 0.99
+  against 0.82 without; Opus 5.5 1.00 against 0.81; Sonnet 5.5 0.98 against
+  0.86; Haiku 5.5 0.96 against 0.79, at 0.012 against 0.021 USD per run.
+  The Fable row replaces the 5.1 measure of crewcut 0.7.0; the Haiku row is
+  new.
 
 - The session start carries the versions the project declares, read from
   `package.json` (engines, dependencies, devDependencies) and

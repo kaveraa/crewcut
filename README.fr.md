@@ -80,7 +80,7 @@ Le ruleset complet : [Les règles](#les-regles).
 
 ## Mesuré
 
-<p align="center"><img src="assets/readme/evals-fr.png" width="880" alt="Suite d'évals, sept cas, trois runs chacun. Plus court, et plus souvent juste. Opus 5.5 : 1,00 avec crewcut, 0,81 pour le même modèle sans plugin. Sonnet 5.5 : 0,98 avec, 0,86 sans. Le score est la part de graders réussis. Chaque cas note la justesse autant que la taille : une réponse plus courte mais fausse vaut zéro."></p>
+<p align="center"><img src="assets/readme/evals-fr.png" width="880" alt="Suite d'évals, sept cas, trois runs chacun. Plus court, et plus souvent juste. Fable 5.2 : 0,99 avec crewcut, 0,82 pour le même modèle sans plugin. Opus 5.5 : 1,00 avec, 0,81 sans. Sonnet 5.5 : 0,98 avec, 0,86 sans. Haiku 5.5 : 0,96 avec, 0,79 sans. Le score est la part de graders réussis. Chaque cas note la justesse autant que la taille : une réponse plus courte mais fausse vaut zéro."></p>
 
 **Suite d'évals.** Les sept cas du plugin, trois runs chacun, avec et sans
 le plugin, Sonnet comme juge. Chaque cas note la justesse autant que la
@@ -88,13 +88,15 @@ taille.
 
 | Modèle | crewcut | Score avec | sans | Tours avec | sans | Coût par run avec | sans |
 |---|---|--:|--:|--:|--:|--:|--:|
+| Fable 5.2 | 0.14.0 | 0,99 | 0,82 | 4,4 | 6,1 | 0,211 USD | 0,214 USD |
 | Opus 5.5 | 0.14.0 | 1,00 | 0,81 | 5,2 | 5,7 | 0,105 USD | 0,102 USD |
 | Sonnet 5.5 | 0.14.0 | 0,98 | 0,86 | 4,4 | 6,2 | 0,059 USD | 0,059 USD |
+| Haiku 5.5 | 0.14.0 | 0,96 | 0,79 | 5,4 | 7,0 | 0,012 USD | 0,021 USD |
 
 Un bug dans une fonction partagée est corrigé à sa racine dans 3 runs sur 3
-avec le plugin, 0 sans : chaque run sans lui a rustiné l'appelant. Tableaux
-par cas et chaque remesure : [evals/RESULTS.md](evals/RESULTS.md) (en
-anglais).
+avec le plugin sur les quatre modèles, 0 sans : chaque run sans lui a
+rustiné l'appelant. Tableaux par cas et chaque remesure :
+[evals/RESULTS.md](evals/RESULTS.md) (en anglais).
 
 **Benchmark agentique.** Douze tickets d'une ligne sur un vrai dépôt, une
 session Claude Code sans interface par cellule, notée sur le `git diff`

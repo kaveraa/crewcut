@@ -76,7 +76,7 @@ The full ruleset: [The rules](#the-rules).
 
 ## Measured
 
-<p align="center"><img src="assets/readme/evals.png" width="880" alt="Eval suite, seven cases, three runs each. Shorter, and more often right. Opus 5.5: 1.00 with crewcut, 0.81 for the same model with no plugin. Sonnet 5.5: 0.98 with, 0.86 without. Score is the share of graders passed. Every case grades correctness as well as size: a shorter answer that is wrong scores zero."></p>
+<p align="center"><img src="assets/readme/evals.png" width="880" alt="Eval suite, seven cases, three runs each. Shorter, and more often right. Fable 5.2: 0.99 with crewcut, 0.82 for the same model with no plugin. Opus 5.5: 1.00 with, 0.81 without. Sonnet 5.5: 0.98 with, 0.86 without. Haiku 5.5: 0.96 with, 0.79 without. Score is the share of graders passed. Every case grades correctness as well as size: a shorter answer that is wrong scores zero."></p>
 
 **Eval suite.** The plugin's own seven cases, three runs each, with and
 without the plugin, Sonnet as judge. Every case grades correctness as well
@@ -84,12 +84,15 @@ as size.
 
 | Model | crewcut | Score with | without | Turns with | without | Cost per run with | without |
 |---|---|--:|--:|--:|--:|--:|--:|
+| Fable 5.2 | 0.14.0 | 0.99 | 0.82 | 4.4 | 6.1 | 0.211 USD | 0.214 USD |
 | Opus 5.5 | 0.14.0 | 1.00 | 0.81 | 5.2 | 5.7 | 0.105 USD | 0.102 USD |
 | Sonnet 5.5 | 0.14.0 | 0.98 | 0.86 | 4.4 | 6.2 | 0.059 USD | 0.059 USD |
+| Haiku 5.5 | 0.14.0 | 0.96 | 0.79 | 5.4 | 7.0 | 0.012 USD | 0.021 USD |
 
 A bug in a shared function is fixed at its root in 3 runs out of 3 with the
-plugin, 0 without: every run without it patched the caller. Per-case tables
-and every re-measure: [evals/RESULTS.md](evals/RESULTS.md).
+plugin on all four models, 0 without: every run without it patched the
+caller. Per-case tables and every re-measure:
+[evals/RESULTS.md](evals/RESULTS.md).
 
 **Agentic benchmark.** Twelve one-line tickets against a real repository, a
 headless Claude Code session per cell, scored on the `git diff` it leaves
