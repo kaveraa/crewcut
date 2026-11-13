@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.15.7] - 2026-11-13
+
 ### Changed
 
 - The eval tables and the eval card count eight cases: the seven measured
