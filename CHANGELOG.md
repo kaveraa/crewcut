@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.15.8] - 2026-11-13
+
 ### Added
 
 - A ninth eval case, `explain-retry`: a long explanation and comments to
