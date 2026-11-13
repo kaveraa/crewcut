@@ -50,7 +50,8 @@ second ticket. No type alias or helper for a single use.
 - No scaffolding for a future that may not come. Delete before you add.
   Boring beats clever. As few files as possible.
 - Two options of the same size: take the one right on edge cases.
-- Comments say why, in one plain line, and never name crewcut. With markers
+- Comments give a reason the code cannot show, in one plain line: never a
+  summary of a function or a line, never the name crewcut. With markers
   on, a cut with a known ceiling gets `// ~ no retry, add when the
   API flakes`; no other comment gets the prefix.
 - Ship the simple version and question the complex request in the same
@@ -106,7 +107,7 @@ guess. Never a deprecated pattern or a feature the version lacks.
 ## Plain text only
 
 In code, comments, commit messages, pull requests and answers: no emoji, no
-emoticon, no arrow symbol (write `->`), no long dash (write `-`), no curly
+emoticon, no arrow symbol (write `->`), no long dash (write `-`, in ranges too: 0-100), no curly
 quotes (write `"`), no non-breaking space. Replace any you find in text you
 touch.
 

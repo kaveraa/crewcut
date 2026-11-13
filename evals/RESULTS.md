@@ -357,3 +357,51 @@ started; the run was launched again.
 As for the eight-case table, this joins measures of the same day on the
 same plugin code: the eight cases and `explain-retry`. 54 runs per model,
 none in error.
+
+## Two rules reworded on explain-retry (crewcut 0.16.0, 2026-11-13)
+
+`explain-retry` showed two rules giving way with the plugin on: Sonnet kept
+a long dash in 2 answers out of 3, and one comment per file named the
+mechanism instead of the reason. Three wordings were tried, five runs per
+model, plugin arm only, the traces kept and read.
+
+| Wording | Sonnet, plain answer | Sonnet, comments why | Haiku, comments why |
+|---|--:|--:|--:|
+| 0.15.8: "long dash (write -)" and "why only, one plain line" | 1 / 3 | 1 / 3 | 0 / 3 |
+| "em or en dash", "gives the reason; never what the code does" | 2 / 5 | 0 / 5 | 0 / 5 |
+| the same, "only a reason the code cannot show; in doubt, none" | 3 / 5 | 3 / 5 | 0 / 5 |
+| the same, "(write -, ranges too: 0-100)" and "never a summary of what a function or a line does" | 5 / 5 | 5 / 5 | 4 / 5 |
+
+The traces gave the two levers. Sonnet's dash was not in its prose but in a
+range of numbers, "0 to 100 ms" written with an en dash: naming the case in
+the rule ended it. Haiku opened each function with a comment that sums it
+up: forbidding the summary ended that. Naming the dash "em or en" and
+asking for "the reason" did nothing on their own.
+
+The two lines as shipped, a little tighter than the last row:
+
+    Plain text only, long answers too: no emoji, arrow (write ->), em or en dash (write -, 0-100 too) or curly quotes.
+    Comments: only a reason the code cannot show, one plain line; never a summary of a function or a line; in doubt, none.
+
+They take the ruleset from 598 to 628 estimated tokens at its heaviest
+level, over the 600 ceiling the test held. Nothing could be cut elsewhere
+without touching a wording already measured, so the ceiling is now 630.
+
+The nine cases with the plugin, three runs, Opus as judge. The arm without
+the plugin does not see the ruleset: it is the one of the previous section.
+
+| Model | Score with | was | without | Turns with | without | Session cost with | without |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| Fable 5.2 | 0.99 | 0.98 | 0.88 | 4.6 | 5.7 | 0.201 USD | 0.192 USD |
+| Opus 5.5 | 1.00 | 0.99 | 0.85 | 5.0 | 5.4 | 0.093 USD | 0.087 USD |
+| Sonnet 5.5 | 1.00 | 0.98 | 0.86 | 4.5 | 5.3 | 0.044 USD | 0.041 USD |
+| Haiku 5.5 | 0.98 | 0.97 | 0.84 | 5.1 | 6.0 | 0.003 USD | 0.003 USD |
+
+No case lost ground beyond one grader in one run. On `explain-retry`, the
+plugin now scores 1.00 on Opus and Sonnet and 0.97 on Haiku. Sonnet passes
+every grader of every case. What still fails with the plugin: Fable,
+`date-picker` `short-answer` twice and `shared-bug` `root-cause-stated`
+twice; Opus, `csv-export` `root-cause-stated` once; Haiku, five graders
+once each. 12.42 USD for this table, 7.09 USD for the three trials. Six
+Fable runs did not start (a process spawn error, twice that day already)
+and their two cases were run again.

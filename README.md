@@ -46,7 +46,7 @@ The full ruleset is in [The rules](#the-rules), under Reference.
 
 ## Measured
 
-<p align="center"><img src="assets/readme/evals.png" width="880" alt="Eval suite, nine cases, three runs each. Shorter, and more often right. Fable 5.2: 0.98 with crewcut, 0.88 for the same model with no plugin. Opus 5.5: 0.99 with, 0.85 without. Sonnet 5.5: 0.98 with, 0.86 without. Haiku 5.5: 0.97 with, 0.84 without. Score is the share of graders passed. Every case grades correctness as well as size: a shorter answer that is wrong scores zero."></p>
+<p align="center"><img src="assets/readme/evals.png" width="880" alt="Eval suite, nine cases, three runs each. Shorter, and more often right. Fable 5.2: 0.99 with crewcut, 0.88 for the same model with no plugin. Opus 5.5: 1.00 with, 0.85 without. Sonnet 5.5: 1.00 with, 0.86 without. Haiku 5.5: 0.98 with, 0.84 without. Score is the share of graders passed. Every case grades correctness as well as size: a shorter answer that is wrong scores zero."></p>
 
 <p align="center"><img src="assets/readme/pt5.png" width="880" alt="Ponytail 5's benchmark, crewcut 0.14.0 against no plugin, Opus 5.5, 39 tasks, 5 runs. Lines of code minus 58 percent, 95 percent interval minus 68 to minus 47, better on 32 tasks and worse on 1. Code information minus 52 percent. Output tokens minus 56 percent. Cost minus 34 percent, interval minus 44 to minus 24. Time minus 53 percent. Turns minus 19 percent. Hidden checks: 85 of 90 passed, 86 without the plugin. Six security tasks: 30 of 30 in both arms. Privacy task: 0 of 5, then 8 of 10 after the rule that names what a change could expose. Ponytail 5 published for itself: code minus 53 percent, output tokens minus 45, cost minus 26, time minus 41. Two runs a month apart, intervals overlap."></p>
 
@@ -71,10 +71,10 @@ session alone, without the judge:
 
 | Model | crewcut | Score with | without | Turns with | without | Cost per run with | without |
 |---|---|--:|--:|--:|--:|--:|--:|
-| Fable 5.2 | 0.15.7 | 0.98 | 0.88 | 4.3 | 5.7 | 0.203 USD | 0.192 USD |
-| Opus 5.5 | 0.15.7 | 0.99 | 0.85 | 4.7 | 5.4 | 0.090 USD | 0.087 USD |
-| Sonnet 5.5 | 0.15.7 | 0.98 | 0.86 | 4.4 | 5.3 | 0.044 USD | 0.041 USD |
-| Haiku 5.5 | 0.15.7 | 0.97 | 0.84 | 5.2 | 6.0 | 0.003 USD | 0.003 USD |
+| Fable 5.2 | 0.16.0 | 0.99 | 0.88 | 4.6 | 5.7 | 0.201 USD | 0.192 USD |
+| Opus 5.5 | 0.16.0 | 1.00 | 0.85 | 5.0 | 5.4 | 0.093 USD | 0.087 USD |
+| Sonnet 5.5 | 0.16.0 | 1.00 | 0.86 | 4.5 | 5.3 | 0.044 USD | 0.041 USD |
+| Haiku 5.5 | 0.16.0 | 0.98 | 0.84 | 5.1 | 6.0 | 0.003 USD | 0.003 USD |
 
 Ponytail 5's benchmark, Opus 5.5, 39 tasks, 5 runs, crewcut 0.14.0 against
 no plugin:
@@ -274,9 +274,11 @@ or a version newer than it knows: it reads the docs or the installed source
 instead of guessing. Never a deprecated pattern, never a feature the version
 lacks.
 
-**Comments.** The why only, in one plain line.
+**Comments.** Only a reason the code cannot show, in one plain line; never
+a summary of what a function or a line does. When in doubt, none.
 
-**Plain text only.** In code, comments, commits, pull requests and answers:
+**Plain text only.** In code, comments, commits, pull requests and answers,
+long ones included, and in ranges of numbers:
 no emoji, no emoticon, no arrow symbol (`->` instead), no long dash (`-`
 instead), no curly quotes (`"` instead). Any found in text Claude touches is
 replaced.

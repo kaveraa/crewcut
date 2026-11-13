@@ -662,10 +662,10 @@ test('the real ruleset carries the plain-punctuation rule at every active level'
   const markdown = fs.readFileSync(path.join(__dirname, '..', 'hooks', 'ruleset.md'), 'utf8');
   for (const level of ['lite', 'full', 'ultra']) {
     const text = renderRuleset(level, markdown);
-    assert.match(text, /Plain text only:/, level);
+    assert.match(text, /Plain text only, long answers too:/, level);
     assert.match(text, /no emoji/, level);
     assert.match(text, /write ->/, level);
-    assert.match(text, /write -\)/, level);
+    assert.match(text, /write -, 0-100 too\)/, level);
   }
 });
 
