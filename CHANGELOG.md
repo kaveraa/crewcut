@@ -5,6 +5,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.17.1] - 2026-11-13
+
 ### Changed
 
 - Eval tables on at least six runs per case instead of three, since three
