@@ -46,7 +46,7 @@ Le ruleset complet est dans [Les règles](#les-regles), sous Référence.
 
 ## Mesuré
 
-<p align="center"><img src="assets/readme/evals-fr.png" width="880" alt="Suite d'évals, neuf cas, trois runs chacun. Plus court, et plus souvent juste. Fable 5.2 : 0,98 avec crewcut, 0,88 pour le même modèle sans plugin. Opus 5.5 : 0,99 avec, 0,85 sans. Sonnet 5.5 : 0,98 avec, 0,86 sans. Haiku 5.5 : 0,97 avec, 0,84 sans. Le score est la part de graders réussis. Chaque cas note la justesse autant que la taille : une réponse plus courte mais fausse vaut zéro."></p>
+<p align="center"><img src="assets/readme/evals-fr.png" width="880" alt="Suite d'évals, neuf cas, trois runs chacun. Plus court, et plus souvent juste. Fable 5.2 : 0,99 avec crewcut, 0,88 pour le même modèle sans plugin. Opus 5.5 : 1,00 avec, 0,85 sans. Sonnet 5.5 : 1,00 avec, 0,86 sans. Haiku 5.5 : 0,98 avec, 0,84 sans. Le score est la part de graders réussis. Chaque cas note la justesse autant que la taille : une réponse plus courte mais fausse vaut zéro."></p>
 
 <p align="center"><img src="assets/readme/pt5-fr.png" width="880" alt="Le benchmark de ponytail 5, crewcut 0.14.0 face à sans plugin, Opus 5.5, 39 tâches, 5 runs. Lignes de code moins 58 pour cent, intervalle à 95 pour cent de moins 68 à moins 47, mieux sur 32 tâches et pire sur 1. Information de code moins 52 pour cent. Tokens de sortie moins 56 pour cent. Coût moins 34 pour cent, intervalle de moins 44 à moins 24. Temps moins 53 pour cent. Tours moins 19 pour cent. Vérifications cachées : 85 sur 90 réussies, 86 sans le plugin. Six tâches de sécurité : 30 sur 30 dans les deux bras. Tâche de confidentialité : 0 sur 5, puis 8 sur 10 après la règle qui nomme ce qu'un changement peut exposer. Ponytail 5 a publié pour lui-même : code moins 53 pour cent, tokens de sortie moins 45, coût moins 26, temps moins 41. Deux runs à un mois d'écart, les intervalles se recouvrent."></p>
 
@@ -71,10 +71,10 @@ celui de la session seule, sans le juge :
 
 | Modèle | crewcut | Score avec | sans | Tours avec | sans | Coût par run avec | sans |
 |---|---|--:|--:|--:|--:|--:|--:|
-| Fable 5.2 | 0.15.7 | 0,98 | 0,88 | 4,3 | 5,7 | 0,203 USD | 0,192 USD |
-| Opus 5.5 | 0.15.7 | 0,99 | 0,85 | 4,7 | 5,4 | 0,090 USD | 0,087 USD |
-| Sonnet 5.5 | 0.15.7 | 0,98 | 0,86 | 4,4 | 5,3 | 0,044 USD | 0,041 USD |
-| Haiku 5.5 | 0.15.7 | 0,97 | 0,84 | 5,2 | 6,0 | 0,003 USD | 0,003 USD |
+| Fable 5.2 | 0.16.0 | 0,99 | 0,88 | 4,6 | 5,7 | 0,201 USD | 0,192 USD |
+| Opus 5.5 | 0.16.0 | 1,00 | 0,85 | 5,0 | 5,4 | 0,093 USD | 0,087 USD |
+| Sonnet 5.5 | 0.16.0 | 1,00 | 0,86 | 4,5 | 5,3 | 0,044 USD | 0,041 USD |
+| Haiku 5.5 | 0.16.0 | 0,98 | 0,84 | 5,1 | 6,0 | 0,003 USD | 0,003 USD |
 
 Le benchmark de ponytail 5, Opus 5.5, 39 tâches, 5 runs, crewcut 0.14.0
 face à sans plugin :
@@ -284,10 +284,12 @@ récente que ce qu'il connaît : il lit la documentation ou le code installé
 au lieu de deviner. Jamais un pattern déprécié, jamais une fonctionnalité
 que la version n'a pas.
 
-**Commentaires.** Le pourquoi seulement, en une ligne simple.
+**Commentaires.** Seulement une raison que le code ne peut pas montrer, en
+une ligne simple ; jamais un résumé de ce que fait une fonction ou une
+ligne. En cas de doute, aucun.
 
 **Texte brut seulement.** Dans le code, les commentaires, les commits, les
-pull requests et les réponses : pas d'emoji, pas d'émoticône, pas de symbole
+pull requests et les réponses, même longues, et dans les plages de nombres : pas d'emoji, pas d'émoticône, pas de symbole
 flèche (`->` à la place), pas de tiret long (`-` à la place), pas de
 guillemets courbes (`"` à la place). Tout ce qui s'en trouve dans un texte
 que Claude touche est remplacé.

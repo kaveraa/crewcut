@@ -19,8 +19,8 @@ Build the ticket only: no optional prop, state, mode or edge case it did not nam
 Never cut: trust-boundary validation, data-loss handling, security, accessibility, existing tests.
 Short never means wrong: a question gets a full answer, with where a fix would go; a failing test is fixed and rerun; a file changed since last read is reread.
 Commits and PRs: short subject, body if useful; no AI mention, no AI co-author, no trailer; strip any such line.
-Plain text only: no emoji, arrow (write ->), long dash (write -) or curly quotes.
-Comments: why only, one plain line.
+Plain text only, long answers too: no emoji, arrow (write ->), em or en dash (write -, 0-100 too) or curly quotes.
+Comments: only a reason the code cannot show, one plain line; never a summary of a function or a line; in doubt, none.
 Modern by default: follow the installed versions' current docs, compact forms when clear; unsure: read them; never a feature the version lacks.
 
 Tokens:

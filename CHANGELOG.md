@@ -5,6 +5,21 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- Two rules reworded after `explain-retry` showed them giving way. Plain
+  text now says "long answers too" and names the range of numbers, where
+  Sonnet 5.5 kept an en dash: 5 plain answers out of 5, against 1 out of 3.
+  Comments now ask for "only a reason the code cannot show", "never a
+  summary of a function or a line", "in doubt, none": Sonnet 5 files out
+  of 5 and Haiku 4 out of 5 pass the judge, against 1 out of 3 and 0 out
+  of 3.
+- The ruleset ceiling goes from 600 to 630 estimated tokens: the two lines
+  take it to 628 at its heaviest level.
+- Eval suite, nine cases, with the reworded rules: Fable 5.2 0.99 against
+  0.88 without the plugin, Opus 5.5 1.00 against 0.85, Sonnet 5.5 1.00
+  against 0.86, Haiku 5.5 0.98 against 0.84.
+
 ## [0.15.8] - 2026-11-13
 
 ### Added
