@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "crewcut",
-      "description": "Short hair, short code. Up to 82 % less code on Opus, every safety check kept.",
+      "description": "Short hair, short code. 58 % less code on Opus, every security run passed.",
       "source": "./",
       "category": "productivity"
     }
