@@ -206,6 +206,32 @@ in every trace. Check the trace before reading an ablation of the map.
 The table of the previous section is over the seven older cases; the next
 full measure counts eight.
 
+## Eight cases (crewcut 0.15.6, 2026-11-13)
+
+| Model | Score with | without | Turns with | without | Session cost with | without |
+|---|--:|--:|--:|--:|--:|--:|
+| Fable 5.2 | 0.98 | 0.89 | 4.3 | 6.0 | 0.197 USD | 0.189 USD |
+| Opus 5.5 | 0.99 | 0.86 | 4.8 | 5.7 | 0.089 USD | 0.086 USD |
+| Sonnet 5.5 | 0.99 | 0.87 | 4.4 | 5.6 | 0.043 USD | 0.040 USD |
+| Haiku 5.5 | 0.98 | 0.86 | 5.3 | 6.4 | 0.003 USD | 0.003 USD |
+
+This table is not a new run. It joins the seven cases of the section before
+last and `zod-email`, measured two hours apart on the same day, with the
+same judge, the same Claude Code and the same plugin code: between crewcut
+0.15.3 and 0.15.6 only the version string, the examples, the README and the
+eval cases changed, none of which reaches a session. One case was run
+again: `explain-bug` on Opus, whose first measure had lost a run without
+the plugin to a process spawn error; with three runs its score without the
+plugin is higher, which is most of the move from 0.80 to 0.86 on that row.
+48 runs per model, none in error, none out of usage.
+
+With the plugin, what still fails: on Fable, `date-picker` `short-answer`
+twice and `shared-bug` `root-cause-stated` three times (the fix is in the
+shared function in every run, the judge wants the cause said more plainly);
+on Opus and Sonnet, `explain-bug` `full-explanation` once each; on Haiku,
+`date-picker` `short-answer` three times and one banned character in an
+answer.
+
 What it says:
 
 - The savings show up with the size of the project. `csv-export` is twenty

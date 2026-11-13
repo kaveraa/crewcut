@@ -21,13 +21,13 @@ crewcut gain                   measured on public repos and eval cases, not on t
   Next.js boilerplate, Opus 5.5    18 %    45 %   40 %   33 %   21/21
   controls on Haiku, LOC: caveman 104 % and 85 %, yagni prompt 112 % and 71 %
 
-  eval cases (seven, three runs each, same model with and without)
+  eval cases (eight, three runs each, same model with and without)
 
                  score with / without   turns with / without   session cost with / without
-  Fable 5.2      0.98 / 0.87            4.4 / 6.1     -28 %    0.202 / 0.193 USD     +5 %
-  Opus 5.5       1.00 / 0.80            5.3 / 6.0     -12 %    0.092 / 0.089 USD     +3 %
-  Sonnet 5.5     0.99 / 0.88            4.6 / 6.0     -23 %    0.045 / 0.042 USD     +7 %
-  Haiku 5.5      0.98 / 0.87            5.6 / 6.9     -19 %    0.003 / 0.003 USD      0 %
+  Fable 5.2      0.98 / 0.89            4.3 / 6.0     -28 %    0.197 / 0.189 USD     +4 %
+  Opus 5.5       0.99 / 0.86            4.8 / 5.7     -16 %    0.089 / 0.086 USD     +3 %
+  Sonnet 5.5     0.99 / 0.87            4.4 / 5.6     -21 %    0.043 / 0.040 USD     +8 %
+  Haiku 5.5      0.98 / 0.86            5.3 / 6.4     -17 %    0.003 / 0.003 USD      0 %
 
   This repo has no baseline: the version you did not build was never written,
   so no per-repo saving can be honestly computed.
