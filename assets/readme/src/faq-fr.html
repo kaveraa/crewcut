@@ -1,0 +1,19 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+.q { padding: 18px 0; border-top: 1px solid #1F2B35; }
+.q:last-of-type { border-bottom: 1px solid #1F2B35; }
+.q b { display: block; font-size: 18px; color: #F4EFE6; }
+.q b::before { content: "? "; color: #E34948; }
+.q span { display: block; margin-top: 8px; font-size: 15px; line-height: 1.55; color: #B8C4CE; }
+.qs { margin-top: 26px; }
+</style>
+<div class="card"><div class="pole"></div>
+<div class="eyebrow">FAQ</div>
+<h1>Trois questions <em>qui méritent une réponse.</em></h1>
+<div class="qs">
+<div class="q"><b>Pourquoi un plugin quand un prompt de sept mots coupe autant sur Opus ?</b><span>Le prompt coupe à l'aveugle. Il saute les tests, écrit plus de code que pas de prompt sur Haiku, et retire une fois le contrôle par client d'un limiteur de débit. crewcut nomme ce qui n'est jamais coupé et corrige un bug à sa racine. Pour l'économie du prompt, /crewcut tests off garde tout le reste.</span></div>
+<div class="q"><b>Suit-il les nouveaux modèles ?</b><span>Oui. Le ruleset est injecté quel que soit le modèle de la session, et les deux agents nomment le leur par alias. Les chiffres sont une autre affaire : chacun vaut pour le modèle sur lequel il a été mesuré.</span></div>
+<div class="q"><b>Revendique-t-il une économie sur mon dépôt ?</b><span>Non. /crewcut-gain affiche les chiffres mesurés. La version que vous n'avez pas construite n'a jamais été écrite.</span></div>
+</div>
+</div>
+<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>

@@ -11,6 +11,8 @@ follows Keep a Changelog and the project follows Semantic Versioning.
   fixed-width font throughout, red as the only bright colour, and a glowing
   cut line in place of the barber pole. The banner is now a PNG rendered
   from `assets/banner.html`, like the cards.
+- README: the install, the settings, the FAQ and the limitations are cards
+  too. The two install commands and the settings table stay as text.
 
 ## [0.15.2] - 2026-11-13
 

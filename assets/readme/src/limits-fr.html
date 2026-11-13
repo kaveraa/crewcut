@@ -1,0 +1,20 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+.l { display: grid; grid-template-columns: 230px 1fr; gap: 20px; padding: 14px 0; border-top: 1px solid #1F2B35; align-items: baseline; }
+.l:last-of-type { border-bottom: 1px solid #1F2B35; }
+.l b { font-size: 16px; color: #F4C27A; font-weight: 400; }
+.l span { font-size: 14.5px; line-height: 1.5; color: #B8C4CE; }
+.ls { margin-top: 26px; }
+</style>
+<div class="card"><div class="pole"></div>
+<div class="eyebrow">Limites</div>
+<h1>Ce qu'il ne fait pas, <em>dit simplement.</em></h1>
+<div class="ls">
+<div class="l"><b>Node dans le PATH</b><span>Les hooks ont besoin de node. Sans lui, seuls les skills fonctionnent.</span></div>
+<div class="l"><b>Un niveau par projet</b><span>Deux sessions dans le même projet le partagent. La ligne de statut affiche le dernier niveau posé, quel que soit le projet.</span></div>
+<div class="l"><b>Une carte par regex</b><span>Les définitions de premier niveau dans dix langages ; les imbriquées ou dynamiques n'y sont pas. Versions lues dans package.json et composer.json seulement.</span></div>
+<div class="l"><b>Claude Code seulement</b><span>Hooks, niveaux, revue, audit et registre. Les autres agents reçoivent le ruleset par AGENTS.md.</span></div>
+<div class="l"><b>Pas en session cloud</b><span>claude.ai/code ne charge pas un plugin installé avec /plugin. L'installation de crewcut y est en cours de test.</span></div>
+</div>
+</div>
+<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>

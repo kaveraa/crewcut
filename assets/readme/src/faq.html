@@ -1,0 +1,19 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+.q { padding: 18px 0; border-top: 1px solid #1F2B35; }
+.q:last-of-type { border-bottom: 1px solid #1F2B35; }
+.q b { display: block; font-size: 18px; color: #F4EFE6; }
+.q b::before { content: "? "; color: #E34948; }
+.q span { display: block; margin-top: 8px; font-size: 15px; line-height: 1.55; color: #B8C4CE; }
+.qs { margin-top: 26px; }
+</style>
+<div class="card"><div class="pole"></div>
+<div class="eyebrow">FAQ</div>
+<h1>Three questions <em>worth asking.</em></h1>
+<div class="qs">
+<div class="q"><b>Why a plugin when a seven-word prompt cuts as much on Opus?</b><span>The prompt cuts blind. It skips the tests, writes more code than no prompt on Haiku, and once drops the per-client check of a rate limiter. crewcut names what never gets cut and fixes a bug at its root. For the prompt's savings, /crewcut tests off keeps everything else.</span></div>
+<div class="q"><b>Does it follow new models?</b><span>Yes. The ruleset is injected whatever the model of the session, and the two agents name theirs by alias. The figures are another matter: each one holds for the model it was measured on.</span></div>
+<div class="q"><b>Does it claim a saving on my repository?</b><span>No. /crewcut-gain prints the measured figures. The version you did not build was never written.</span></div>
+</div>
+</div>
+<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>

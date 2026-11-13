@@ -1,0 +1,20 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+.term { margin-top: 26px; padding: 22px 24px; border-radius: 12px; background: #111921; border: 1px solid #1F2B35; font-size: 17px; line-height: 1.9; color: #F4EFE6; }
+.term i { font-style: normal; color: #E34948; margin-right: 12px; }
+.term u { text-decoration: none; color: #56687A; }
+.three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+.three div { border: 1px solid #1F2B35; border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.5; color: #B8C4CE; }
+.three b { display: block; font-size: 15px; color: #F4EFE6; margin-bottom: 4px; }
+</style>
+<div class="card"><div class="pole"></div>
+<div class="eyebrow">Installation</div>
+<h1>Deux commandes, <em>et il est actif.</em></h1>
+<div class="term"><i>&gt;</i>/plugin marketplace add kaveraa/crewcut<br><i>&gt;</i>/plugin install crewcut@crewcut<br><u>crewcut: full | Opus | votre-projet</u></div>
+<div class="three">
+<div><b>Node 22 ou plus récent</b>Les hooks lancent node. Sans lui, seuls les skills fonctionnent.</div>
+<div><b>Une seule session</b>claude --plugin-dir /chemin/vers/crewcut, depuis un checkout local.</div>
+<div><b>Autres agents</b>Copiez AGENTS.md dans votre projet : le ruleset full, pour tout agent qui lit un fichier de règles.</div>
+</div>
+</div>
+<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>
