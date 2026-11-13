@@ -38,13 +38,6 @@ registre restent au plugin Claude Code.
 
 <p align="center"><img src="assets/readme/beforeafter-fr.png" width="880" alt="Ticket : ajouter un sélecteur de date au frontend. Sans crewcut : 318 lignes, 2 nouveaux paquets, 14 tours, 0,37 USD. Avec crewcut : 10 lignes, aucun paquet, 5 tours, 0,11 USD. Tout le composant est une fonction qui renvoie l'Input du dépôt avec le type date. Même dépôt, même modèle, Opus 5.5, une session sans interface de chaque côté."></p>
 
-Sans le plugin, Opus installe un calendrier et un popover, écrit un
-composant d'enrobage, une feuille de style et une page d'exemple, et vous
-demande de lancer `bun install`. Avec lui, la réponse dit ce que le
-composant enrobe, qu'il fonctionne avec `react-hook-form` comme les autres
-champs, que rien n'a été exécuté, et que le calendrier stylé coûterait deux
-paquets si vous le voulez.
-
 Les deux diffs et les deux réponses, tels quels, avec quatre autres
 tickets : [examples/](examples/) (en anglais).
 
@@ -52,39 +45,27 @@ tickets : [examples/](examples/) (en anglais).
 
 <p align="center"><img src="assets/readme/ladder-fr.png" width="880" alt="Comment ça marche. Lire ce que le changement touche, puis prendre le barreau le plus bas qui tient. 1, pas nécessaire : on saute et on le dit en une ligne. 2, déjà dans ce code : on réutilise. 3, dans la bibliothèque standard : on l'utilise. 4, natif à la plateforme, HTML, CSS, SQL, l'OS : on l'utilise. 5, une dépendance installée : on l'utilise, jamais d'ajout. 6, une ligne : une ligne. 7, sinon le minimum qui marche. Jamais coupé : validation aux frontières de confiance, pertes de données, sécurité, accessibilité, tests."></p>
 
-Au démarrage de la session, et dans chaque sous-agent, Claude reçoit un
-ruleset : un senior qui lit tout et n'écrit presque rien.
+<p align="center"><img src="assets/readme/rules-fr.png" width="880" alt="Le ruleset, à chaque démarrage de session : un senior qui lit tout et n'écrit presque rien. Le ticket, rien de plus : aucune prop, aucun état, mode ou cas limite qu'il n'a pas nommé. Corriger la cause : trouver tous les appelants, corriger la fonction partagée une fois. Court ne veut pas dire faux : une question reçoit une réponse complète, un test qui échoue est corrigé et relancé. Pratiques à jour : suivre ce que la documentation officielle des versions installées recommande aujourd'hui. Sortie propre : les commentaires disent le pourquoi en une ligne, ni emoji, ni flèche, ni tiret long, aucune trace d'IA dans les commits. Avec lui, une carte des noms que le projet définit déjà et les versions qu'il déclare."></p>
 
-- **Construire le ticket, pas ses voisins.** Aucune prop, aucun état, mode
-  ou cas limite que le ticket n'a pas nommé. Un second cas d'usage est un
-  second ticket.
-- **Corriger un bug, c'est corriger sa cause.** Trouver tous les appelants,
-  corriger la fonction partagée une fois, même quand les autres appelants
-  semblent sûrs aujourd'hui.
-- **Court ne veut jamais dire faux.** Une question reçoit une réponse
-  complète, un test qui échoue est corrigé et relancé, un fichier modifié
-  depuis la dernière lecture est relu.
-- **Pratiques à jour.** Claude suit ce que la documentation officielle des
-  versions installées recommande aujourd'hui, et la lit en cas de doute.
-- **Sortie propre.** Les commentaires disent le pourquoi, en une ligne
-  simple. Pas d'emoji, pas de symbole flèche, pas de tiret long. Aucune
-  mention ni co-auteur IA dans les commits et les pull requests.
-
-Avec le ruleset, le démarrage de session porte une carte de ce que le
-projet définit déjà, une ligne par dossier avec ses noms exportés, et les
-versions que `package.json` et `composer.json` déclarent. Réutiliser un
-helper et écrire pour les versions utilisées ne coûtent alors aucune
-recherche. `/crewcut map off` retire les deux.
-
-Le ruleset complet : [Les règles](#les-regles).
+Le ruleset complet est dans [Les règles](#les-regles), sous Référence.
 
 ## Mesuré
 
 <p align="center"><img src="assets/readme/evals-fr.png" width="880" alt="Suite d'évals, sept cas, trois runs chacun. Plus court, et plus souvent juste. Fable 5.2 : 0,99 avec crewcut, 0,82 pour le même modèle sans plugin. Opus 5.5 : 1,00 avec, 0,81 sans. Sonnet 5.5 : 0,98 avec, 0,86 sans. Haiku 5.5 : 0,96 avec, 0,79 sans. Le score est la part de graders réussis. Chaque cas note la justesse autant que la taille : une réponse plus courte mais fausse vaut zéro."></p>
 
-**Suite d'évals.** Les sept cas du plugin, trois runs chacun, avec et sans
-le plugin, Sonnet comme juge. Chaque cas note la justesse autant que la
-taille.
+<p align="center"><img src="assets/readme/benchmark-fr.png" width="880" alt="Benchmark agentique, face au même modèle sans plugin. Code, tokens, coût, temps, sûr. Opus 5.5 sur Next-js-Boilerplate : moins 82, moins 55, moins 60, moins 67 pour cent, 100 pour cent sûr. Opus 5.5 sur full-stack-fastapi-template : moins 70, moins 40, moins 43, moins 49, 100 sûr. Sonnet 5.5 sur Next-js-Boilerplate : moins 70, moins 11, moins 31, moins 34, 100 sûr. Haiku 4.5 sur Next-js-Boilerplate : moins 63, moins 48, moins 46, moins 40, 100 sûr. Haiku 4.5 sur le template : moins 9, moins 30, moins 30, moins 20, 100 sûr. Sonnet 5.5 sur le template : moins 8, plus 9, plus 2, moins 2, 100 sûr."></p>
+
+<p align="center"><img src="assets/readme/controls-fr.png" width="880" alt="Mêmes runs, deux contrôles : code et coût face à sans plugin, pour crewcut, crewcut tests off, et le prompt YAGNI de sept mots. Le prompt coupe autant sur Opus et Sonnet, écrit plus de code que pas de prompt sur le template Haiku, et n'est sûr que sur 96 pour cent des cellules de sécurité Haiku, là où crewcut l'est sur toutes."></p>
+
+Chaque chiffre vaut pour le modèle nommé dans sa ligne. Méthode, tableaux
+par tâche, limites et reproduction :
+[benchmarks/agentic/RESULTS.md](benchmarks/agentic/RESULTS.md) et
+[evals/RESULTS.md](evals/RESULTS.md) (en anglais).
+
+<details>
+<summary>Les chiffres en texte</summary>
+
+Suite d'évals, sept cas, trois runs chacun, Sonnet comme juge :
 
 | Modèle | crewcut | Score avec | sans | Tours avec | sans | Coût par run avec | sans |
 |---|---|--:|--:|--:|--:|--:|--:|
@@ -93,16 +74,7 @@ taille.
 | Sonnet 5.5 | 0.14.0 | 0,98 | 0,86 | 4,4 | 6,2 | 0,059 USD | 0,059 USD |
 | Haiku 5.5 | 0.14.0 | 0,96 | 0,79 | 5,4 | 7,0 | 0,012 USD | 0,021 USD |
 
-Un bug dans une fonction partagée est corrigé à sa racine dans 3 runs sur 3
-avec le plugin sur les quatre modèles, 0 sans : chaque run sans lui a
-rustiné l'appelant. Tableaux par cas et chaque remesure :
-[evals/RESULTS.md](evals/RESULTS.md) (en anglais).
-
-**Benchmark agentique.** Douze tickets d'une ligne sur un vrai dépôt, une
-session Claude Code sans interface par cellule, notée sur le `git diff`
-qu'elle laisse, plus sept tâches de sécurité dont la sortie est exécutée
-sur des entrées hostiles. Chaque case est un pourcentage du même modèle
-sans plugin.
+Benchmark agentique, crewcut face au même modèle sans plugin :
 
 | crewcut vs baseline sans plugin | lignes | tokens | coût | temps | sûr |
 |---|--:|--:|--:|--:|--:|
@@ -113,19 +85,7 @@ sans plugin.
 | **Haiku 4.5, full-stack-fastapi-template** | **-9 %** | **-30 %** | **-30 %** | **-20 %** | **100 %** |
 | **Sonnet 5.5, full-stack-fastapi-template** | **-8 %** | **+9 %** | **+2 %** | **-2 %** | **100 %** |
 
-La coupe suit ce que la baseline sur-construit, qui dépend du dépôt autant
-que du modèle : elle est la plus forte quand un élément natif remplace un
-composant, proche de zéro sur les endpoints irréductibles. Les tokens ne
-baissent que là où le plugin retire des tours : sur Opus, de 12,1 à 7,5 par
-ticket.
-
-<p align="center"><img src="assets/benchmark-opus-next.svg" width="860" alt="Chaque bras en pourcentage de la baseline sans plugin sur les lignes, les tokens, le coût et le temps (Opus 5.5, Next-js-Boilerplate). Crewcut : lignes 18, tokens 45, coût 40, temps 33. Crewcut tests off : 17, 43, 37, 31. Le prompt yagni : 12, 38, 34, 28. Sécurité : chaque bras 100 pour cent."></p>
-
-<details>
-<summary>Tests off, et le contrôle du prompt de sept mots</summary>
-
-Le même bras avec `/crewcut tests off`, un test seulement si le ticket le
-demande :
+Le même bras avec `/crewcut tests off` :
 
 | crewcut, tests off, vs baseline sans plugin | lignes | tokens | coût | temps | sûr |
 |---|--:|--:|--:|--:|--:|
@@ -136,8 +96,7 @@ demande :
 | Haiku 4.5, full-stack-fastapi-template | -20 % | -38 % | -35 % | -26 % | 100 % |
 | Sonnet 5.5, full-stack-fastapi-template | -17 % | -15 % | -26 % | -24 % | 100 % |
 
-Le prompt de sept mots "Follow YAGNI principles, and prefer one-liner
-solutions." dans les mêmes runs :
+Le prompt "Follow YAGNI principles, and prefer one-liner solutions." :
 
 | prompt "YAGNI + one-liners" vs baseline sans plugin | lignes | tokens | coût | temps | sûr |
 |---|--:|--:|--:|--:|--:|
@@ -148,19 +107,18 @@ solutions." dans les mêmes runs :
 | Haiku 4.5, full-stack-fastapi-template | +12 % | -15 % | +11 % | -5 % | 96 % |
 | Sonnet 5.5, full-stack-fastapi-template | -31 % | -1 % | -12 % | -14 % | 100 % |
 
-<p align="center"><img src="assets/benchmark-opus-tests.svg" width="860" alt="Tests on contre tests off, chaque bras en pourcentage de la baseline sans plugin (Opus 5.5, full-stack-fastapi-template). Crewcut tests on : lignes 30, tokens 60, coût 57, temps 51. Crewcut tests off : 29, 50, 47, 39. Le prompt yagni : 28, 56, 51, 44. Sécurité : chaque bras 100 pour cent."></p>
-
-Caveman, le contrôle prose concise, ne coupe aucun code (+4 % de lignes sur
-le template) : prose courte ne veut pas dire code court.
-
 </details>
 
-Le harnais est celui que ponytail a publié pour son propre benchmark, avec
-un bras `crewcut` en plus ; les lignes Haiku sont la remesure de crewcut
-0.11.3. Méthode, tableaux par tâche, limites et reproduction :
-[benchmarks/agentic/RESULTS.md](benchmarks/agentic/RESULTS.md) (en anglais).
-
 ## Niveaux et commandes
+
+<p align="center"><img src="assets/readme/commands-fr.png" width="880" alt="Niveaux et commandes. Quatre niveaux : off, rien pour cette session ; lite, discipline de sortie et lecture légère ; full, par défaut, sortie, lecture, écriture et outils ; ultra, full plus des réponses d'une ligne et aucun fichier non demandé. Commandes : /crewcut niveau, /crewcut default niveau, /crewcut tests on ou off, /crewcut map on ou off, /crewcut subagents on ou off, /crewcut lang code, /crewcut markers on ou off, /crewcut-review, /crewcut-audit, /crewcut-debt, /crewcut-gain, /crewcut-help, /crewcut uninstall."></p>
+
+Une nouvelle session démarre au niveau par défaut, `full` sauf si vous
+l'avez changé ; une session reprise garde le niveau choisi. Taper
+`stop crewcut` comme message entier coupe aussi le plugin.
+
+<details>
+<summary>Niveaux et commandes en texte</summary>
 
 | Niveau  | Ce que Claude reçoit                                                    |
 | ------- | ----------------------------------------------------------------------- |
@@ -168,11 +126,6 @@ un bras `crewcut` en plus ; les lignes Haiku sont la remesure de crewcut
 | `lite`  | Discipline de sortie et lecture légère                                  |
 | `full`  | Par défaut. Discipline de sortie, de lecture, d'écriture et d'outils    |
 | `ultra` | Full, plus des réponses d'une ligne et aucun nouveau fichier ni dépendance sans demande explicite |
-
-Une nouvelle session démarre au niveau par défaut, `full` sauf si vous l'avez
-changé ; une session reprise et une compaction du contexte gardent le niveau
-choisi. Taper `stop crewcut` ou `normal mode` comme message entier coupe
-aussi le plugin.
 
 | Commande                    | Effet                                                 |
 | --------------------------- | ----------------------------------------------------- |
@@ -191,50 +144,17 @@ aussi le plugin.
 | `/crewcut-help`             | Carte de référence                                    |
 | `/crewcut uninstall`        | Retire les fichiers du plugin à côté de vos réglages  |
 
+</details>
+
 ## Revue, audit et dette
 
-`/crewcut-review` passe en revue les changements non commités, ou le
-dernier commit s'il n'y en a pas ; une plage git, un lien de PR ou des
-chemins de fichiers fixent la portée. Un agent en lecture seule sur Sonnet
-lit le diff et le code qu'il touche, appelants compris, dans cet ordre :
-juste, sûr, tient à la charge que le projet attend, testé, rapide, sobre.
-Chaque constat vient avec un cas concret, le plus petit correctif et ce qui
-arrive si on le saute, numéroté pour que vous puissiez dire « corrige 2 et
-4 » :
+<p align="center"><img src="assets/readme/review-fr.png" width="880" alt="Un exemple du format de /crewcut-review. Ce que fait le changement, puis des constats groupés en à corriger et à corriger ensuite, chacun avec le quoi, le problème, le correctif et la conséquence si on le saute, un verdict et les lignes à couper. Dans l'ordre : juste, sûr, tient à la charge, testé, rapide, sobre. Lecture seule. /crewcut-audit fait la même revue sur tout un arbre, vingt constats au plus."></p>
 
-```
-What this does: adds a nightly job that closes the day and bills its orders.
-
-Must fix
-1. Orders land on the wrong day (billing/close_day.py:40-52)
-   What: the job stamps each order with the server clock, which runs in UTC.
-   Problem: an order placed at 00:30 in Berlin is billed on the day before.
-   Fix: take the date once in the shop's time zone; one line, nothing else moves.
-   If skipped: late orders carry the wrong date and accounting corrects them by hand.
-
-Should fix
-2. No test on the billing total (billing/close_day.py:60)
-   ...
-
-Verdict: fix 1 first.
-cut: 14 lines
-```
-
-`/crewcut-audit` fait la même revue sur tout un arbre, points d'entrée et
-flux principaux d'abord, vingt constats au plus. Les deux rapportent et ne
-changent rien.
-
-Avec `/crewcut markers on`, un coin coupé volontairement porte un
-commentaire comme `// ~ no retry, add when the API flakes`. Le signe est
-discret : crewcut n'écrit jamais son nom dans votre code. `/crewcut-debt`
-rassemble les marqueurs et signale ceux qui ne nomment aucune condition
-pour y revenir :
-
-```
-src/queue.js:18: no retry -> add when: the API flakes
-src/report.js:40: full table scan -> no trigger
-2 markers, 1 without a trigger
-```
+`/crewcut-review` prend les changements non commités, une plage git, un
+lien de PR ou des chemins de fichiers. Avec `/crewcut markers on`, un coin
+coupé volontairement porte un discret
+`// ~ no retry, add when the API flakes`, et `/crewcut-debt` les liste.
+crewcut n'écrit jamais son nom dans votre code.
 
 ## Référence
 

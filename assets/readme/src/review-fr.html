@@ -1,0 +1,27 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+.term { margin-top: 26px; padding: 22px 24px; border-radius: 12px; background: #0E151B; font-family: Consolas, monospace; font-size: 14.5px; line-height: 1.65; color: #B8C4CE; white-space: pre-wrap; }
+.term b { color: #E34948; }
+.term i { font-style: normal; color: #F4C27A; }
+.term u { text-decoration: none; color: #6B7F90; }
+.term em { font-style: normal; color: #F4EFE6; font-weight: 700; }
+</style>
+<div class="card"><div class="pole"></div>
+<div class="eyebrow">/crewcut-review, un exemple du format</div>
+<h1>Relu comme le senior <em>qu'on appelle quand ça casse.</em></h1>
+<div class="term"><u>What this does:</u> adds a nightly job that closes the day and bills its orders.
+
+<b>Must fix</b>
+<em>1. Orders land on the wrong day</em> <u>(billing/close_day.py:40-52)</u>
+   <i>What:</i> the job stamps each order with the server clock, which runs in UTC.
+   <i>Problem:</i> an order placed at 00:30 in Berlin is billed on the day before.
+   <i>Fix:</i> take the date once in the shop's time zone; one line.
+   <i>If skipped:</i> late orders carry the wrong date, fixed by hand.
+
+<b>Should fix</b>
+<em>2. No test on the billing total</em> <u>(billing/close_day.py:60)</u>
+
+<u>Verdict:</u> fix 1 first.    <u>cut:</u> 14 lines</div>
+<div class="foot">Dans l'ordre : juste, sûr, tient à la charge, testé, rapide, sobre. Lecture seule.<br>/crewcut-audit fait la même revue sur tout un arbre, vingt constats au plus.</div>
+</div>
+<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>

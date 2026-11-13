@@ -1,0 +1,39 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+.lv { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 26px; }
+.lv div { border: 1px solid #35495E; border-radius: 12px; padding: 14px 16px; }
+.lv div.on { border-color: #E34948; background: rgba(227, 73, 72, 0.08); }
+.lv b { display: block; font-family: Consolas, monospace; font-size: 18px; color: #F4EFE6; }
+.lv .on b { color: #E34948; }
+.lv span { display: block; margin-top: 6px; font-size: 14px; line-height: 1.4; color: #B8C4CE; }
+.c { display: grid; grid-template-columns: 290px 1fr; padding: 10px 0; border-top: 1px solid #35495E; align-items: baseline; }
+.c code { font-family: Consolas, monospace; font-size: 15.5px; color: #F4C27A; }
+.c span { font-size: 15.5px; color: #B8C4CE; }
+.cs { margin-top: 24px; border-bottom: 1px solid #35495E; }
+</style>
+<div class="card"><div class="pole"></div>
+<div class="eyebrow">Niveaux et commandes</div>
+<h1>Quatre niveaux, <em>une commande pour en changer.</em></h1>
+<div class="lv">
+<div><b>off</b><span>Rien, pour cette session</span></div>
+<div><b>lite</b><span>Discipline de sortie, lecture légère</span></div>
+<div class="on"><b>full</b><span>Par défaut. Sortie, lecture, écriture, outils</span></div>
+<div><b>ultra</b><span>Full, plus des réponses d'une ligne, aucun fichier non demandé</span></div>
+</div>
+<div class="cs">
+<div class="c"><code>/crewcut &lt;niveau&gt;</code><span>change de niveau ; seul, affiche le niveau courant</span></div>
+<div class="c"><code>/crewcut default &lt;niveau&gt;</code><span>niveau de départ des nouvelles sessions</span></div>
+<div class="c"><code>/crewcut tests on|off</code><span>off : un test seulement si le ticket le demande</span></div>
+<div class="c"><code>/crewcut map on|off</code><span>les noms et les versions du projet au démarrage</span></div>
+<div class="c"><code>/crewcut subagents on|off</code><span>les règles dans les sous-agents aussi</span></div>
+<div class="c"><code>/crewcut lang &lt;code&gt;</code><span>répond en en, es, fr, de, ko ou zh</span></div>
+<div class="c"><code>/crewcut markers on|off</code><span>un commentaire discret // ~ sur un coin coupé</span></div>
+<div class="c"><code>/crewcut-review [portée]</code><span>revue en lecture seule d'un changement</span></div>
+<div class="c"><code>/crewcut-audit [chemin]</code><span>la même sur tout un arbre, classée</span></div>
+<div class="c"><code>/crewcut-debt [chemin]</code><span>registre des marqueurs // ~</span></div>
+<div class="c"><code>/crewcut-gain</code><span>les chiffres mesurés, sous forme de carte</span></div>
+<div class="c"><code>/crewcut-help</code><span>carte de référence</span></div>
+<div class="c"><code>/crewcut uninstall</code><span>retire les fichiers du plugin à côté de vos réglages</span></div>
+</div>
+</div>
+<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>

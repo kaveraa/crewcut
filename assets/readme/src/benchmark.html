@@ -1,0 +1,16 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<div class="card"><div class="pole"></div>
+<div class="eyebrow">Agentic benchmark, against the same model with no plugin</div>
+<h1>Less code on every model. <em>Fewer tokens where turns disappear.</em></h1>
+<table>
+<tr><th>model, repository</th><th>code</th><th>tokens</th><th>cost</th><th>time</th><th>safe</th></tr>
+<tr class="top"><td>Opus 5.5<small>Next-js-Boilerplate</small></td><td class="hot">-82 %</td><td class="hot">-55 %</td><td class="hot">-60 %</td><td class="hot">-67 %</td><td class="ok">100 %</td></tr>
+<tr><td>Opus 5.5<small>full-stack-fastapi-template</small></td><td class="hot">-70 %</td><td class="warm">-40 %</td><td class="warm">-43 %</td><td class="warm">-49 %</td><td class="ok">100 %</td></tr>
+<tr><td>Sonnet 5.5<small>Next-js-Boilerplate</small></td><td class="hot">-70 %</td><td class="warm">-11 %</td><td class="warm">-31 %</td><td class="warm">-34 %</td><td class="ok">100 %</td></tr>
+<tr><td>Haiku 4.5<small>Next-js-Boilerplate</small></td><td class="hot">-63 %</td><td class="warm">-48 %</td><td class="warm">-46 %</td><td class="warm">-40 %</td><td class="ok">100 %</td></tr>
+<tr><td>Haiku 4.5<small>full-stack-fastapi-template</small></td><td class="warm">-9 %</td><td class="warm">-30 %</td><td class="warm">-30 %</td><td class="warm">-20 %</td><td class="ok">100 %</td></tr>
+<tr><td>Sonnet 5.5<small>full-stack-fastapi-template</small></td><td class="warm">-8 %</td><td>+9 %</td><td>+2 %</td><td class="warm">-2 %</td><td class="ok">100 %</td></tr>
+</table>
+<div class="foot">Twelve one-line tickets per repository, a headless Claude Code session per cell, scored on<br>the git diff. Safe: seven tasks whose output is executed against adversarial input.</div>
+</div>
+<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>

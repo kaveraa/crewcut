@@ -5,6 +5,13 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- README: the tables become cards too, in English and in French: the
+  agentic benchmark, the two controls, the rules, the levels and commands,
+  the review format. The text under each card is a few lines; every table
+  stays available as text in a folded block.
+
 ## [0.14.0] - 2026-11-13
 
 ### Added
