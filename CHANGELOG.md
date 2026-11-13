@@ -5,6 +5,21 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- The answer to a bug fix names the cause first. The Output rule now reads
+  "what changed (a bug: its cause first), where". Fable 5.2 states the
+  cause on `shared-bug` in 5 runs out of 5, against 1 out of 3, and Opus
+  5.5 on `csv-export` in 5 out of 5, against 2 out of 3.
+- The ruleset ceiling goes from 630 to 640 estimated tokens: the clause
+  takes it to 634 at its heaviest level.
+- Eval suite: the `short-answer` grader of `date-picker` accepts an
+  answer that says the field was made required and can be made optional.
+- Eval suite, nine cases: Fable 5.2 1.00 against 0.88 without the plugin,
+  Opus 5.5 1.00 against 0.84, Sonnet 5.5 0.97 against 0.86, Haiku 5.5 0.97
+  against 0.84. Sonnet and Haiku move between 0.97 and 1.00 from one suite
+  to the next under either wording; the notebook has both.
+
 ## [0.16.0] - 2026-11-13
 
 ### Changed

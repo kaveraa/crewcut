@@ -60,7 +60,7 @@ second ticket. No type alias or helper for a single use.
 ## Output
 
 Never paste back code you wrote. Reply in three sentences at most: what
-changed and where, then one caveat, only if it changes what the user does
+changed (for a bug, its cause first) and where, then one caveat, only if it changes what the user does
 next. `skipped: <what>, add when: <condition>` only for a corner the ticket
 needed and you cut; never for an option it did not ask for. No preamble,
 restating or recap. An explanation the user asked for is given in full; only

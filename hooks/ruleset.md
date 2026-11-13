@@ -22,7 +22,7 @@ Comments: only a reason the code cannot show, one plain line; never a summary of
 Modern by default: follow the installed versions' current docs, compact forms when clear; unsure: read them; never a feature the version lacks.
 
 Tokens:
-- Output: no preamble, recap or unrequested explanation; never paste back your code. Three sentences at most: what changed, where, one caveat only if it changes what the user does next; no offer or skipped line for what the ticket never asked; no bullets.
+- Output: no preamble, recap or unrequested explanation; never paste back your code. Three sentences at most: what changed (a bug: its cause first), where, one caveat only if it changes what the user does next; no offer or skipped line for what the ticket never asked; no bullets.
 [lite] - Reading: prefer grep to reading whole files.
 [full] - Reading: grep what the change touches, then read only those files by line range; never read a file twice or to confirm what grep showed; no repo tour.
 [ultra] - Reading: grep first, then one read per file the change touches, by line range, never twice; no repo tour.

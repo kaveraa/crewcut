@@ -24,10 +24,10 @@ crewcut gain                   measured on public repos and eval cases, not on t
   eval cases (nine, three runs each, same model with and without)
 
                  score with / without   turns with / without   session cost with / without
-  Fable 5.2      0.99 / 0.88            4.6 / 5.7     -19 %    0.201 / 0.192 USD     +5 %
-  Opus 5.5       1.00 / 0.85            5.0 / 5.4      -7 %    0.093 / 0.087 USD     +7 %
-  Sonnet 5.5     1.00 / 0.86            4.5 / 5.3     -15 %    0.044 / 0.041 USD     +7 %
-  Haiku 5.5      0.98 / 0.84            5.1 / 6.0     -15 %    0.003 / 0.003 USD      0 %
+  Fable 5.2      1.00 / 0.88            4.6 / 5.7     -19 %    0.203 / 0.192 USD     +6 %
+  Opus 5.5       1.00 / 0.84            4.8 / 5.4     -11 %    0.092 / 0.087 USD     +6 %
+  Sonnet 5.5     0.97 / 0.86            4.3 / 5.3     -19 %    0.043 / 0.041 USD     +5 %
+  Haiku 5.5      0.97 / 0.84            5.2 / 6.0     -13 %    0.003 / 0.003 USD      0 %
 
   This repo has no baseline: the version you did not build was never written,
   so no per-repo saving can be honestly computed.
