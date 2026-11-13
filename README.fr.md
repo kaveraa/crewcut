@@ -15,7 +15,7 @@
 Un plugin Claude Code pour le code le plus simple qui marche : moins de code, moins de tokens, des réponses courtes, et aucune coupe sur la sécurité.
 </p>
 
-<p align="center"><img src="assets/readme/numbers-fr.png" width="880" alt="Opus 5.5, avec et sans le plugin. Même agent, mêmes tickets, une fraction du code : 82 pour cent de code en moins, 55 pour cent de tokens en moins, 60 pour cent de coût en moins, 67 pour cent de temps en moins. 100 pour cent des tâches de sécurité passent toujours. Douze tickets d'une ligne sur Next-js-Boilerplate, sessions Claude Code sans interface, notées sur le git diff, face au même modèle sans plugin."></p>
+<p align="center"><img src="assets/readme/numbers-fr.png" width="880" alt="Opus 5.5, avec et sans le plugin. Même agent, mêmes tâches, moins de la moitié du code : 58 pour cent de code en moins, 56 pour cent de tokens de sortie en moins, 34 pour cent de coût en moins, 53 pour cent de temps en moins. 30 runs de sécurité sur 30 réussis, avec le plugin comme sans. Le benchmark de ponytail 5, son harnais inchangé : 39 tâches, 5 runs chacune, 390 sessions Claude Code sans interface. Médiane par tâche, moyenne géométrique sur les tâches."></p>
 
 ## Installation
 
@@ -53,11 +53,15 @@ Le ruleset complet est dans [Les règles](#les-regles), sous Référence.
 
 <p align="center"><img src="assets/readme/evals-fr.png" width="880" alt="Suite d'évals, sept cas, trois runs chacun. Plus court, et plus souvent juste. Fable 5.2 : 0,99 avec crewcut, 0,82 pour le même modèle sans plugin. Opus 5.5 : 1,00 avec, 0,81 sans. Sonnet 5.5 : 0,98 avec, 0,86 sans. Haiku 5.5 : 0,96 avec, 0,79 sans. Le score est la part de graders réussis. Chaque cas note la justesse autant que la taille : une réponse plus courte mais fausse vaut zéro."></p>
 
-<p align="center"><img src="assets/readme/benchmark-fr.png" width="880" alt="Benchmark agentique, face au même modèle sans plugin. Code, tokens, coût, temps, sûr. Opus 5.5 sur Next-js-Boilerplate : moins 82, moins 55, moins 60, moins 67 pour cent, 100 pour cent sûr. Opus 5.5 sur full-stack-fastapi-template : moins 70, moins 40, moins 43, moins 49, 100 sûr. Sonnet 5.5 sur Next-js-Boilerplate : moins 70, moins 11, moins 31, moins 34, 100 sûr. Haiku 4.5 sur Next-js-Boilerplate : moins 63, moins 48, moins 46, moins 40, 100 sûr. Haiku 4.5 sur le template : moins 9, moins 30, moins 30, moins 20, 100 sûr. Sonnet 5.5 sur le template : moins 8, plus 9, plus 2, moins 2, 100 sûr."></p>
+<p align="center"><img src="assets/readme/pt5-fr.png" width="880" alt="Le benchmark de ponytail 5, crewcut 0.14.0 face à sans plugin, Opus 5.5, 39 tâches, 5 runs. Lignes de code moins 58 pour cent, intervalle à 95 pour cent de moins 68 à moins 47, mieux sur 32 tâches et pire sur 1. Information de code moins 52 pour cent. Tokens de sortie moins 56 pour cent. Coût moins 34 pour cent, intervalle de moins 44 à moins 24. Temps moins 53 pour cent. Tours moins 19 pour cent. Vérifications cachées : 85 sur 90 réussies, 86 sans le plugin. Six tâches de sécurité : 30 sur 30 dans les deux bras. Tâche de confidentialité : 0 sur 5, puis 8 sur 10 après la règle qui nomme ce qu'un changement peut exposer. Ponytail 5 a publié pour lui-même : code moins 53 pour cent, tokens de sortie moins 45, coût moins 26, temps moins 41. Deux runs à un mois d'écart, les intervalles se recouvrent."></p>
+
+<p align="center"><img src="assets/readme/benchmark-fr.png" width="880" alt="Le harnais d'octobre, trois modèles, deux dépôts, face au même modèle sans plugin. Code, tokens, coût, temps, sûr. Opus 5.5 sur Next-js-Boilerplate : moins 82, moins 55, moins 60, moins 67 pour cent, 100 pour cent sûr. Opus 5.5 sur full-stack-fastapi-template : moins 70, moins 40, moins 43, moins 49, 100 sûr. Sonnet 5.5 sur Next-js-Boilerplate : moins 70, moins 11, moins 31, moins 34, 100 sûr. Haiku 4.5 sur Next-js-Boilerplate : moins 63, moins 48, moins 46, moins 40, 100 sûr. Haiku 4.5 sur le template : moins 9, moins 30, moins 30, moins 20, 100 sûr. Sonnet 5.5 sur le template : moins 8, plus 9, plus 2, moins 2, 100 sûr."></p>
 
 <p align="center"><img src="assets/readme/controls-fr.png" width="880" alt="Mêmes runs, deux contrôles : code et coût face à sans plugin, pour crewcut, crewcut tests off, et le prompt YAGNI de sept mots. Le prompt coupe autant sur Opus et Sonnet, écrit plus de code que pas de prompt sur le template Haiku, et n'est sûr que sur 96 pour cent des cellules de sécurité Haiku, là où crewcut l'est sur toutes."></p>
 
-Chaque chiffre vaut pour le modèle nommé dans sa ligne. Méthode, tableaux
+Le premier tableau est le benchmark de ponytail 5, joué avec son harnais
+inchangé ; les deux suivants viennent du harnais d'octobre, sur trois modèles
+et deux dépôts. Chaque chiffre vaut pour le modèle nommé dans sa ligne. Méthode, tableaux
 par tâche, limites et reproduction :
 [benchmarks/agentic/RESULTS.md](benchmarks/agentic/RESULTS.md) et
 [evals/RESULTS.md](evals/RESULTS.md) (en anglais).
@@ -74,7 +78,19 @@ Suite d'évals, sept cas, trois runs chacun, Sonnet comme juge :
 | Sonnet 5.5 | 0.14.0 | 0,98 | 0,86 | 4,4 | 6,2 | 0,059 USD | 0,059 USD |
 | Haiku 5.5 | 0.14.0 | 0,96 | 0,79 | 5,4 | 7,0 | 0,012 USD | 0,021 USD |
 
-Benchmark agentique, crewcut face au même modèle sans plugin :
+Le benchmark de ponytail 5, Opus 5.5, 39 tâches, 5 runs, crewcut 0.14.0
+face à sans plugin :
+
+| | écart | intervalle à 95 % | tâches mieux / pire |
+|---|--:|--:|--:|
+| Lignes de code | -58 % | -68 à -47 | 32 / 1 |
+| Information de code (gzip) | -52 % | -61 à -41 | 34 / 1 |
+| Tokens de sortie | -56 % | -64 à -47 | 38 / 1 |
+| Coût | -34 % | -44 à -24 | 32 / 7 |
+| Temps | -53 % | -59 à -46 | 39 / 0 |
+| Tours | -19 % | -26 à -11 | 21 / 4 |
+
+Le harnais d'octobre, crewcut face au même modèle sans plugin :
 
 | crewcut vs baseline sans plugin | lignes | tokens | coût | temps | sûr |
 |---|--:|--:|--:|--:|--:|

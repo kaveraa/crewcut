@@ -4,20 +4,20 @@
 .n { font-size: 58px; font-weight: 700; color: #E34948; letter-spacing: -1.5px; line-height: 1; }
 .l { margin-top: 8px; font-family: Consolas, monospace; font-size: 15px; color: #B8C4CE; }
 .safe { display: flex; align-items: baseline; gap: 16px; }
-.safe b { font-size: 40px; color: #F4C27A; letter-spacing: -1px; }
+.safe b { font-size: 40px; color: #F4C27A; letter-spacing: -1px; white-space: nowrap; }
 .safe span { font-size: 18px; color: #E6EDF3; }
 </style>
 <div class="card"><div class="pole"></div>
 <div class="eyebrow">Opus 5.5, with and without the plugin</div>
-<h1>Same agent, same tickets. <em>A fraction of the code.</em></h1>
+<h1>Same agent, same tasks. <em>Less than half the code.</em></h1>
 <div class="grid">
-<div><div class="n">-82%</div><div class="l">code</div></div>
-<div><div class="n">-55%</div><div class="l">tokens</div></div>
-<div><div class="n">-60%</div><div class="l">cost</div></div>
-<div><div class="n">-67%</div><div class="l">time</div></div>
+<div><div class="n">-58%</div><div class="l">code</div></div>
+<div><div class="n">-56%</div><div class="l">output tokens</div></div>
+<div><div class="n">-34%</div><div class="l">cost</div></div>
+<div><div class="n">-53%</div><div class="l">time</div></div>
 </div>
 <div class="rule"></div>
-<div class="safe"><b>100%</b><span>of the safety tasks still pass. Nothing is cut on validation or security.</span></div>
-<div class="foot">Twelve one-line tickets on Next-js-Boilerplate, headless Claude Code sessions,<br>scored on the git diff, against the same model with no plugin.</div>
+<div class="safe"><b>30 / 30</b><span>security runs pass, with the plugin as without it.</span></div>
+<div class="foot">Ponytail 5's benchmark, its harness unchanged: 39 tasks, 5 runs each, 390 headless<br>Claude Code sessions. Median per task, geometric mean over the tasks.</div>
 </div>
 <script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>
