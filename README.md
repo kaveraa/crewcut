@@ -403,10 +403,12 @@ What the ruleset says, beyond the ladder above.
   what one read answers.
 
 **Modern by default.** Claude checks the versions the project runs,
-language, runtime, framework and libraries, and uses the idioms those
-versions allow, including the compact forms when they stay clear: ternary,
-optional chaining, destructuring, early return. Never an old pattern the
-version has replaced, never a feature the version lacks.
+language, runtime, framework and libraries, and follows what their official
+docs recommend today, including the compact forms when they stay clear:
+ternary, optional chaining, destructuring, early return. Unsure of an API,
+or a version newer than it knows: it reads the docs or the installed source
+instead of guessing. Never a deprecated pattern, never a feature the version
+lacks.
 
 **Plain text only.** In code, comments, commits, pull requests and answers:
 no emoji, no emoticon, no arrow symbol (`->` instead), no long dash (`-`

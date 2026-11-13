@@ -425,10 +425,12 @@ Ce que dit le ruleset, au-delà de l'échelle plus haut.
   sorties ; pas de sous-agent pour ce qu'une lecture répond.
 
 **Moderne par défaut.** Claude vérifie les versions que le projet utilise,
-langage, runtime, framework et bibliothèques, et emploie les idiomes que ces
-versions permettent, y compris les formes compactes quand elles restent
-claires : ternaire, chaînage optionnel, déstructuration, retour anticipé.
-Jamais un vieux pattern que la version a remplacé, jamais une fonctionnalité
+langage, runtime, framework et bibliothèques, et suit ce que leur
+documentation officielle recommande aujourd'hui, y compris les formes
+compactes quand elles restent claires : ternaire, chaînage optionnel,
+déstructuration, retour anticipé. Un doute sur une API, ou une version plus
+récente que ce qu'il connaît : il lit la documentation ou le code installé
+au lieu de deviner. Jamais un pattern déprécié, jamais une fonctionnalité
 que la version n'a pas.
 
 **Texte brut seulement.** Dans le code, les commentaires, les commits, les

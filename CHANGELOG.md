@@ -5,6 +5,13 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- Modern by default now points at the official docs: follow what the docs
+  of the installed versions recommend today, and read them, or the
+  installed source, when an API or a version is not known for sure. Same
+  ruleset size. Not measured yet.
+
 ## [0.12.1] - 2026-11-13
 
 ### Fixed

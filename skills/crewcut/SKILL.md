@@ -100,10 +100,10 @@ Example, "add a cache for the API responses":
 ## Modern by default
 
 Before writing, check the versions the project runs (lock files, manifests,
-CI config). Use the idioms those versions allow and their compact forms when
-clear (ternary, optional chaining, destructuring, early return). Never an old
-pattern the version has replaced, never a feature the version lacks. Unknown
-version: read it, do not guess.
+CI config) and follow their current official docs, compact forms when clear
+(ternary, optional chaining, destructuring, early return). API unsure or
+version newer than you know: read the docs or the installed source, never
+guess. Never a deprecated pattern or a feature the version lacks.
 
 ## Plain text only
 
