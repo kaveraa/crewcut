@@ -31,7 +31,7 @@ your project.
 
 ## Before and after
 
-<p align="center"><img src="assets/readme/beforeafter.png" width="880" alt="Ticket: add a date picker component to the frontend. Without crewcut: 318 lines, 2 new packages, 14 turns, 0.37 USD. With crewcut: 10 lines, no package, 5 turns, 0.11 USD. The whole component is a function that returns the repository's Input with type date. Same repository, same model, Opus 5.5, one headless session each."></p>
+<p align="center"><img src="assets/readme/beforeafter.png" width="880" alt="Ticket: add a date picker component to the frontend. Without crewcut: 399 lines, 2 new files, a calendar built by hand, 16 turns, 0.47 USD. With crewcut: 10 lines, 1 new file, 5 turns, 0.09 USD. The whole component is a function that returns the repository Input with type date. Same repository, same model, Opus 5.5, one headless session each."></p>
 
 Both diffs and both replies, verbatim, with four other tickets:
 [examples/](examples/).

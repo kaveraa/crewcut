@@ -2,384 +2,443 @@
 
 Ticket: "Add a date picker component to the frontend."
 
-Repository: [fastapi/full-stack-fastapi-template](https://github.com/fastapi/full-stack-fastapi-template) at `cd83fc1`. Model: Claude Opus 5.5. One headless Claude Code session per arm through ponytail's agentic harness (see [RESULTS.md](../benchmarks/agentic/RESULTS.md)), crewcut 0.6.4, 2026-10-03. The diff is what the session left in the working tree, the reply is its last message; neither is edited. Lines are source lines added, tests counted apart.
+Repository: [fastapi/full-stack-fastapi-template](https://github.com/fastapi/full-stack-fastapi-template) at `cd83fc1`. Model: Claude Opus 5.5. One headless Claude Code session per arm through ponytail's agentic harness, unchanged, crewcut 0.15.4, 2026-11-13 (see [RESULTS.md](../benchmarks/agentic/RESULTS.md)). The diff is what the session left behind, the reply is its last message; neither is edited.
 
-## Without crewcut: 318 lines, 14 turns, 203k tokens, 0.37 USD
+## Without crewcut: 399 lines, 16 turns, 266k tokens, 0.47 USD
 
 ```diff
-diff --git a/frontend/package.json b/frontend/package.json
-index 8a9a50f..623ac42 100644
---- a/frontend/package.json
-+++ b/frontend/package.json
-@@ -19,6 +19,7 @@
-     "@radix-ui/react-dialog": "^1.1.15",
-     "@radix-ui/react-dropdown-menu": "^2.1.16",
-     "@radix-ui/react-label": "^2.1.8",
-+    "@radix-ui/react-popover": "^1.1.15",
-     "@radix-ui/react-radio-group": "^1.3.8",
-     "@radix-ui/react-scroll-area": "^1.2.10",
-     "@radix-ui/react-select": "^2.2.6",
-@@ -39,6 +40,7 @@
-     "lucide-react": "^0.563.0",
-     "next-themes": "^0.4.6",
-     "react": "^19.1.1",
-+    "react-day-picker": "^9.11.1",
-     "react-dom": "^19.2.3",
-     "react-error-boundary": "^6.0.0",
-     "react-hook-form": "^7.68.0",
 diff --git a/frontend/src/components/ui/calendar.tsx b/frontend/src/components/ui/calendar.tsx
 new file mode 100644
-index 0000000..d281a3b
+index 0000000..5cbb8f5
 --- /dev/null
 +++ b/frontend/src/components/ui/calendar.tsx
-@@ -0,0 +1,196 @@
+@@ -0,0 +1,249 @@
 +import * as React from "react"
-+import {
-+  ChevronDownIcon,
-+  ChevronLeftIcon,
-+  ChevronRightIcon,
-+} from "lucide-react"
-+import {
-+  type DayButton,
-+  DayPicker,
-+  getDefaultClassNames,
-+} from "react-day-picker"
++import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 +
 +import { cn } from "@/lib/utils"
 +import { Button, buttonVariants } from "@/components/ui/button"
 +
++type WeekStart = 0 | 1 | 2 | 3 | 4 | 5 | 6
++
++function startOfDay(date: Date) {
++  return new Date(date.getFullYear(), date.getMonth(), date.getDate())
++}
++
++function addDays(date: Date, amount: number) {
++  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + amount)
++}
++
++function addMonths(date: Date, amount: number) {
++  const target = new Date(date.getFullYear(), date.getMonth() + amount, 1)
++  const lastDay = new Date(
++    target.getFullYear(),
++    target.getMonth() + 1,
++    0
++  ).getDate()
++  target.setDate(Math.min(date.getDate(), lastDay))
++  return target
++}
++
++function isSameDay(a?: Date, b?: Date) {
++  return (
++    !!a &&
++    !!b &&
++    a.getFullYear() === b.getFullYear() &&
++    a.getMonth() === b.getMonth() &&
++    a.getDate() === b.getDate()
++  )
++}
++
++function isSameMonth(a: Date, b: Date) {
++  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth()
++}
++
++function clampDate(date: Date, min?: Date, max?: Date) {
++  if (min && date < startOfDay(min)) return startOfDay(min)
++  if (max && date > startOfDay(max)) return startOfDay(max)
++  return date
++}
++
++type CalendarProps = Omit<React.ComponentProps<"div">, "onSelect"> & {
++  /** Currently selected date. */
++  selected?: Date
++  /** Called when the user picks a day. */
++  onSelect?: (date: Date) => void
++  /** Month shown initially when nothing is selected. Defaults to today. */
++  defaultMonth?: Date
++  /** Earliest selectable date (inclusive). */
++  minDate?: Date
++  /** Latest selectable date (inclusive). */
++  maxDate?: Date
++  /** Extra predicate to disable specific days. */
++  isDateDisabled?: (date: Date) => boolean
++  /** 0 = Sunday, 1 = Monday, ... Defaults to 1 (Monday). */
++  weekStartsOn?: WeekStart
++  /** BCP 47 locale used for month and weekday names. */
++  locale?: string
++  /** Move keyboard focus into the grid on mount. */
++  autoFocus?: boolean
++}
++
 +function Calendar({
++  selected,
++  onSelect,
++  defaultMonth,
++  minDate,
++  maxDate,
++  isDateDisabled,
++  weekStartsOn = 1,
++  locale,
++  autoFocus = false,
 +  className,
-+  classNames,
-+  showOutsideDays = true,
-+  captionLayout = "label",
-+  buttonVariant = "ghost",
-+  formatters,
-+  components,
 +  ...props
-+}: React.ComponentProps<typeof DayPicker> & {
-+  buttonVariant?: React.ComponentProps<typeof Button>["variant"]
-+}) {
-+  const defaultClassNames = getDefaultClassNames()
-+
-+  return (
-+    <DayPicker
-+      showOutsideDays={showOutsideDays}
-+      className={cn(
-+        "bg-background group/calendar p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
-+        className
-+      )}
-+      captionLayout={captionLayout}
-+      formatters={{
-+        formatMonthDropdown: (date) =>
-+          date.toLocaleString("default", { month: "short" }),
-+        ...formatters,
-+      }}
-+      classNames={{
-+        root: cn("w-fit", defaultClassNames.root),
-+        months: cn(
-+          "flex gap-4 flex-col md:flex-row relative",
-+          defaultClassNames.months
-+        ),
-+        month: cn("flex flex-col w-full gap-4", defaultClassNames.month),
-+        nav: cn(
-+          "flex items-center gap-1 w-full absolute top-0 inset-x-0 justify-between",
-+          defaultClassNames.nav
-+        ),
-+        button_previous: cn(
-+          buttonVariants({ variant: buttonVariant }),
-+          "size-(--cell-size) aria-disabled:opacity-50 p-0 select-none",
-+          defaultClassNames.button_previous
-+        ),
-+        button_next: cn(
-+          buttonVariants({ variant: buttonVariant }),
-+          "size-(--cell-size) aria-disabled:opacity-50 p-0 select-none",
-+          defaultClassNames.button_next
-+        ),
-+        month_caption: cn(
-+          "flex items-center justify-center h-(--cell-size) w-full px-(--cell-size)",
-+          defaultClassNames.month_caption
-+        ),
-+        dropdowns: cn(
-+          "w-full flex items-center text-sm font-medium justify-center h-(--cell-size) gap-1.5",
-+          defaultClassNames.dropdowns
-+        ),
-+        dropdown_root: cn(
-+          "relative has-focus:border-ring border border-input shadow-xs has-focus:ring-ring/50 has-focus:ring-[3px] rounded-md",
-+          defaultClassNames.dropdown_root
-+        ),
-+        dropdown: cn(
-+          "absolute bg-popover inset-0 opacity-0",
-+          defaultClassNames.dropdown
-+        ),
-+        caption_label: cn(
-+          "select-none font-medium",
-+          captionLayout === "label"
-+            ? "text-sm"
-+            : "rounded-md pl-2 pr-1 flex items-center gap-1 text-sm h-8 [&>svg]:text-muted-foreground [&>svg]:size-3.5",
-+          defaultClassNames.caption_label
-+        ),
-+        table: "w-full border-collapse",
-+        weekdays: cn("flex", defaultClassNames.weekdays),
-+        weekday: cn(
-+          "text-muted-foreground rounded-md flex-1 font-normal text-[0.8rem] select-none",
-+          defaultClassNames.weekday
-+        ),
-+        week: cn("flex w-full mt-2", defaultClassNames.week),
-+        day: cn(
-+          "relative w-full h-full p-0 text-center [&:first-child[data-selected=true]_button]:rounded-l-md [&:last-child[data-selected=true]_button]:rounded-r-md group/day aspect-square select-none",
-+          defaultClassNames.day
-+        ),
-+        range_start: cn(
-+          "rounded-l-md bg-accent",
-+          defaultClassNames.range_start
-+        ),
-+        range_middle: cn("rounded-none", defaultClassNames.range_middle),
-+        range_end: cn("rounded-r-md bg-accent", defaultClassNames.range_end),
-+        today: cn(
-+          "bg-accent text-accent-foreground rounded-md data-[selected=true]:rounded-none",
-+          defaultClassNames.today
-+        ),
-+        outside: cn(
-+          "text-muted-foreground aria-selected:text-muted-foreground",
-+          defaultClassNames.outside
-+        ),
-+        disabled: cn(
-+          "text-muted-foreground opacity-50",
-+          defaultClassNames.disabled
-+        ),
-+        hidden: cn("invisible", defaultClassNames.hidden),
-+        ...classNames,
-+      }}
-+      components={{
-+        Root: ({ className, rootRef, ...props }) => {
-+          return (
-+            <div
-+              data-slot="calendar"
-+              ref={rootRef}
-+              className={cn(className)}
-+              {...props}
-+            />
-+          )
-+        },
-+        Chevron: ({ className, orientation, ...props }) => {
-+          if (orientation === "left") {
-+            return (
-+              <ChevronLeftIcon className={cn("size-4", className)} {...props} />
-+            )
-+          }
-+
-+          if (orientation === "right") {
-+            return (
-+              <ChevronRightIcon
-+                className={cn("size-4", className)}
-+                {...props}
-+              />
-+            )
-+          }
-+
-+          return (
-+            <ChevronDownIcon className={cn("size-4", className)} {...props} />
-+          )
-+        },
-+        DayButton: CalendarDayButton,
-+        ...components,
-+      }}
-+      {...props}
-+    />
++}: CalendarProps) {
++  const [focusedDate, setFocusedDate] = React.useState(() =>
++    clampDate(startOfDay(selected ?? defaultMonth ?? new Date()), minDate, maxDate)
 +  )
-+}
++  const gridRef = React.useRef<HTMLDivElement>(null)
++  const shouldFocus = React.useRef(autoFocus)
++  const today = startOfDay(new Date())
 +
-+function CalendarDayButton({
-+  className,
-+  day,
-+  modifiers,
-+  ...props
-+}: React.ComponentProps<typeof DayButton>) {
-+  const defaultClassNames = getDefaultClassNames()
-+
-+  const ref = React.useRef<HTMLButtonElement>(null)
++  // Keep the visible month in sync when the selection changes from outside.
 +  React.useEffect(() => {
-+    if (modifiers.focused) ref.current?.focus()
-+  }, [modifiers.focused])
++    if (selected) setFocusedDate(startOfDay(selected))
++  }, [selected?.getTime()])
++
++  React.useEffect(() => {
++    if (!shouldFocus.current) return
++    shouldFocus.current = false
++    gridRef.current
++      ?.querySelector<HTMLButtonElement>('button[tabindex="0"]')
++      ?.focus()
++  }, [focusedDate])
++
++  const isDisabled = (date: Date) =>
++    (!!minDate && date < startOfDay(minDate)) ||
++    (!!maxDate && date > startOfDay(maxDate)) ||
++    (isDateDisabled?.(date) ?? false)
++
++  const monthStart = new Date(focusedDate.getFullYear(), focusedDate.getMonth(), 1)
++  const offset = (monthStart.getDay() - weekStartsOn + 7) % 7
++  const gridStart = addDays(monthStart, -offset)
++  const days = Array.from({ length: 42 }, (_, i) => addDays(gridStart, i))
++  const weeks = Array.from({ length: 6 }, (_, i) => days.slice(i * 7, i * 7 + 7))
++
++  const monthLabel = new Intl.DateTimeFormat(locale, {
++    month: "long",
++    year: "numeric",
++  }).format(monthStart)
++  const weekdayShort = new Intl.DateTimeFormat(locale, { weekday: "short" })
++  const weekdayLong = new Intl.DateTimeFormat(locale, { weekday: "long" })
++  const dayLabel = new Intl.DateTimeFormat(locale, { dateStyle: "full" })
++
++  const prevMonthDisabled =
++    !!minDate && addDays(monthStart, -1) < startOfDay(minDate)
++  const nextMonthDisabled =
++    !!maxDate && addMonths(monthStart, 1) > startOfDay(maxDate)
++
++  const moveFocus = (next: Date) => {
++    shouldFocus.current = true
++    setFocusedDate(clampDate(next, minDate, maxDate))
++  }
++
++  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
++    const dow = (focusedDate.getDay() - weekStartsOn + 7) % 7
++    const keyMap: Record<string, () => Date> = {
++      ArrowLeft: () => addDays(focusedDate, -1),
++      ArrowRight: () => addDays(focusedDate, 1),
++      ArrowUp: () => addDays(focusedDate, -7),
++      ArrowDown: () => addDays(focusedDate, 7),
++      Home: () => addDays(focusedDate, -dow),
++      End: () => addDays(focusedDate, 6 - dow),
++      PageUp: () => addMonths(focusedDate, event.shiftKey ? -12 : -1),
++      PageDown: () => addMonths(focusedDate, event.shiftKey ? 12 : 1),
++    }
++    const getNext = keyMap[event.key]
++    if (!getNext) return
++    event.preventDefault()
++    moveFocus(getNext())
++  }
 +
 +  return (
-+    <Button
-+      ref={ref}
-+      variant="ghost"
-+      size="icon"
-+      data-day={day.date.toLocaleDateString()}
-+      data-selected-single={
-+        modifiers.selected &&
-+        !modifiers.range_start &&
-+        !modifiers.range_end &&
-+        !modifiers.range_middle
-+      }
-+      data-range-start={modifiers.range_start}
-+      data-range-end={modifiers.range_end}
-+      data-range-middle={modifiers.range_middle}
-+      className={cn(
-+        "data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md [&>span]:text-xs [&>span]:opacity-70",
-+        defaultClassNames.day,
-+        className
-+      )}
++    <div
++      data-slot="calendar"
++      className={cn("w-fit p-3", className)}
 +      {...props}
-+    />
++    >
++      <div className="flex items-center justify-between gap-2 pb-2">
++        <Button
++          type="button"
++          variant="ghost"
++          size="icon-sm"
++          aria-label="Previous month"
++          disabled={prevMonthDisabled}
++          onClick={() =>
++            setFocusedDate(clampDate(addMonths(focusedDate, -1), minDate, maxDate))
++          }
++        >
++          <ChevronLeftIcon />
++        </Button>
++        <div className="text-sm font-medium" aria-live="polite">
++          {monthLabel}
++        </div>
++        <Button
++          type="button"
++          variant="ghost"
++          size="icon-sm"
++          aria-label="Next month"
++          disabled={nextMonthDisabled}
++          onClick={() =>
++            setFocusedDate(clampDate(addMonths(focusedDate, 1), minDate, maxDate))
++          }
++        >
++          <ChevronRightIcon />
++        </Button>
++      </div>
++      <div
++        ref={gridRef}
++        role="grid"
++        aria-label={monthLabel}
++        onKeyDown={handleKeyDown}
++      >
++        <div role="row" className="flex">
++          {weeks[0].map((day) => (
++            <div
++              key={day.getDay()}
++              role="columnheader"
++              aria-label={weekdayLong.format(day)}
++              className="text-muted-foreground w-8 text-center text-[0.8rem] font-normal"
++            >
++              {weekdayShort.format(day).slice(0, 2)}
++            </div>
++          ))}
++        </div>
++        {weeks.map((week) => (
++          <div role="row" key={week[0].getTime()} className="mt-1 flex">
++            {week.map((day) => {
++              const disabled = isDisabled(day)
++              const isSelected = isSameDay(day, selected)
++              const isToday = isSameDay(day, today)
++              const outside = !isSameMonth(day, monthStart)
++              return (
++                <div role="gridcell" key={day.getTime()} aria-selected={isSelected}>
++                  <button
++                    type="button"
++                    data-slot="calendar-day"
++                    tabIndex={isSameDay(day, focusedDate) ? 0 : -1}
++                    // aria-disabled (not `disabled`) keeps the day focusable
++                    // so keyboard navigation never drops focus.
++                    aria-disabled={disabled || undefined}
++                    aria-label={dayLabel.format(day)}
++                    aria-current={isToday ? "date" : undefined}
++                    onClick={() => {
++                      if (disabled) return
++                      setFocusedDate(day)
++                      onSelect?.(day)
++                    }}
++                    className={cn(
++                      buttonVariants({ variant: "ghost", size: "icon-sm" }),
++                      "font-normal",
++                      disabled &&
++                        "text-muted-foreground cursor-not-allowed line-through opacity-50 hover:bg-transparent",
++                      outside && "text-muted-foreground opacity-60",
++                      isToday && !isSelected && "bg-accent text-accent-foreground",
++                      isSelected &&
++                        "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary"
++                    )}
++                  >
++                    {day.getDate()}
++                  </button>
++                </div>
++              )
++            })}
++          </div>
++        ))}
++      </div>
++    </div>
 +  )
 +}
 +
-+export { Calendar, CalendarDayButton }
++export { Calendar, isSameDay, startOfDay }
++export type { CalendarProps }
 diff --git a/frontend/src/components/ui/date-picker.tsx b/frontend/src/components/ui/date-picker.tsx
 new file mode 100644
-index 0000000..a59a51d
+index 0000000..f5600e7
 --- /dev/null
 +++ b/frontend/src/components/ui/date-picker.tsx
-@@ -0,0 +1,76 @@
+@@ -0,0 +1,150 @@
 +import * as React from "react"
-+import { CalendarIcon } from "lucide-react"
++import { CalendarIcon, XIcon } from "lucide-react"
 +
 +import { cn } from "@/lib/utils"
 +import { Button } from "@/components/ui/button"
-+import { Calendar } from "@/components/ui/calendar"
-+import {
-+  Popover,
-+  PopoverContent,
-+  PopoverTrigger,
-+} from "@/components/ui/popover"
++import { Calendar, type CalendarProps } from "@/components/ui/calendar"
 +
 +type DatePickerProps = Omit<
-+  React.ComponentProps<typeof Button>,
-+  "value" | "onChange" | "children"
-+> & {
-+  value?: Date
-+  onChange?: (date: Date | undefined) => void
-+  placeholder?: string
-+  formatOptions?: Intl.DateTimeFormatOptions
-+  calendarProps?: Omit<
-+    React.ComponentProps<typeof Calendar>,
-+    "mode" | "selected" | "onSelect" | "required"
-+  >
-+}
++  React.ComponentProps<"button">,
++  "value" | "onChange" | "defaultValue"
++> &
++  Pick<
++    CalendarProps,
++    "minDate" | "maxDate" | "isDateDisabled" | "weekStartsOn" | "locale"
++  > & {
++    value?: Date
++    onChange?: (date: Date | undefined) => void
++    placeholder?: string
++    /** Show a button to clear the current value. */
++    clearable?: boolean
++    /** Options for formatting the selected date in the trigger. */
++    formatOptions?: Intl.DateTimeFormatOptions
++  }
 +
++/**
++ * Button-triggered date picker. Works as a controlled input and plugs
++ * directly into react-hook-form via `value={field.value}` and
++ * `onChange={field.onChange}`.
++ */
 +function DatePicker({
 +  value,
 +  onChange,
 +  placeholder = "Pick a date",
-+  formatOptions = { dateStyle: "long" },
-+  calendarProps,
++  clearable = false,
++  formatOptions = { dateStyle: "medium" },
++  minDate,
++  maxDate,
++  isDateDisabled,
++  weekStartsOn,
++  locale,
++  disabled,
 +  className,
 +  ...props
 +}: DatePickerProps) {
 +  const [open, setOpen] = React.useState(false)
++  const containerRef = React.useRef<HTMLDivElement>(null)
++  const triggerRef = React.useRef<HTMLButtonElement>(null)
++  const popoverId = React.useId()
++
++  const close = React.useCallback((restoreFocus: boolean) => {
++    setOpen(false)
++    if (restoreFocus) triggerRef.current?.focus()
++  }, [])
++
++  React.useEffect(() => {
++    if (!open) return
++    const onPointerDown = (event: PointerEvent) => {
++      if (!containerRef.current?.contains(event.target as Node)) close(false)
++    }
++    document.addEventListener("pointerdown", onPointerDown)
++    return () => document.removeEventListener("pointerdown", onPointerDown)
++  }, [open, close])
++
++  const label = value
++    ? new Intl.DateTimeFormat(locale, formatOptions).format(value)
++    : placeholder
 +
 +  return (
-+    <Popover open={open} onOpenChange={setOpen}>
-+      <PopoverTrigger asChild>
++    <div
++      ref={containerRef}
++      data-slot="date-picker"
++      className="relative inline-block"
++      onBlur={(event) => {
++        // Close when focus is tabbed out. Outside clicks (relatedTarget may be
++        // null) are handled by the pointerdown listener above.
++        const next = event.relatedTarget as Node | null
++        if (open && next && !containerRef.current?.contains(next)) {
++          close(false)
++        }
++      }}
++    >
++      <Button
++        ref={triggerRef}
++        type="button"
++        variant="outline"
++        disabled={disabled}
++        aria-haspopup="dialog"
++        aria-expanded={open}
++        aria-controls={open ? popoverId : undefined}
++        data-empty={!value}
++        onClick={() => setOpen((o) => !o)}
++        className={cn(
++          "w-[240px] justify-start text-left font-normal data-[empty=true]:text-muted-foreground",
++          clearable && value && "pr-9",
++          className
++        )}
++        {...props}
++      >
++        <CalendarIcon />
++        <span className="truncate">{label}</span>
++      </Button>
++      {clearable && value && !disabled && (
 +        <Button
-+          data-slot="date-picker"
-+          variant="outline"
-+          data-empty={!value}
-+          className={cn(
-+            "data-[empty=true]:text-muted-foreground w-[240px] justify-start text-left font-normal",
-+            className
-+          )}
-+          {...props}
-+        >
-+          <CalendarIcon />
-+          {value ? (
-+            value.toLocaleDateString(undefined, formatOptions)
-+          ) : (
-+            <span>{placeholder}</span>
-+          )}
-+        </Button>
-+      </PopoverTrigger>
-+      <PopoverContent className="w-auto p-0" align="start">
-+        <Calendar
-+          {...calendarProps}
-+          mode="single"
-+          selected={value}
-+          defaultMonth={value ?? calendarProps?.defaultMonth}
-+          onSelect={(date) => {
-+            onChange?.(date)
-+            setOpen(false)
++          type="button"
++          variant="ghost"
++          size="icon-sm"
++          aria-label="Clear date"
++          className="absolute top-1/2 right-0.5 size-7 -translate-y-1/2"
++          onClick={() => {
++            onChange?.(undefined)
++            triggerRef.current?.focus()
 +          }}
-+        />
-+      </PopoverContent>
-+    </Popover>
++        >
++          <XIcon />
++        </Button>
++      )}
++      {open && (
++        <div
++          id={popoverId}
++          role="dialog"
++          aria-label="Choose date"
++          className="bg-popover text-popover-foreground animate-in fade-in-0 zoom-in-95 absolute top-full left-0 z-50 mt-1 rounded-md border shadow-md"
++          onKeyDown={(event) => {
++            if (event.key === "Escape") {
++              event.stopPropagation()
++              close(true)
++            }
++          }}
++        >
++          <Calendar
++            autoFocus
++            selected={value}
++            onSelect={(date) => {
++              onChange?.(date)
++              close(true)
++            }}
++            minDate={minDate}
++            maxDate={maxDate}
++            isDateDisabled={isDateDisabled}
++            weekStartsOn={weekStartsOn}
++            locale={locale}
++          />
++        </div>
++      )}
++    </div>
 +  )
 +}
 +
 +export { DatePicker }
 +export type { DatePickerProps }
-diff --git a/frontend/src/components/ui/popover.tsx b/frontend/src/components/ui/popover.tsx
-new file mode 100644
-index 0000000..0f91cde
---- /dev/null
-+++ b/frontend/src/components/ui/popover.tsx
-@@ -0,0 +1,46 @@
-+import * as React from "react"
-+import * as PopoverPrimitive from "@radix-ui/react-popover"
-+
-+import { cn } from "@/lib/utils"
-+
-+function Popover({
-+  ...props
-+}: React.ComponentProps<typeof PopoverPrimitive.Root>) {
-+  return <PopoverPrimitive.Root data-slot="popover" {...props} />
-+}
-+
-+function PopoverTrigger({
-+  ...props
-+}: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
-+  return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />
-+}
-+
-+function PopoverContent({
-+  className,
-+  align = "center",
-+  sideOffset = 4,
-+  ...props
-+}: React.ComponentProps<typeof PopoverPrimitive.Content>) {
-+  return (
-+    <PopoverPrimitive.Portal>
-+      <PopoverPrimitive.Content
-+        data-slot="popover-content"
-+        align={align}
-+        sideOffset={sideOffset}
-+        className={cn(
-+          "bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-72 origin-(--radix-popover-content-transform-origin) rounded-md border p-4 shadow-md outline-hidden",
-+          className
-+        )}
-+        {...props}
-+      />
-+    </PopoverPrimitive.Portal>
-+  )
-+}
-+
-+function PopoverAnchor({
-+  ...props
-+}: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {
-+  return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />
-+}
-+
-+export { Popover, PopoverAnchor, PopoverContent, PopoverTrigger }
 ```
 
 Reply:
 
-I added a date picker to the frontend, built the standard shadcn/ui way to match the existing `components/ui` files. None of it has been installed, type-checked or run, and the new packages aren't installed yet.
+I added a date picker to the frontend as two new files. It uses no new dependencies. I haven't type-checked, linted, run or tested it, and it isn't used on any page yet.
 
-**Before it will build:** I added two packages to `frontend/package.json`: `react-day-picker` and `@radix-ui/react-popover`. You need to run `bun install` so the root `bun.lock` picks them up.
+**Why no new packages:** the usual shadcn date picker needs `react-day-picker`, `date-fns` and `@radix-ui/react-popover`. None of those are installed, and `CONTRIBUTING.md` restricts adding dependencies because of supply-chain risk. So both components use only native `Date`/`Intl`, `lucide-react` icons and the existing `Button`.
 
-**New files in `frontend/src/components/ui/`:**
-- **`popover.tsx`**: a wrapper around the Radix popover, in the same style as the other components there.
-- **`calendar.tsx`**: a styled month calendar that uses the existing button styles and the light/dark theme.
-- **`date-picker.tsx`**: an outlined button with a calendar icon. Clicking it opens the calendar in a popover, and picking a day closes it.
-  - It takes `value` and `onChange` (the date can be cleared, so it may be `undefined`).
-  - Optional props: placeholder text, date format and extra calendar settings (for example, disabling some dates).
-  - Dates are formatted by the browser in the user's locale, so I didn't add a date library.
+**`frontend/src/components/ui/calendar.tsx`: `Calendar`**
+- Shows one month as a grid, with previous/next month buttons.
+- You can limit it with `minDate`/`maxDate` (inclusive) or turn off specific days with an `isDateDisabled(date)` function.
+- `weekStartsOn` (default Monday) and `locale` control the week layout and the month and weekday names.
+- Keyboard: arrow keys move by day or week, Home/End jump to the start or end of the week, PageUp/PageDown change month, and Shift+PageUp/PageDown change year. Only one day is in the Tab order at a time.
+- Screen-reader labels are set: each day is announced as a full date and today is marked. Disabled days stay focusable so arrow-key navigation doesn't get stuck on them.
 
-To use it in a form:
+**`frontend/src/components/ui/date-picker.tsx`: `DatePicker`**
+- An outline button shows the selected date (or a placeholder) and opens a dropdown containing the `Calendar`.
+- Picking a day or pressing Escape closes it and returns focus to the button. Clicking outside or tabbing away also closes it.
+- Optional props: `clearable` adds a clear button, `formatOptions` changes how the date is displayed, and the usual button props (`id`, `disabled`, `aria-invalid`, …) are passed through.
+- It works directly with react-hook-form:
+
 ```tsx
 <FormField
   control={form.control}
@@ -388,7 +447,7 @@ To use it in a form:
     <FormItem>
       <FormLabel>Due date</FormLabel>
       <FormControl>
-        <DatePicker value={field.value} onChange={field.onChange} />
+        <DatePicker value={field.value} onChange={field.onChange} clearable />
       </FormControl>
       <FormMessage />
     </FormItem>
@@ -396,14 +455,16 @@ To use it in a form:
 />
 ```
 
-I didn't add tests. The project only has Playwright end-to-end tests, and nothing on any page uses the picker yet, so there's nothing for them to click. Once you put it in a form, add a test there.
+**Limitation:** the dropdown always opens directly below the button. Unlike the Radix-based menus in the app, it won't flip upward or move sideways when it's near the edge of the screen.
 
-## With crewcut: 10 lines, 5 turns, 79k tokens, 0.11 USD
+I didn't add tests. The project only has Playwright end-to-end tests, and those need the component to appear on a real page. If you tell me which form should use it, such as a date field on items, I'll wire it in and add a Playwright test.
+
+## With crewcut: 10 lines, 5 turns, 80k tokens, 0.09 USD
 
 ```diff
 diff --git a/frontend/src/components/ui/date-picker.tsx b/frontend/src/components/ui/date-picker.tsx
 new file mode 100644
-index 0000000..7cde068
+index 0000000..8fd8997
 --- /dev/null
 +++ b/frontend/src/components/ui/date-picker.tsx
 @@ -0,0 +1,10 @@
@@ -411,7 +472,7 @@ index 0000000..7cde068
 +
 +import { Input } from "@/components/ui/input"
 +
-+// crewcut: native <input type="date"> gives the calendar popup, keyboard and screen reader support for free
++// Native date input: built-in calendar, keyboard and screen reader support, value is "YYYY-MM-DD".
 +function DatePicker(props: Omit<React.ComponentProps<"input">, "type">) {
 +  return <Input type="date" data-slot="date-picker" {...props} />
 +}
@@ -421,6 +482,4 @@ index 0000000..7cde068
 
 Reply:
 
-I added `DatePicker` in `frontend/src/components/ui/date-picker.tsx`. It wraps the existing `Input` component with `type="date"`, so it matches the other inputs' styling. It also works with `react-hook-form` like `Input` does, and its value is a `YYYY-MM-DD` string. It isn't used on any page yet, and nothing was run or tested.
-
-Because it uses the browser's built-in date picker, it needs no new dependency and comes with keyboard and screen reader support. The trade-off is that the calendar popup looks different in each browser. If you want one styled calendar everywhere, the shadcn Calendar + Popover version would need two new packages, `react-day-picker` and `@radix-ui/react-popover`. Say if you want that version instead.
+I added `DatePicker` in `frontend/src/components/ui/date-picker.tsx`. It wraps the existing `Input` with `type="date"`, so it looks like the other inputs and accepts the usual input props (`value`, `onChange`, `name`, `aria-*`). I haven't run or type-checked it, and nothing uses it yet. It's built on the browser's own date picker rather than a new calendar library, so the popup looks different from browser to browser, and the value is a `"YYYY-MM-DD"` string rather than a `Date`.

@@ -31,7 +31,7 @@ Tout autre agent qui lit un fichier de règles : copiez
 
 ## Avant et après
 
-<p align="center"><img src="assets/readme/beforeafter-fr.png" width="880" alt="Ticket : ajouter un sélecteur de date au frontend. Sans crewcut : 318 lignes, 2 nouveaux paquets, 14 tours, 0,37 USD. Avec crewcut : 10 lignes, aucun paquet, 5 tours, 0,11 USD. Tout le composant est une fonction qui renvoie l'Input du dépôt avec le type date. Même dépôt, même modèle, Opus 5.5, une session sans interface de chaque côté."></p>
+<p align="center"><img src="assets/readme/beforeafter-fr.png" width="880" alt="Ticket : ajouter un sélecteur de date au frontend. Sans crewcut : 399 lignes, 2 nouveaux fichiers, un calendrier construit à la main, 16 tours, 0,47 USD. Avec crewcut : 10 lignes, 1 nouveau fichier, 5 tours, 0,09 USD. Tout le composant est une fonction qui renvoie l'Input du dépôt avec le type date. Même dépôt, même modèle, Opus 5.5, une session sans interface de chaque côté."></p>
 
 Les deux diffs et les deux réponses, tels quels, avec quatre autres
 tickets : [examples/](examples/) (en anglais).
