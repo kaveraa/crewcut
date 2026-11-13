@@ -1,6 +1,6 @@
 # crewcut
 
-<p align="center"><img src="https://raw.githubusercontent.com/kaveraa/crewcut/acdf351/assets/banner.svg" alt="crewcut" width="100%"></p>
+<p align="center"><img src="assets/banner.png" alt="crewcut: short hair, short code. A Claude Code plugin." width="100%"></p>
 
 <p align="center">
 <a href="https://github.com/kaveraa/crewcut/actions/workflows/tests.yml"><img src="https://github.com/kaveraa/crewcut/actions/workflows/tests.yml/badge.svg" alt="tests"></a>
@@ -19,20 +19,15 @@ A Claude Code plugin for the simplest code that works: less code, fewer tokens, 
 
 ## Install
 
+<p align="center"><img src="assets/readme/install.png" width="880" alt="Install: two commands, then it is on. /plugin marketplace add kaveraa/crewcut, then /plugin install crewcut@crewcut. The hooks run node, so Node 22 or newer must be on the PATH; without it, only the skills work. For one session from a local checkout: claude --plugin-dir /path/to/crewcut. Other agents: copy AGENTS.md into your project, the full ruleset for any agent that reads a rules file."></p>
+
 ```
 /plugin marketplace add kaveraa/crewcut
 /plugin install crewcut@crewcut
 ```
 
-From a local checkout, for one session: `claude --plugin-dir /path/to/crewcut`.
-
-The hooks run `node`, so Node 22 or newer must be on the PATH of the shell
-that starts Claude Code. Without it, only the skills work.
-
-Any other agent that reads a rules file (Codex, Cursor, Copilot, Gemini
-CLI, OpenCode and the rest): copy [AGENTS.md](AGENTS.md) into your project.
-It is the `full` ruleset; the levels, the review, the audit and the ledger
-stay with the Claude Code plugin.
+Any other agent that reads a rules file: copy [AGENTS.md](AGENTS.md) into
+your project.
 
 ## Before and after
 
@@ -175,6 +170,8 @@ lists them. crewcut never writes its name in your code.
 
 ## Reference
 
+<p align="center"><img src="assets/readme/settings.png" width="880" alt="Settings, in crewcut.json next to your Claude settings. Six keys, and the environment variable wins over the file. defaultLevel, CREWCUT_DEFAULT_MODE: level new sessions start at. subagents: the ruleset in subagents, about 500 tokens each. subagentMatcher, CREWCUT_SUBAGENT_MATCHER: regular expression on the agent type. tests, CREWCUT_TESTS: off, a test only when the ticket asks. map, CREWCUT_MAP: off, no map and no versions at session start. markers: a discreet comment on each corner cut."></p>
+
 <details>
 <summary>Settings</summary>
 
@@ -293,22 +290,7 @@ description says what changed, why, and how it was checked, in a few lines.
 
 ## FAQ
 
-**Why a plugin when the seven-word prompt cuts more on Opus?** Because the
-prompt cuts blind. It ships barer components and skips the tests: on Opus
-it writes tests in 31 % of the cells against 50 % for crewcut on the
-template. On Haiku it writes more code than no prompt at all, and once
-drops a guard, the per-client check of a rate limiter. Crewcut kept every
-guard on every safety cell of every tier, names what never gets cut, and
-fixes a bug at its root rather than at the caller. If you would rather have
-the prompt's savings, `/crewcut tests off` keeps everything else.
-
-**Does it follow new models?** Yes. The ruleset is injected whatever the
-model of the session, and the two agents name theirs by alias. The figures
-above are another matter: each one holds for the model it was measured on,
-named in its row.
-
-**Does it claim a saving on my repository?** No. `/crewcut-gain` prints the
-measured figures; the version you did not build was never written.
+<p align="center"><img src="assets/readme/faq.png" width="880" alt="FAQ. Why a plugin when a seven-word prompt cuts as much on Opus? The prompt cuts blind: it skips the tests, writes more code than no prompt on Haiku, and once drops the per-client check of a rate limiter. crewcut names what never gets cut and fixes a bug at its root; for the prompt's savings, /crewcut tests off keeps everything else. Does it follow new models? Yes: the ruleset is injected whatever the model, and the two agents name theirs by alias; each figure holds for the model it was measured on. Does it claim a saving on my repository? No: /crewcut-gain prints the measured figures, the version you did not build was never written."></p>
 
 ## Update and uninstall
 
@@ -324,18 +306,7 @@ cleanup is `node <plugin dir>/hooks/crewcut.js uninstall`.
 
 ## Limitations
 
-- The hooks need `node` on the PATH.
-- Two sessions in the same project share one level; the status line shows
-  the level set last, whatever the project.
-- The map lists top-level definitions found by one regular expression per
-  language (JavaScript and TypeScript, Python, Go, Rust, Ruby, PHP, Java,
-  Kotlin, C#, Swift); nested or dynamic definitions are not in it. The
-  versions come from `package.json` and `composer.json` only.
-- The hooks, levels, review, audit and ledger are Claude Code only; other
-  agents get the ruleset through `AGENTS.md`.
-- A cloud session (claude.ai/code) does not load a plugin installed with
-  `/plugin`, nor one a repository turns on in `.claude/settings.json`, and
-  has no `/plugin` command. Installing crewcut there is being tested.
+<p align="center"><img src="assets/readme/limits.png" width="880" alt="Limitations. The hooks need node on the PATH. Two sessions in the same project share one level, and the status line shows the level set last. The map lists top-level definitions found by one regular expression per language, ten languages, and the versions come from package.json and composer.json only. The hooks, levels, review, audit and ledger are Claude Code only; other agents get the ruleset through AGENTS.md. A cloud session on claude.ai/code does not load a plugin installed with /plugin."></p>
 
 ## Credits and license
 

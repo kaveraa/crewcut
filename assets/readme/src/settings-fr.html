@@ -1,0 +1,26 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+.term { margin-top: 26px; padding: 18px 24px; border-radius: 12px; background: #111921; border: 1px solid #1F2B35; font-size: 15px; color: #B8C4CE; }
+.term i { font-style: normal; color: #F4C27A; }
+.term u { text-decoration: none; color: #E34948; }
+.s { display: grid; grid-template-columns: 170px 250px 1fr; gap: 14px; padding: 12px 0; border-top: 1px solid #1F2B35; align-items: baseline; font-size: 14.5px; }
+.s:last-of-type { border-bottom: 1px solid #1F2B35; }
+.s b { color: #F4C27A; font-weight: 400; }
+.s code { font-family: inherit; color: #8A9BAB; font-size: 13px; }
+.s span { color: #B8C4CE; line-height: 1.45; }
+.ss { margin-top: 18px; }
+</style>
+<div class="card"><div class="pole"></div>
+<div class="eyebrow">Réglages, dans crewcut.json à côté de vos réglages Claude</div>
+<h1>Six clés. <em>L'environnement l'emporte.</em></h1>
+<div class="term">{ <i>"defaultLevel"</i>: <u>"ultra"</u>, <i>"subagents"</i>: <u>true</u>, <i>"markers"</i>: <u>false</u>, <i>"map"</i>: <u>true</u> }</div>
+<div class="ss">
+<div class="s"><b>defaultLevel</b><code>CREWCUT_DEFAULT_MODE</code><span>niveau de départ des nouvelles sessions</span></div>
+<div class="s"><b>subagents</b><code></code><span>le ruleset dans les sous-agents, environ 500 tokens chacun</span></div>
+<div class="s"><b>subagentMatcher</b><code>CREWCUT_SUBAGENT_MATCHER</code><span>expression régulière sur le type d'agent</span></div>
+<div class="s"><b>tests</b><code>CREWCUT_TESTS</code><span>off : un test seulement si le ticket le demande</span></div>
+<div class="s"><b>map</b><code>CREWCUT_MAP</code><span>off : ni carte ni versions au démarrage de session</span></div>
+<div class="s"><b>markers</b><code></code><span>un commentaire discret // ~ sur chaque coin coupé</span></div>
+</div>
+</div>
+<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>

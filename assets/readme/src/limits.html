@@ -1,0 +1,20 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="card.css">
+<style>
+.l { display: grid; grid-template-columns: 230px 1fr; gap: 20px; padding: 14px 0; border-top: 1px solid #1F2B35; align-items: baseline; }
+.l:last-of-type { border-bottom: 1px solid #1F2B35; }
+.l b { font-size: 16px; color: #F4C27A; font-weight: 400; }
+.l span { font-size: 14.5px; line-height: 1.5; color: #B8C4CE; }
+.ls { margin-top: 26px; }
+</style>
+<div class="card"><div class="pole"></div>
+<div class="eyebrow">Limitations</div>
+<h1>What it does not do, <em>said plainly.</em></h1>
+<div class="ls">
+<div class="l"><b>Node on the PATH</b><span>The hooks need node. Without it, only the skills work.</span></div>
+<div class="l"><b>One level per project</b><span>Two sessions in the same project share it. The status line shows the level set last, whatever the project.</span></div>
+<div class="l"><b>A map by regex</b><span>Top-level definitions in ten languages; nested or dynamic ones are not in it. Versions from package.json and composer.json only.</span></div>
+<div class="l"><b>Claude Code only</b><span>Hooks, levels, review, audit and ledger. Other agents get the ruleset through AGENTS.md.</span></div>
+<div class="l"><b>Not in cloud sessions</b><span>claude.ai/code does not load a plugin installed with /plugin. Installing crewcut there is being tested.</span></div>
+</div>
+</div>
+<script>document.documentElement.dataset.h=Math.ceil(document.querySelector(".card").getBoundingClientRect().height)</script>

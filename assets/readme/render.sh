@@ -11,3 +11,6 @@ for page in "$here"/src/*.html; do
     --force-device-scale-factor=2 --window-size=880,"$height" --screenshot="$here/$name.png" "file://$page" >/dev/null 2>&1
   echo "$name ${height}px"
 done
+"$chrome" --headless=new --disable-gpu --hide-scrollbars --default-background-color=00000000 \
+  --force-device-scale-factor=2 --window-size=1280,400 --screenshot="$here/../banner.png" "file://$here/../banner.html" >/dev/null 2>&1
+echo "banner 400px"

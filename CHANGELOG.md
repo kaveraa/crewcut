@@ -5,6 +5,15 @@ follows Keep a Changelog and the project follows Semantic Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- New banner and one theme for every README image: near-black, a
+  fixed-width font throughout, red as the only bright colour, and a glowing
+  cut line in place of the barber pole. The banner is now a PNG rendered
+  from `assets/banner.html`, like the cards.
+- README: the install, the settings, the FAQ and the limitations are cards
+  too. The two install commands and the settings table stay as text.
+
 ## [0.15.2] - 2026-11-13
 
 ### Changed

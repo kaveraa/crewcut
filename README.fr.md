@@ -1,6 +1,6 @@
 # crewcut
 
-<p align="center"><img src="https://raw.githubusercontent.com/kaveraa/crewcut/acdf351/assets/banner.svg" alt="crewcut" width="100%"></p>
+<p align="center"><img src="assets/banner.png" alt="crewcut : cheveux courts, code court. Un plugin Claude Code." width="100%"></p>
 
 <p align="center">
 <a href="https://github.com/kaveraa/crewcut/actions/workflows/tests.yml"><img src="https://github.com/kaveraa/crewcut/actions/workflows/tests.yml/badge.svg" alt="tests"></a>
@@ -19,20 +19,15 @@ Un plugin Claude Code pour le code le plus simple qui marche : moins de code, mo
 
 ## Installation
 
+<p align="center"><img src="assets/readme/install-fr.png" width="880" alt="Installation : deux commandes, et il est actif. /plugin marketplace add kaveraa/crewcut, puis /plugin install crewcut@crewcut. Les hooks lancent node, donc Node 22 ou plus récent doit être dans le PATH ; sans lui, seuls les skills fonctionnent. Pour une seule session depuis un checkout local : claude --plugin-dir /chemin/vers/crewcut. Autres agents : copiez AGENTS.md dans votre projet, le ruleset full pour tout agent qui lit un fichier de règles."></p>
+
 ```
 /plugin marketplace add kaveraa/crewcut
 /plugin install crewcut@crewcut
 ```
 
-Depuis un checkout local, pour une session : `claude --plugin-dir /chemin/vers/crewcut`.
-
-Les hooks lancent `node`, donc Node 22 ou plus récent doit être dans le PATH
-du shell qui démarre Claude Code. Sans lui, seuls les skills fonctionnent.
-
-Tout autre agent qui lit un fichier de règles (Codex, Cursor, Copilot,
-Gemini CLI, OpenCode et les autres) : copiez [AGENTS.md](AGENTS.md) dans
-votre projet. C'est le ruleset `full` ; les niveaux, la revue, l'audit et le
-registre restent au plugin Claude Code.
+Tout autre agent qui lit un fichier de règles : copiez
+[AGENTS.md](AGENTS.md) dans votre projet.
 
 ## Avant et après
 
@@ -176,6 +171,8 @@ crewcut n'écrit jamais son nom dans votre code.
 
 ## Référence
 
+<p align="center"><img src="assets/readme/settings-fr.png" width="880" alt="Réglages, dans crewcut.json à côté de vos réglages Claude. Six clés, et la variable d'environnement l'emporte sur le fichier. defaultLevel, CREWCUT_DEFAULT_MODE : niveau de départ des nouvelles sessions. subagents : le ruleset dans les sous-agents, environ 500 tokens chacun. subagentMatcher, CREWCUT_SUBAGENT_MATCHER : expression régulière sur le type d'agent. tests, CREWCUT_TESTS : off, un test seulement si le ticket le demande. map, CREWCUT_MAP : off, ni carte ni versions au démarrage. markers : un commentaire discret sur chaque coin coupé."></p>
+
 <details>
 <summary>Réglages</summary>
 
@@ -305,24 +302,7 @@ changé, pourquoi, et comment ça a été vérifié, en quelques lignes.
 
 ## FAQ
 
-**Pourquoi un plugin quand le prompt de sept mots coupe plus sur Opus ?**
-Parce que le prompt coupe à l'aveugle. Il livre des composants plus nus et
-saute les tests : sur Opus il écrit des tests dans 31 % des cellules contre
-50 % pour crewcut sur le template. Sur Haiku, il écrit plus de code que pas
-de prompt du tout, et retire un garde-fou une fois, le contrôle par client
-d'un limiteur de débit. Crewcut a gardé chaque garde-fou sur chaque cellule
-de sécurité de chaque palier, nomme ce qui n'est jamais coupé, et corrige
-un bug à sa racine plutôt que chez l'appelant. Si vous préférez l'économie
-du prompt, `/crewcut tests off` garde tout le reste.
-
-**Suit-il les nouveaux modèles ?** Oui. Le ruleset est injecté quel que
-soit le modèle de la session, et les deux agents nomment le leur par alias.
-Les chiffres plus haut sont une autre affaire : chacun vaut pour le modèle
-sur lequel il a été mesuré, nommé dans sa ligne.
-
-**Revendique-t-il une économie sur mon dépôt ?** Non. `/crewcut-gain`
-affiche les chiffres mesurés ; la version que vous n'avez pas construite
-n'a jamais été écrite.
+<p align="center"><img src="assets/readme/faq-fr.png" width="880" alt="FAQ. Pourquoi un plugin quand un prompt de sept mots coupe autant sur Opus ? Le prompt coupe à l'aveugle : il saute les tests, écrit plus de code que pas de prompt sur Haiku, et retire une fois le contrôle par client d'un limiteur de débit. crewcut nomme ce qui n'est jamais coupé et corrige un bug à sa racine ; pour l'économie du prompt, /crewcut tests off garde tout le reste. Suit-il les nouveaux modèles ? Oui : le ruleset est injecté quel que soit le modèle, et les deux agents nomment le leur par alias ; chaque chiffre vaut pour le modèle sur lequel il a été mesuré. Revendique-t-il une économie sur mon dépôt ? Non : /crewcut-gain affiche les chiffres mesurés, la version que vous n'avez pas construite n'a jamais été écrite."></p>
 
 ## Mise à jour et désinstallation
 
@@ -340,20 +320,7 @@ lui-même. Depuis un shell, le même nettoyage est
 
 ## Limites
 
-- Les hooks ont besoin de `node` dans le PATH.
-- Deux sessions dans le même projet partagent un niveau ; la ligne de statut
-  affiche le dernier niveau posé, quel que soit le projet.
-- La carte liste les définitions de premier niveau trouvées par une
-  expression régulière par langage (JavaScript et TypeScript, Python, Go,
-  Rust, Ruby, PHP, Java, Kotlin, C#, Swift) ; les définitions imbriquées ou
-  dynamiques n'y sont pas. Les versions viennent de `package.json` et
-  `composer.json` seulement.
-- Les hooks, les niveaux, la revue, l'audit et le registre sont réservés à
-  Claude Code ; les autres agents reçoivent le ruleset par `AGENTS.md`.
-- Une session cloud (claude.ai/code) ne charge ni un plugin installé avec
-  `/plugin`, ni un plugin qu'un dépôt active dans `.claude/settings.json`,
-  et n'a pas de commande `/plugin`. L'installation de crewcut y est en
-  cours de test.
+<p align="center"><img src="assets/readme/limits-fr.png" width="880" alt="Limites. Les hooks ont besoin de node dans le PATH. Deux sessions dans le même projet partagent un niveau, et la ligne de statut affiche le dernier niveau posé. La carte liste les définitions de premier niveau trouvées par une expression régulière par langage, dix langages, et les versions viennent de package.json et composer.json seulement. Les hooks, les niveaux, la revue, l'audit et le registre sont réservés à Claude Code ; les autres agents reçoivent le ruleset par AGENTS.md. Une session cloud sur claude.ai/code ne charge pas un plugin installé avec /plugin."></p>
 
 ## Crédits et licence
 

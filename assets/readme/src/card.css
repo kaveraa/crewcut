@@ -1,22 +1,14 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { background: transparent; }
-body { width: 880px; font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: #E6EDF3; }
-.card { position: relative; width: 880px; padding: 44px 48px 40px 68px; border-radius: 20px; overflow: hidden;
-  background: #1C2831; }
-.pole { position: absolute; left: 0; top: 0; bottom: 0; width: 20px;
-  background: repeating-linear-gradient(135deg, #E34948 0 14px, #F4EFE6 14px 28px, #35495E 28px 42px, #F4EFE6 42px 56px); }
-.eyebrow { font-family: Consolas, "Courier New", monospace; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: #8A9BAB; }
-h1 { font-size: 34px; line-height: 1.2; font-weight: 700; color: #F4EFE6; margin-top: 12px; letter-spacing: -0.3px; }
+body { width: 880px; font-family: Consolas, "Courier New", monospace; color: #E6EDF3; }
+.card { position: relative; width: 880px; padding: 46px 48px 40px; border-radius: 20px; overflow: hidden; background: #0B1015; }
+/* the cut: one glowing line across the top of every card */
+.pole { position: absolute; left: 0; right: 0; top: 0; height: 2px;
+  background: linear-gradient(90deg, rgba(227,73,72,0), #E34948 14%, #E34948 86%, rgba(227,73,72,0));
+  box-shadow: 0 0 22px 2px rgba(227,73,72,0.55); }
+.eyebrow { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: #8A9BAB; }
+.eyebrow::before { content: ">_"; color: #E34948; margin-right: 14px; letter-spacing: 0; }
+h1 { font-size: 31px; line-height: 1.22; font-weight: 700; color: #F4EFE6; margin-top: 14px; letter-spacing: -1px; }
 h1 em { font-style: normal; color: #E34948; }
-.foot { margin-top: 26px; font-family: Consolas, "Courier New", monospace; font-size: 13px; line-height: 1.5; color: #8A9BAB; }
-.rule { height: 1px; background: #35495E; margin: 26px 0; }
-table { width: 100%; border-collapse: collapse; margin-top: 26px; font-size: 17px; }
-th { text-align: right; padding: 0 0 12px 12px; font-family: Consolas, "Courier New", monospace; font-size: 13px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; color: #8A9BAB; }
-th:first-child, td:first-child { text-align: left; padding-left: 0; }
-td { text-align: right; padding: 13px 0 13px 12px; border-top: 1px solid #35495E; font-family: Consolas, "Courier New", monospace; color: #B8C4CE; white-space: nowrap; }
-td:first-child { font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: #E6EDF3; white-space: normal; }
-td small { display: block; font-size: 13px; color: #8A9BAB; margin-top: 2px; }
-td.hot { color: #E34948; font-weight: 700; }
-td.warm { color: #F4C27A; }
-td.ok { color: #1BAF7A; }
-tr.top td:first-child { font-weight: 700; color: #F4EFE6; }
+.foot { margin-top: 26px; font-size: 13px; line-height: 1.5; color: #8A9BAB; }
+.rule { height: 1px; background: #1F2B35; margin: 26px 0; }
