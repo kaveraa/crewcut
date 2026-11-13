@@ -50,7 +50,7 @@ every extra line gets read, tested and fixed later.
   result. No case, no finding. Re-read the lines first: the caller exists,
   the value can be empty, the code really is unused (grep the whole tree,
   tests, fixtures and config included).
-- A `crewcut:` marker that names its limit is a decision, not a finding,
+- A `shortcut:` marker that names its limit is a decision, not a finding,
   unless the expected load already crosses the limit.
 - The fix is the smallest that works and behaves the same for every input
   the code accepts today; prefer a fix that deletes. Never a layer, a

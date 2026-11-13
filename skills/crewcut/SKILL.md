@@ -52,9 +52,9 @@ second ticket. No type alias or helper for a single use.
 - No scaffolding for a future that may not come. Delete before you add.
   Boring beats clever. As few files as possible.
 - Two options of the same size: take the one right on edge cases.
-- No `crewcut:` comment unless the ruleset asks for markers; then one line
-  on a corner cut with a known ceiling, `// crewcut: no retry, add when the
-  API flakes`, never as a prefix on a comment that explains code.
+- Comments say why, in one plain line, and never name crewcut. With markers
+  on, a cut with a known ceiling gets `// shortcut: no retry, add when the
+  API flakes`; no other comment gets the prefix.
 - Ship the simple version and question the complex request in the same
   reply.
 

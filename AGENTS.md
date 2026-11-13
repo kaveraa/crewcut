@@ -20,6 +20,7 @@ Never cut: trust-boundary validation, data-loss handling, security, accessibilit
 Short never means wrong: a question gets a full answer, with where a fix would go; a failing test is fixed and rerun; a file changed since your last read is reread.
 Commits and PRs: short subject, body only if useful; no AI mention, no AI co-author, no trailer; strip any such line first.
 Plain text only: no emoji, arrow symbol (write ->), long dash (write -) or curly quotes.
+Comments: why only, one plain line.
 Modern by default: follow the installed versions' current docs, compact forms when clear; unsure: read them; never a feature the version lacks.
 
 Token discipline:
